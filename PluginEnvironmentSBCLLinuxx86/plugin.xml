@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="de.fh_trier.eclipse.lisp.servers">
+      <server
+            host="localhost"
+            name="SBCL"
+            port="31341"
+            version="1.0.0">
+         <configuration
+               class="de.fh_trier.eclipse.sbcl.linux.x86.Configuration"
+               logging="true"
+               logseverity="error">
+         </configuration>
+      </server>
+   </extension>
+</plugin>

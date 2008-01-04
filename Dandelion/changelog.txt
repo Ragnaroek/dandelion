@@ -1,0 +1,4 @@
+
+1.0.1
+* Compatibility Eclipse 3.3 (Europa)
+* Refactoring (EvalServer -> Environment)

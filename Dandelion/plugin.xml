@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="de.fh_trier.eclipse.lisp.servers" name="Lisp Servers" schema="schema/de.fh_trier.eclipse.lisp.servers.exsd"/>
+   <extension
+         id="de.fh_trier.eclipse.lisp.editor"
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor"
+            contributorClass="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditorActionContributor"
+            default="false"
+            extensions="lisp"
+            icon="images/lisp_file.gif"
+            id="de.fh_trier.eclipse.lisp.editor"
+            name="Lisp Editor"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.documentParticipant"
+         name="Lisp Document Participant"
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="de.fh_trier.eclipse.lisp.internal.ui.editor.LispDocumentSetupParticipant"
+            extensions="lisp"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.perspectives"
+         name="Lisp Perspective"
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.fh_trier.eclipse.lisp.internal.ui.LispPerspective"
+            fixed="false"
+            icon="images/lambda.gif"
+            id="de.fh_trier.eclipse.lisp.lispPerspective"
+            name="Lisp"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.views"
+         name="Lisp Views"
+         point="org.eclipse.ui.views">
+      <category
+            id="de.fh_trier.eclipse.lisp.lispViews"
+            name="Lisp"/>
+      <view
+            allowMultiple="true"
+            category="de.fh_trier.eclipse.lisp.lispViews"
+            class="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView"
+            icon="images/listener.gif"
+            id="de.fh_trier.eclipse.lisp.views.listenerView"
+            name="Listener"/>
+      <view
+            allowMultiple="false"
+            category="de.fh_trier.eclipse.lisp.lispViews"
+            class="de.fh_trier.eclipse.lisp.internal.ui.views.apropos.AproposView"
+            icon="images/apropos.png"
+            id="de.fh_trier.eclipse.lisp.views.aproposView"
+            name="Apropos"/>
+      <view
+            category="de.fh_trier.eclipse.lisp.lispViews"
+            class="de.fh_trier.eclipse.lisp.internal.ui.views.macroexpand.MacroexpandView"
+            icon="images/macroexpand.png"
+            id="de.fh_trier.eclipse.lisp.views.macroexpandView"
+            name="Macroexpand"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.viewActions"
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="de.fh_trier.eclipse.lisp.views.outline"
+            targetID="org.eclipse.ui.views.ContentOutline">
+         <action
+               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               icon="images/sort_types.gif"
+               id="de.fh_trier.eclipse.lisp.views.outline.sortType"
+               label="Sort by type"
+               menubarPath="sort"
+               style="toggle"
+               toolbarPath="sort"/>
+         <action
+               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               icon="images/sort_alphab.gif"
+               id="de.fh_trier.eclipse.lisp.views.outline.sortAlphab"
+               label="Sort by name"
+               menubarPath="sort"
+               style="toggle"
+               toolbarPath="sort"/>
+         <action
+               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               icon="images/hide_sublevel.gif"
+               id="de.fh_trier.eclipse.lisp.views.outline.hideSubLevel"
+               label="Hide Sublevel"
+               menubarPath="visibility"
+               style="toggle"
+               toolbarPath="visibility"
+               tooltip="Hide sublevel forms"/>
+         <action
+               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineVisibleTypeActions"
+               icon="/images/types.gif"
+               id="de.fh_trier.eclipse.lisp.views.outline.typesToplevel"
+               label="Visible Types Toplevel"
+               menubarPath="visibility"
+               style="push"
+               toolbarPath="visibility"
+               tooltip="Select Visible Types on Toplevel"/>
+         <action
+               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineVisibleTypeActions"
+               icon="images/types_sublevel.gif"
+               id="de.fh_trier.eclipse.lisp.views.outline.typesSublevel"
+               label="Visible Types Sublevel"
+               menubarPath="visibility"
+               style="push"
+               toolbarPath="visibility"
+               tooltip="Select Visible Types on Sublevel"/>
+      </viewContribution>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.decorators"
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="de.fh_trier.eclipse.lisp.internal.ui.LispResourceDecorator"
+            id="de.fh_trier.eclipse.lisp.decorators.resourceDecorator"
+            label="Lisp Resource Decorator"
+            state="true">
+            	<enablement>
+     				<objectClass name="org.eclipse.core.resources.IResource"/> 
+     			</enablement>  
+      </decorator>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.natures.lispNature"
+         name="Lisp Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="de.fh_trier.eclipse.lisp.internal.LispNature"/>
+      </runtime>
+      <options allowLinking="false"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.natures.images"
+         name="Lisp Nature Image"
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="images/lisp_nature.gif"
+            id="de.fh_trier.eclipse.lisp.natures.images.image"
+            natureId="de.fh_trier.eclipse.lisp.natures.lispNature"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.newWizards"
+         name="New Wizards"
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            canFinishEarly="false"
+            category="de.fh_trier.eclipse.lisp.newWizards.lispCategory"
+            class="de.fh_trier.eclipse.lisp.internal.ui.wizards.LispProjectWizard"
+            finalPerspective="de.fh_trier.eclipse.lisp.lispPerspective"
+            hasPages="true"
+            icon="images/lambda.gif"
+            id="de.fh_trier.eclipse.lisp.newWizards.projectWizard"
+            name="Lisp Project"
+            preferredPerspectives="de.fh_trier.eclipse.lisp.lispPerspective"
+            project="true">
+      <description>
+Creates a new Lisp Project.
+      </description>    
+      </wizard>
+      <category
+            id="de.fh_trier.eclipse.lisp.newWizards.lispCategory"
+            name="Lisp"/>
+      <wizard
+            canFinishEarly="false"
+            category="de.fh_trier.eclipse.lisp.newWizards.lispCategory"
+            class="de.fh_trier.eclipse.lisp.internal.ui.wizards.LispFileWizard"
+            finalPerspective="de.fh_trier.eclipse.lisp.lispPerspective"
+            hasPages="true"
+            icon="images/lisp_file.gif"
+            id="de.fh_trier.eclipse.lisp.newWizards.fileWizard"
+            name="Lisp File"
+            preferredPerspectives="de.fh_trier.eclipse.lisp.lispPerspective"
+            project="false"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.resourceFilters"
+         point="org.eclipse.ui.ide.resourceFilters">
+      <filter
+            pattern=".project"
+            selected="true"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.commands"
+         point="org.eclipse.ui.commands">
+      <category
+            id="de.fh_trier.eclipse.lisp.commands.editor"
+            name="Lisp Editing"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.evalSelection"
+            name="Evaluate Selection"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.evalFile"
+            name="Evaluate File"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.evalToplevel"
+            name="Evaluate Toplevel"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.macroexpand"
+            name="Macroexpand Selection"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.macroexpandOne"
+            name="Macroexpand-1 Selection"/>
+      <command
+            categoryId="de.fh_trier.eclipse.lisp.commands.editor"
+            id="de.fh_trier.eclipse.lisp.commands.editor.format"
+            name="Format"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.bindings"
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.evalSelection"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+E"/>
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.evalFile"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+E"/>
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.evalToplevel"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F8"/>
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.format"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+I"/>
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.macroexpand"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+M"/>
+      <key
+            commandId="de.fh_trier.eclipse.lisp.commands.editor.macroexpandOne"
+            contextId="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+M"/>
+   </extension>
+   <extension
+         id="de.fh_trier.eclipse.lisp.contexts"
+         point="org.eclipse.ui.contexts">
+      <context
+            id="de.fh_trier.eclipse.lisp.contexts.lispEditorScope"
+            name="Editing Lisp"
+            parentId="org.eclipse.ui.textEditorScope"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="de.fh_trier.eclipse.lisp.preferences.lispMain"
+            class="de.fh_trier.eclipse.lisp.internal.preferences.LispServerPreferencePage"
+            id="de.fh_trier.eclipse.lisp.preferences.LispServerPreferences"
+            name="Lisp Environments"/>
+      <page
+            class="de.fh_trier.eclipse.lisp.internal.preferences.LispPrimaryPreferences"
+            id="de.fh_trier.eclipse.lisp.preferences.lispMain"
+            name="Lisp"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="de.fh_trier.eclipse.lisp.internal.ui.LispProjectPropertyPage"
+            id="de.fh_trier.eclipse.lisp.propertyPages.project"
+            name="Lisp">
+             <filter
+				name="projectNature"
+				value="de.fh_trier.eclipse.lisp.natures.lispNature">
+			</filter>
+             <enabledWhen>
+                <instanceof
+                      value="org.eclipse.core.resources.IProject">
+                </instanceof>
+             </enabledWhen>
+      </page>
+   </extension>
+
+</plugin>

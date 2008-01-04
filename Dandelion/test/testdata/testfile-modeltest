@@ -1,0 +1,23 @@
+(defpackage :my-package
+	(use :cl-user :libx :liby))
+
+(in-package :my-package)
+
+(defun my-function (a1 a2 &key (a b) &rest rest)
+  (mapcar #'(lambda (x y)
+  	  (setf x 'y)) (list 'a 'b) (list 'c 'd 'e))
+)
+
+(defmacro my-great-macro (a1 a2 &body body)
+  `(defun test ()
+  	(in-package :zy) ;warning: in-package not on top-level
+  	 (lambda (z y)
+  	 	(pprint "should not do this")
+  	 ))
+)
+
+(#|comment|#defun ugly#|kommentar#| nil
+  (loop (pprint "bla"))
+)
+
+'top-level-quoted-sym ;wird gelese als (quote top...)

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SBCL Environment
+Bundle-SymbolicName: de.fh_trier.eclipse.SBCLEnvironmentMacPPC;singleton:=true
+Bundle-Version: 1.0.2
+Bundle-Activator: de.fh_trier.eclipse.sbcl.mac.ppc.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ de.fh_trier.eclipse.lisp
+Eclipse-LazyStart: true
+Bundle-Vendor: Michael Bohn

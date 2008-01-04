@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SBCL Environment
+Bundle-SymbolicName: de.fh_trier.eclipse.SBCLEnvironmentWin32x86;singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: de.fh_trier.eclipse.sbcl.win32.x86.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ de.fh_trier.eclipse.lisp
+Eclipse-LazyStart: true
+Bundle-Vendor: Michael Bohn

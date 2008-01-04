@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Clisp Environment
+Bundle-SymbolicName: de.fh_trier.eclipse.ClispEnvironmentLinuxx86;singleton:=true
+Bundle-Version: 2.4.1
+Bundle-Activator: de.fh_trier.eclipse.clisp.linux.x86.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ de.fh_trier.eclipse.lisp
+Eclipse-LazyStart: true
+Bundle-Vendor: Michael Bohn

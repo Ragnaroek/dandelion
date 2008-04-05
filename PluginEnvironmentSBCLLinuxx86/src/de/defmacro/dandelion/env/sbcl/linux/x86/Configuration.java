@@ -1,4 +1,4 @@
-package de.fh_trier.eclipse.sbcl.linux.x86;
+package de.defmacro.dandelion.env.sbcl.linux.x86;
 
 import java.io.File;
 import java.util.*;

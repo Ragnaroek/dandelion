@@ -9,7 +9,7 @@
             port="31340"
             version="2.4.1">
          <configuration
-               class="de.fh_trier.eclipse.clisp.linux.x86.Configuration"
+               class="de.defmacro.dandelion.env.clisp.linux.x86.Configuration"
                logging="true"
                logseverity="error"/>
       </server>

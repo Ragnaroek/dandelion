@@ -17,7 +17,7 @@
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package de.fh_trier.eclipse.clisp.linux.x86;
+package de.defmacro.dandelion.env.clisp.linux.x86;
 
 import java.io.*;
 import java.util.List;
@@ -33,6 +33,6 @@ extends AbstractConfigurationFactory
 
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/eval-server_2.4.1_05");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/environment_clisp_2.4.1");
 	}
 }

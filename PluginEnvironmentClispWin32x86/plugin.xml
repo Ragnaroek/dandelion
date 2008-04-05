@@ -8,12 +8,12 @@
        <server
             host="localhost"
             name="CLISP"
-            port="31339"
-            version="2.4.1">
+            port="31400"
+            version="2.4.4">
           <configuration
-               class="de.fh_trier.eclipse.clisp.win32.x86.Configuration"
+               class="de.defmacro.dandelion.env.clisp.win32.x86.Configuration"
                logging="true"
-               logseverity="debug">
+               logseverity="error">
           </configuration>
        </server>
     </extension>

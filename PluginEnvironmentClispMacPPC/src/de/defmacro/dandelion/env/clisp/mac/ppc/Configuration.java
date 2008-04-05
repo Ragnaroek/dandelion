@@ -17,11 +17,12 @@
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package de.fh_trier.eclipse.clisp.mac.ppc;
+package de.defmacro.dandelion.env.clisp.mac.ppc;
 
 import java.io.*;
 import java.util.List;
-import de.fh_trier.eclipse.clisp.mac.ppc.Activator;
+
+import de.defmacro.dandelion.env.clisp.mac.ppc.Activator;
 import de.fh_trier.eclipse.lisp.core.connection.*;
 
 public class Configuration 
@@ -39,6 +40,6 @@ extends AbstractConfigurationFactory
 	 */
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/eval-server_2.4.1_05");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/environment_clisp_2.4.3");
 	}
 }

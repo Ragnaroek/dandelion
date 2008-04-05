@@ -6,10 +6,10 @@
       <server
             host="localhost"
             name="CLISP"
-            port="31340"
-            version="2.4.1">
+            port="31399"
+            version="2.4.3">
          <configuration
-               class="de.fh_trier.eclipse.clisp.mac.ppc.Configuration"
+               class="de.defmacro.dandelion.env.clisp.mac.ppc.Configuration"
                logging="false"
                logseverity="error"/>
       </server>

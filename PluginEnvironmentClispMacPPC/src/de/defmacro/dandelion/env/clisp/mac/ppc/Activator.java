@@ -17,7 +17,7 @@
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package de.fh_trier.eclipse.clisp.mac.ppc;
+package de.defmacro.dandelion.env.clisp.mac.ppc;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -29,7 +29,7 @@ public class Activator
 extends Plugin 
 {
 	// The plug-in ID
-	public static final String PLUGIN_ID = "de.fh_trier.eclipse.ClispEnvironmentMacPPC";
+	public static final String PLUGIN_ID = "de.defmacro.dandelion.env.clisp.mac.ppc";
 
 	// The shared instance
 	private static Activator plugin;

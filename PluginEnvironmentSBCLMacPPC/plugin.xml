@@ -6,10 +6,10 @@
       <server
             host="localhost"
             name="SBCL"
-            port="31341"
-            version="1.0.2">
+            port="30210"
+            version="1.0.15">
          <configuration
-               class="de.fh_trier.eclipse.sbcl.mac.ppc.Configuration"
+               class="de.defmacro.dandelion.env.sbcl.mac.ppc.Configuration"
                logging="true"
                logseverity="error">
          </configuration>

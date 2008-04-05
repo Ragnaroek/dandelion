@@ -1,4 +1,4 @@
-package de.fh_trier.eclipse.sbcl.mac.ppc;
+package de.defmacro.dandelion.env.sbcl.mac.ppc;
 
 import java.io.File;
 import java.util.*;
@@ -15,6 +15,6 @@ extends AbstractConfigurationFactory
 	}
 
 	public File getExecutableFile() {
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/eval-server_1.0.2_05");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/environment_sbcl_1.0.15");
 	}
 }

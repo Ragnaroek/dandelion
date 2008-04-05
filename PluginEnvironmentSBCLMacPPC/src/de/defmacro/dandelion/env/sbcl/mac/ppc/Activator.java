@@ -1,4 +1,4 @@
-package de.fh_trier.eclipse.sbcl.mac.ppc;
+package de.defmacro.dandelion.env.sbcl.mac.ppc;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -10,7 +10,7 @@ public class Activator
 extends Plugin 
 {
 	// The plug-in ID
-	public static final String PLUGIN_ID = "SBCLEnvironmentMacPPC";
+	public static final String PLUGIN_ID = "de.defmacro.dandelion.env.sbcl.mac.ppc";
 	// The shared instance
 	private static Activator plugin;
 	

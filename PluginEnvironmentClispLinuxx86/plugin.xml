@@ -6,8 +6,8 @@
       <server
             host="localhost"
             name="CLISP"
-            port="31340"
-            version="2.4.1">
+            port="31400"
+            version="2.4.4">
          <configuration
                class="de.defmacro.dandelion.env.clisp.linux.x86.Configuration"
                logging="true"

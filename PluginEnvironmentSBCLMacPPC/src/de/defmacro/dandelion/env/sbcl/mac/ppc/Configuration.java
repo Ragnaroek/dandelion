@@ -3,7 +3,7 @@ package de.defmacro.dandelion.env.sbcl.mac.ppc;
 import java.io.File;
 import java.util.*;
 
-import de.fh_trier.eclipse.lisp.core.connection.AbstractConfigurationFactory;
+import de.defmacro.dandelion.core.connection.AbstractConfigurationFactory;
 
 public class Configuration 
 extends AbstractConfigurationFactory 
@@ -15,6 +15,6 @@ extends AbstractConfigurationFactory
 	}
 
 	public File getExecutableFile() {
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/environment_sbcl_1.0.15");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_1.0.22");
 	}
 }

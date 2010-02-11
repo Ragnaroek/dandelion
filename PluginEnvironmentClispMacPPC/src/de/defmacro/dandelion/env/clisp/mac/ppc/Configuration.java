@@ -22,8 +22,8 @@ package de.defmacro.dandelion.env.clisp.mac.ppc;
 import java.io.*;
 import java.util.List;
 
+import de.defmacro.dandelion.core.connection.*;
 import de.defmacro.dandelion.env.clisp.mac.ppc.Activator;
-import de.fh_trier.eclipse.lisp.core.connection.*;
 
 public class Configuration 
 extends AbstractConfigurationFactory
@@ -40,6 +40,6 @@ extends AbstractConfigurationFactory
 	 */
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/environment_clisp_2.4.3");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_clisp_2.4.8");
 	}
 }

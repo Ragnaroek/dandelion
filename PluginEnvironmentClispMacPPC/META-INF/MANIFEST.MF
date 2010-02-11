@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CLISP Environment
 Bundle-SymbolicName: de.defmacro.dandelion.env.clisp.mac.ppc;singleton:=true
-Bundle-Version: 2.4.3
+Bundle-Version: 2.4.8
 Bundle-Activator: de.defmacro.dandelion.env.clisp.mac.ppc.Activator
 Bundle-Vendor: Michael Bohn
 Require-Bundle: org.eclipse.core.runtime,
- de.fh_trier.eclipse.lisp,
- org.eclipse.ui
-Eclipse-LazyStart: true
+ org.eclipse.ui,
+ de.defmacro.dandelion
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

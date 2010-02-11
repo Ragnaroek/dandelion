@@ -3,7 +3,7 @@ package de.defmacro.dandelion.env.sbcl.linux.x86;
 import java.io.File;
 import java.util.*;
 
-import de.fh_trier.eclipse.lisp.core.connection.AbstractConfigurationFactory;
+import de.defmacro.dandelion.core.connection.AbstractConfigurationFactory;
 
 public class Configuration 
 extends AbstractConfigurationFactory 
@@ -16,6 +16,6 @@ extends AbstractConfigurationFactory
 	}
 
 	public File getExecutableFile() {
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/eval-server_1.0.0_05");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_1.0.29");
 	}
 }

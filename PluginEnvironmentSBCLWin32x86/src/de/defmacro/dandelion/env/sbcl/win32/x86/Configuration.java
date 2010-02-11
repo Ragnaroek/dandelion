@@ -1,8 +1,9 @@
-package de.fh_trier.eclipse.sbcl.win32.x86;
+package de.defmacro.dandelion.env.sbcl.win32.x86;
 
 import java.io.File;
 import java.util.*;
-import de.fh_trier.eclipse.lisp.core.connection.*;
+
+import de.defmacro.dandelion.core.connection.*;
 
 public class Configuration 
 extends AbstractConfigurationFactory
@@ -16,6 +17,6 @@ extends AbstractConfigurationFactory
 
 	public File getExecutableFile() 
 	{	
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/lib/eval-server.exe");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_1.0.29.exe");
 	}
 }

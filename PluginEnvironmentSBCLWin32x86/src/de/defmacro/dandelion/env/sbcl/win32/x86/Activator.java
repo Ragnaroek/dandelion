@@ -1,4 +1,4 @@
-package de.fh_trier.eclipse.sbcl.win32.x86;
+package de.defmacro.dandelion.env.sbcl.win32.x86;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

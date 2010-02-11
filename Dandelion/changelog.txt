@@ -1,4 +1,8 @@
 
-1.0.1
+1.0.5
 * Compatibility Eclipse 3.3 (Europa)
 * Refactoring (EvalServer -> Environment)
+
+1.1.0
+* Environment Projekt aenderbar (ueber Projekt Properties Dialog)
+* Package => de.defmacro.dandelion

@@ -6,8 +6,8 @@
          id="de.fh_trier.eclipse.lisp.editor"
          point="org.eclipse.ui.editors">
       <editor
-            class="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor"
-            contributorClass="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditorActionContributor"
+            class="de.defmacro.dandelion.internal.ui.editor.LispEditor"
+            contributorClass="de.defmacro.dandelion.internal.ui.editor.LispEditorActionContributor"
             default="false"
             extensions="lisp"
             icon="images/lisp_file.gif"
@@ -19,7 +19,7 @@
          name="Lisp Document Participant"
          point="org.eclipse.core.filebuffers.documentSetup">
       <participant
-            class="de.fh_trier.eclipse.lisp.internal.ui.editor.LispDocumentSetupParticipant"
+            class="de.defmacro.dandelion.internal.ui.editor.LispDocumentSetupParticipant"
             extensions="lisp"/>
    </extension>
    <extension
@@ -27,7 +27,7 @@
          name="Lisp Perspective"
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="de.fh_trier.eclipse.lisp.internal.ui.LispPerspective"
+            class="de.defmacro.dandelion.internal.ui.LispPerspective"
             fixed="false"
             icon="images/lambda.gif"
             id="de.fh_trier.eclipse.lisp.lispPerspective"
@@ -43,20 +43,20 @@
       <view
             allowMultiple="true"
             category="de.fh_trier.eclipse.lisp.lispViews"
-            class="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView"
+            class="de.defmacro.dandelion.internal.ui.views.listener.ListenerView"
             icon="images/listener.gif"
             id="de.fh_trier.eclipse.lisp.views.listenerView"
             name="Listener"/>
       <view
             allowMultiple="false"
             category="de.fh_trier.eclipse.lisp.lispViews"
-            class="de.fh_trier.eclipse.lisp.internal.ui.views.apropos.AproposView"
+            class="de.defmacro.dandelion.internal.ui.views.apropos.AproposView"
             icon="images/apropos.png"
             id="de.fh_trier.eclipse.lisp.views.aproposView"
             name="Apropos"/>
       <view
             category="de.fh_trier.eclipse.lisp.lispViews"
-            class="de.fh_trier.eclipse.lisp.internal.ui.views.macroexpand.MacroexpandView"
+            class="de.defmacro.dandelion.internal.ui.views.macroexpand.MacroexpandView"
             icon="images/macroexpand.png"
             id="de.fh_trier.eclipse.lisp.views.macroexpandView"
             name="Macroexpand"/>
@@ -68,7 +68,7 @@
             id="de.fh_trier.eclipse.lisp.views.outline"
             targetID="org.eclipse.ui.views.ContentOutline">
          <action
-               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               class="de.defmacro.dandelion.internal.ui.actions.OutlineToggleActions"
                icon="images/sort_types.gif"
                id="de.fh_trier.eclipse.lisp.views.outline.sortType"
                label="Sort by type"
@@ -76,7 +76,7 @@
                style="toggle"
                toolbarPath="sort"/>
          <action
-               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               class="de.defmacro.dandelion.internal.ui.actions.OutlineToggleActions"
                icon="images/sort_alphab.gif"
                id="de.fh_trier.eclipse.lisp.views.outline.sortAlphab"
                label="Sort by name"
@@ -84,7 +84,7 @@
                style="toggle"
                toolbarPath="sort"/>
          <action
-               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineToggleActions"
+               class="de.defmacro.dandelion.internal.ui.actions.OutlineToggleActions"
                icon="images/hide_sublevel.gif"
                id="de.fh_trier.eclipse.lisp.views.outline.hideSubLevel"
                label="Hide Sublevel"
@@ -93,7 +93,7 @@
                toolbarPath="visibility"
                tooltip="Hide sublevel forms"/>
          <action
-               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineVisibleTypeActions"
+               class="de.defmacro.dandelion.internal.ui.actions.OutlineVisibleTypeActions"
                icon="/images/types.gif"
                id="de.fh_trier.eclipse.lisp.views.outline.typesToplevel"
                label="Visible Types Toplevel"
@@ -102,7 +102,7 @@
                toolbarPath="visibility"
                tooltip="Select Visible Types on Toplevel"/>
          <action
-               class="de.fh_trier.eclipse.lisp.internal.ui.actions.OutlineVisibleTypeActions"
+               class="de.defmacro.dandelion.internal.ui.actions.OutlineVisibleTypeActions"
                icon="images/types_sublevel.gif"
                id="de.fh_trier.eclipse.lisp.views.outline.typesSublevel"
                label="Visible Types Sublevel"
@@ -116,7 +116,7 @@
          id="de.fh_trier.eclipse.lisp.decorators"
          point="org.eclipse.ui.decorators">
       <decorator
-            class="de.fh_trier.eclipse.lisp.internal.ui.LispResourceDecorator"
+            class="de.defmacro.dandelion.internal.ui.LispResourceDecorator"
             id="de.fh_trier.eclipse.lisp.decorators.resourceDecorator"
             label="Lisp Resource Decorator"
             state="true">
@@ -130,7 +130,7 @@
          name="Lisp Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="de.fh_trier.eclipse.lisp.internal.LispNature"/>
+         <run class="de.defmacro.dandelion.internal.LispNature"/>
       </runtime>
       <options allowLinking="false"/>
    </extension>
@@ -150,7 +150,7 @@
       <wizard
             canFinishEarly="false"
             category="de.fh_trier.eclipse.lisp.newWizards.lispCategory"
-            class="de.fh_trier.eclipse.lisp.internal.ui.wizards.LispProjectWizard"
+            class="de.defmacro.dandelion.internal.ui.wizards.LispProjectWizard"
             finalPerspective="de.fh_trier.eclipse.lisp.lispPerspective"
             hasPages="true"
             icon="images/lambda.gif"
@@ -168,7 +168,7 @@ Creates a new Lisp Project.
       <wizard
             canFinishEarly="false"
             category="de.fh_trier.eclipse.lisp.newWizards.lispCategory"
-            class="de.fh_trier.eclipse.lisp.internal.ui.wizards.LispFileWizard"
+            class="de.defmacro.dandelion.internal.ui.wizards.LispFileWizard"
             finalPerspective="de.fh_trier.eclipse.lisp.lispPerspective"
             hasPages="true"
             icon="images/lisp_file.gif"
@@ -261,18 +261,18 @@ Creates a new Lisp Project.
          point="org.eclipse.ui.preferencePages">
       <page
             category="de.fh_trier.eclipse.lisp.preferences.lispMain"
-            class="de.fh_trier.eclipse.lisp.internal.preferences.LispServerPreferencePage"
+            class="de.defmacro.dandelion.internal.preferences.LispServerPreferencePage"
             id="de.fh_trier.eclipse.lisp.preferences.LispServerPreferences"
             name="Lisp Environments"/>
       <page
-            class="de.fh_trier.eclipse.lisp.internal.preferences.LispPrimaryPreferences"
+            class="de.defmacro.dandelion.internal.preferences.LispPrimaryPreferences"
             id="de.fh_trier.eclipse.lisp.preferences.lispMain"
             name="Lisp"/>
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="de.fh_trier.eclipse.lisp.internal.ui.LispProjectPropertyPage"
+            class="de.defmacro.dandelion.internal.ui.LispProjectPropertyPage"
             id="de.fh_trier.eclipse.lisp.propertyPages.project"
             name="Lisp">
              <filter

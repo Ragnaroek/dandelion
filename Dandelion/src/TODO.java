@@ -10,16 +10,24 @@
 	at org.eclipse.jface.text.source.projection.ProjectionSummary$Summarizer.run(ProjectionSummary.java:70)
  */
 
+/*########### Version 1.10 ####################
+//TODO Hinweis in AutoCompletion wenn keine Verbindung zu Listener besteht
+//TODO Error Konsole (fuer ausgabe *error-output*)
+//TODO Verbesserte Fehlermeldung wenn defpackage noch noch nicht evaluiert wurde und vorher evaluiert wird
+//TODO Laden kompletter Datei aus Kontextmenue
+//FIXME Lisp-Outline Symbole erscheinen auch in anderen Outlines!
 //TODO Refactoring: package namen -> de.fh-trier -> auf neue domain
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!! Hohe Prioritaet
-//TODO GUI-Dialog Environment anlegen aendern (Parameter fuer Exectuable hinzufuegen, TODO Werte auslesen)
+//TODO Interne Ids auf neuen Domain-Namespace
 //TODO GUI-Dialog Executable oder Parameterstart ausgewaehlt => automatisch localhost in server und nicht aenderbar!! (Feld enabled = false)
-//TODO Aenderung Eval-Server Projekt ermoeglichen
 //TODO Aenderung Eval-Server Preferences ermoeglichen (Server aus Plugin, aenderbar???)
+//TODO GUI-Dialog Environment anlegen aendern (Parameter fuer Exectuable hinzufuegen, TODO Werte auslesen)
+//!!!!!!!!!!!!!!!!!!!!!!!!!! Hohe Prioritaet
 //TODO connect/disconnect ermoeglichen, in projekt-kontextmenue, apropos connect-image, ListenerView
 //!!!!!!!!!!!!!!!!!!!!!!!!!!
+#################################################*/
+
+
+
 
 //TODO Save Memimage bei beenden Lisp-Prozess ermoeglichen!!!
 //TODO Auschliessen von paketen bei symboluebertragung ermoeglichen
@@ -37,7 +45,7 @@
 //TODO LispModel zur Verwaltung selbst definierter SExpressions
 //TODO Selektion Editor mit Outline abgleichen (ueber offset in dokument)
 //TODO Folding Kommentar Toplevel
-//TODO todo-Markierung in Quellcode ermoeglichen
+//TODO !!!todo-Markierung in Quellcode ermoeglichen
 //TODO Parsen Effizienter -> Nur veränderte TL-Form neu scannen-> Mitteilung ueber Listener
 //TODO Unterstuetzung CLOS
 //TODO ProjectionSummary Anzeige mit Syntax-Highlighting Lisp

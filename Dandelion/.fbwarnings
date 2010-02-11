@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BugCollection version="1.0.0" sequence="0" timestamp="-1" analysisTimestamp="1166207842266" release="">
+  <Project filename="&lt;&lt;unnamed project&gt;&gt;">
+    <Jar>/Users/mb/mbEigeneDateien/Studium/7. Semester/abschlussarbeit/workspace/LambdaEclipse/bin/de/fh_trier/eclipse/lisp/internal/ui/editor/LispOutlineContentProvider.class</Jar>
+    <AuxClasspathEntry>/Users/mb/mbEigeneDateien/Studium/7. Semester/abschlussarbeit/workspace/LambdaEclipse/bin</AuxClasspathEntry>
+    <AuxClasspathEntry>/Users/mb/mbEigeneDateien/Studium/7. Semester/abschlussarbeit/workspace/LambdaEclipse/lib/commons-codec-1.3.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.swt_3.2.0.v3232o.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.swt.carbon.macosx_3.2.0.v3232m.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.jface_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui.workbench_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.osgi_3.2.0.v20060601.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/runtime_registry_compatibility.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.equinox.registry_3.2.0.v20060601.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.equinox.preferences_3.2.0.v20060601.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui.editors_3.2.0.v20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.filebuffers_3.2.0.v20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.jface.text_3.2.0.v20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.text_3.2.0.v20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.core.resources_3.2.0.v20060603.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui.workbench.texteditor_3.2.0.v20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.junit4_4.1.0/junit-4.1.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui.ide_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/org.eclipse.ui.views_3.2.0.I20060605-1400.jar</AuxClasspathEntry>
+    <AuxClasspathEntry>/Applications/eclipse [3.2]/plugins/edu.umd.cs.findbugs.plugin.eclipse_1.0.0.rel/annotations.jar</AuxClasspathEntry>
+  </Project>
+  <BugInstance type="NO_NOTIFY_NOT_NOTIFYALL" priority="3" abbrev="No" category="MT_CORRECTNESS">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="BackgroundEvaluation.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/BackgroundEvaluation.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation" name="evalForm" signature="(Ljava/lang/String;Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation" start="85" end="89" startBytecode="0" endBytecode="19" sourcefile="BackgroundEvaluation.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/BackgroundEvaluation.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation" start="88" end="88" startBytecode="16" endBytecode="16" sourcefile="BackgroundEvaluation.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/BackgroundEvaluation.java"/>
+  </BugInstance>
+  <BugInstance type="SIC_INNER_SHOULD_BE_STATIC_ANON" priority="3" abbrev="SIC" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.Result$1">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.Result$1" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="Result.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/Result.java"/>
+    </Class>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolMatcherFactory">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolMatcherFactory" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolMatcherFactory.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolMatcherFactory.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolMatcherFactory" name="fFactory" signature="Lde/fh_trier/eclipse/lisp/internal/core/connection/protocol/IProtocolPatternFactory;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolMatcherFactory" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolMatcherFactory.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolMatcherFactory.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolReader.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolReader.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" name="protocolReader" signature="Lde/fh_trier/eclipse/lisp/internal/core/connection/protocol/IProtocolReader;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolReader.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolReader.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolReader.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolReader.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" name="writer" signature="Ljava/io/Writer;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolReader.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolReader.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="SIC_INNER_SHOULD_BE_STATIC_ANON" priority="3" abbrev="SIC" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader$1">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader$1" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolReader.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolReader.java"/>
+    </Class>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolWriter.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolWriter.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" name="protocolWriter" signature="Lde/fh_trier/eclipse/lisp/internal/core/connection/protocol/IProtocolWriter;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolWriter.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolWriter.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolWriter.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolWriter.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" name="reader" signature="Ljava/io/BufferedReader;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolWriter.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolWriter.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="SIC_INNER_SHOULD_BE_STATIC_ANON" priority="3" abbrev="SIC" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter$1">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter$1" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestProtocolWriter.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/connection/protocol/TestProtocolWriter.java"/>
+    </Class>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpDOMVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpDOMVisitor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" name="model" signature="Lde/fh_trier/eclipse/lisp/internal/core/dom/ISexpModel;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpDOMVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpDOMVisitor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpDOMVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpDOMVisitor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" name="project" signature="Lde/fh_trier/eclipse/lisp/testutils/TestProject;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpDOMVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpDOMVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpDOMVisitor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="BC_UNCONFIRMED_CAST" priority="3" abbrev="BC" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" name="testDOMValidFile" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="43" end="141" startBytecode="0" endBytecode="363" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Method>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="SExpression.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/SExpression.java"/>
+    </Class>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.DefunForm">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.DefunForm" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="DefunForm.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/DefunForm.java"/>
+    </Class>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="63" end="63" startBytecode="113" endBytecode="113" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+  </BugInstance>
+  <BugInstance type="BC_UNCONFIRMED_CAST" priority="3" abbrev="BC" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" name="testDOMValidFile" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="43" end="141" startBytecode="0" endBytecode="363" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Method>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="SExpression.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/SExpression.java"/>
+    </Class>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.Form">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.Form" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="Form.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/Form.java"/>
+    </Class>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="136" end="136" startBytecode="844" endBytecode="844" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+  </BugInstance>
+  <BugInstance type="BC_UNCONFIRMED_CAST" priority="3" abbrev="BC" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" name="testDOMValidFile" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="43" end="141" startBytecode="0" endBytecode="363" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Method>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.SExpression" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="SExpression.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/SExpression.java"/>
+    </Class>
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.Symbol">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.Symbol" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="Symbol.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/Symbol.java"/>
+    </Class>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="117" end="117" startBytecode="680" endBytecode="680" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="124" end="124" startBytecode="741" endBytecode="741" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" name="model" signature="Lde/fh_trier/eclipse/lisp/internal/core/dom/ISexpModel;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" name="project" signature="Lde/fh_trier/eclipse/lisp/testutils/TestProject;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.core.dom.TestSexpModel" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSexpModel.java" sourcepath="de/fh_trier/eclipse/lisp/internal/core/dom/TestSexpModel.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="URF_UNREAD_FIELD" priority="2" abbrev="UrF" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispEditor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/editor/LispEditor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor" name="fSexpModel" signature="Lde/fh_trier/eclipse/lisp/internal/core/dom/ISexpModel;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispEditor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/editor/LispEditor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispOutlineContentProvider">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispOutlineContentProvider" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispOutlineContentProvider.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/editor/LispOutlineContentProvider.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispOutlineContentProvider" name="fInputModel" signature="Lde/fh_trier/eclipse/lisp/internal/core/dom/ISexpModel;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.editor.LispOutlineContentProvider" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispOutlineContentProvider.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/editor/LispOutlineContentProvider.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestSourceUtilities">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestSourceUtilities" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSourceUtilities.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestSourceUtilities.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestSourceUtilities" name="project" signature="Lde/fh_trier/eclipse/lisp/testutils/TestProject;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestSourceUtilities" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestSourceUtilities.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestSourceUtilities.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestTopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestTopLevelFormVisitor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" name="project" signature="Lde/fh_trier/eclipse/lisp/testutils/TestProject;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestTopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestTopLevelFormVisitor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestTopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestTopLevelFormVisitor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" name="visitor" signature="Lde/fh_trier/eclipse/lisp/internal/ui/text/TopLevelFormVisitor;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestTopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestTopLevelFormVisitor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="ITA_INEFFICIENT_TO_ARRAY" priority="3" abbrev="ITA" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="testFormTypes" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="90" end="109" startBytecode="0" endBytecode="512" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="102" end="102" startBytecode="380" endBytecode="380" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+  </BugInstance>
+  <BugInstance type="ITA_INEFFICIENT_TO_ARRAY" priority="3" abbrev="ITA" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="testFormTypes" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="90" end="109" startBytecode="0" endBytecode="512" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="104" end="104" startBytecode="411" endBytecode="411" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+  </BugInstance>
+  <BugInstance type="ITA_INEFFICIENT_TO_ARRAY" priority="3" abbrev="ITA" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="testFormTypes" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="90" end="109" startBytecode="0" endBytecode="512" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="105" end="105" startBytecode="442" endBytecode="442" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+  </BugInstance>
+  <BugInstance type="ITA_INEFFICIENT_TO_ARRAY" priority="3" abbrev="ITA" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="testFormTypes" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="90" end="109" startBytecode="0" endBytecode="512" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="107" end="107" startBytecode="473" endBytecode="473" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+  </BugInstance>
+  <BugInstance type="ITA_INEFFICIENT_TO_ARRAY" priority="3" abbrev="ITA" category="PERFORMANCE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="testFormTypes" signature="()V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="90" end="109" startBytecode="0" endBytecode="512" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="108" end="108" startBytecode="504" endBytecode="504" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="project" signature="Lde/fh_trier/eclipse/lisp/testutils/TestProject;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="visitDocValid" signature="Lde/fh_trier/eclipse/lisp/internal/ui/text/VisitableDocument;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" name="visitor" signature="Lde/fh_trier/eclipse/lisp/testutils/FormTestVisitor;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestVisitableDocument.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TestVisitableDocument.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.TopLevelFormVisitor">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TopLevelFormVisitor.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.TopLevelFormVisitor" name="fVisitingDocument" signature="Lorg/eclipse/jface/text/IDocument;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.TopLevelFormVisitor" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TopLevelFormVisitor.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/TopLevelFormVisitor.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.text.presentation.LispDoubleClickStrategy">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.presentation.LispDoubleClickStrategy" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispDoubleClickStrategy.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/presentation/LispDoubleClickStrategy.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.text.presentation.LispDoubleClickStrategy" name="defaultStrategy" signature="Lorg/eclipse/jface/text/ITextDoubleClickStrategy;" isStatic="true">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.text.presentation.LispDoubleClickStrategy" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="LispDoubleClickStrategy.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/text/presentation/LispDoubleClickStrategy.java"/>
+    </Field>
+  </BugInstance>
+  <BugInstance type="DM_CONVERT_CASE" priority="3" abbrev="Dm" category="I18N">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="ListenerView.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/views/listener/ListenerView.java"/>
+    </Class>
+    <Method classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView" name="setPrompt" signature="(Ljava/lang/String;)V" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView" start="156" end="161" startBytecode="0" endBytecode="34" sourcefile="ListenerView.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/views/listener/ListenerView.java"/>
+    </Method>
+    <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView" start="160" end="160" startBytecode="13" endBytecode="13" sourcefile="ListenerView.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/views/listener/ListenerView.java"/>
+  </BugInstance>
+  <BugInstance type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" priority="3" abbrev="UwF" category="STYLE">
+    <Class classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.TestEvalHistory">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.TestEvalHistory" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestEvalHistory.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/views/listener/TestEvalHistory.java"/>
+    </Class>
+    <Field classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.TestEvalHistory" name="history" signature="Lde/fh_trier/eclipse/lisp/internal/ui/views/listener/IEvalHistory;" isStatic="false">
+      <SourceLine classname="de.fh_trier.eclipse.lisp.internal.ui.views.listener.TestEvalHistory" start="-1" end="-1" startBytecode="-1" endBytecode="-1" sourcefile="TestEvalHistory.java" sourcepath="de/fh_trier/eclipse/lisp/internal/ui/views/listener/TestEvalHistory.java"/>
+    </Field>
+  </BugInstance>
+  <Errors></Errors>
+  <FindBugsSummary timestamp="Sat, 9 Dec 2006 15:23:07 +0100" total_classes="0" total_bugs="23" total_size="0" num_packages="6" cpu_seconds="103.72" clock_seconds="1029.09" peak_mbytes="153.57" gc_seconds="18.58" priority_3="22" priority_2="1">
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.core.connection" total_bugs="2" total_types="2" total_size="0" priority_3="2">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.BackgroundEvaluation" interface="false" size="0" bugs="1" priority_3="1"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.Result$1" interface="false" size="0" bugs="1" priority_3="1"/>
+    </PackageStats>
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.core.connection.protocol" total_bugs="7" total_types="5" total_size="0" priority_3="7">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolMatcherFactory" interface="false" size="0" bugs="1" priority_3="1"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader" interface="false" size="0" bugs="2" priority_3="2"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolReader$1" interface="false" size="0" bugs="1" priority_3="1"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter" interface="false" size="0" bugs="2" priority_3="2"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.core.connection.protocol.TestProtocolWriter$1" interface="false" size="0" bugs="1" priority_3="1"/>
+    </PackageStats>
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.ui.editor" total_bugs="1" total_types="1" total_size="0" priority_2="1">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.editor.LispEditor" interface="false" size="0" bugs="1" priority_2="1"/>
+    </PackageStats>
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.ui.text" total_bugs="11" total_types="3" total_size="0" priority_3="11">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.text.TestTopLevelFormVisitor" interface="false" size="0" bugs="2" priority_3="2"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.text.TestVisitableDocument" interface="false" size="0" bugs="8" priority_3="8"/>
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.text.TopLevelFormVisitor" interface="false" size="0" bugs="1" priority_3="1"/>
+    </PackageStats>
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.ui.text.presentation" total_bugs="1" total_types="1" total_size="0" priority_3="1">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.text.presentation.LispDoubleClickStrategy" interface="false" size="0" bugs="1" priority_3="1"/>
+    </PackageStats>
+    <PackageStats package="de.fh_trier.eclipse.lisp.internal.ui.views.listener" total_bugs="1" total_types="1" total_size="0" priority_3="1">
+      <ClassStats class="de.fh_trier.eclipse.lisp.internal.ui.views.listener.ListenerView" interface="false" size="0" bugs="1" priority_3="1"/>
+    </PackageStats>
+  </FindBugsSummary>
+  <ClassFeatures></ClassFeatures>
+  <History></History>
+</BugCollection>

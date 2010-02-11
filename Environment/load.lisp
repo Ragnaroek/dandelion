@@ -19,7 +19,7 @@
 
 ;;;
 ;; File		     - load.lisp
-;; Description	     - Load-Skript fuer Eval-Server
+;; Description	 - Load-Skript fuer Eval-Server
 ;; Author	     - Michael Bohn
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -32,10 +32,10 @@
    (list
     #+allegro excl:*source-pathname*
     #+lucid  lucid::*source-pathname*
-    #+MCL  (parse-namestring ccl::*LOADING-FILE-SOURCE-FILE*)
-    #+CLISP common-lisp::*load-pathname*
+    #+(or mcl openmcl)  (parse-namestring ccl::*LOADING-FILE-SOURCE-FILE*)
+    #+clisp common-lisp::*load-pathname*
     #+sbcl *load-pathname*
-    #+(and :coral (not MCL)) (car ccl::*loading-files*)
+    #+(and :coral (not mcl)) (car ccl::*loading-files*)
     #+genera (concatenate 'string
 	       (host-namestring sys:fdefine-file-pathname)
            ":"
@@ -43,7 +43,7 @@
            )
     #+next  *source-pathname*
     #+lispworks (lw:current-pathname)
-    #-(or lucid :coral genera next mcl clisp allegro lispworks sbcl)
+    #-(or openmcl lucid :coral genera next mcl clisp allegro lispworks sbcl)
     (error "this-files-pathname not implemented"))))
 
 
@@ -66,7 +66,7 @@
 ;###########################################
 
 ;Pfad fuer die Erstellung der executable und mem-Dateien
-(defparameter *binary-path* "/tmp/eval-server")
+(defparameter *binary-path* "/tmp/environment")
 
 ;Test laden ja/nein
 (defparameter *load-tests* NIL)
@@ -159,6 +159,7 @@
 ;# Build
 ;# Bisher verfuegbar fuer:
 ;#  - CLISP
+;#  - SBCL
 ;#
 ;###########################################
 

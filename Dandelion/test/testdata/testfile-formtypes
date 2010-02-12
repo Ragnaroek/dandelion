@@ -1,0 +1,15 @@
+'(1 2 3 4) ;sollte als Form geliefert werden
+(defun my-function () nil) ;Form
+"string" ; Symbol
+'   quoted-sym
+'   ("quoted" "list)")
+' ( ( ( () ) ) );gequotetet (((( ))Form mit geschatelter Klammerstruktur
+#|
+Code auskommentierte
+spielt keine Rolle fuer den Visitor
+'(my-func) (defun my-func () "string()")
+|#
+
+(form)
+
+'

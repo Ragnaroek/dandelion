@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dandelion
-Bundle-SymbolicName: de.fh_trier.eclipse.lisp;singleton:=true
-Bundle-Version: 1.0.5
-Bundle-Activator: de.fh_trier.eclipse.lisp.internal.LispPluginActivator
+Bundle-SymbolicName: de.defmacro.dandelion;singleton:=true
+Bundle-Version: 1.1.0
+Bundle-Activator: de.defmacro.dandelion.internal.LispPluginActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.editors,
@@ -13,11 +13,11 @@ Require-Bundle: org.eclipse.ui,
  org.junit4,
  org.eclipse.ui.ide,
  org.eclipse.ui.views,
- org.eclipse.ui.forms,
- org.eclipse.core.expressions
-Eclipse-LazyStart: true
+ org.eclipse.ui.forms
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/commons-codec-1.3.jar,
  lib/annotations.jar
-Export-Package: de.fh_trier.eclipse.lisp.core.connection
+Export-Package: de.defmacro.dandelion.core.connection
 Bundle-Vendor: Michael Bohn
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

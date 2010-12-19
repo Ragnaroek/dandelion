@@ -23,11 +23,13 @@ import org.eclipse.jface.text.source.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
+
 public class ErrorAnnotation
 extends Annotation
 implements IAnnotationPresentation
 {
-	public static final String TYPE = "de.fh_trier.eclipse.lisp.errorAnnotation";
+	public static final String TYPE = LispPluginActivator.NS + ".errorAnnotation";
 	
 	private Image errorImage;
 	

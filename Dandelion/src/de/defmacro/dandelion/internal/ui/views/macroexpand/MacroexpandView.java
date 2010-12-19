@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.connection.*;
 import de.defmacro.dandelion.internal.core.connection.IResult.TResult;
 import de.defmacro.dandelion.internal.ui.LispUI;
@@ -38,7 +39,7 @@ public class MacroexpandView
 extends ViewPart
 implements IBackgroundEvaluationListener
 {
-	public static final String ID = "de.fh_trier.eclipse.lisp.views.macroexpandView";
+	public static final String ID = LispPluginActivator.NS + ".views.macroexpandView";
 	
 	private static final Color BACKGROUND_COLOR = LispUI.getUIColorManager().getColor(new RGB(255, 255, 225));
 	

@@ -84,7 +84,7 @@ extends AbstractJob
 			reader = new BufferedReader(new InputStreamReader(fCreatedProcess.getInputStream()));
 			String line = reader.readLine();
 			if(line == null || !line.equalsIgnoreCase(STARTUP_TOKEN)) {
-				Status status = new Status(IStatus.WARNING, LispPluginActivator.PLUGIN_ID, 0, "Unexpeced startup token read: " + line, null);
+				Status status = new Status(IStatus.WARNING, LispPluginActivator.ID, 0, "Unexpeced startup token read: " + line, null);
 				//LispPluginActivator.log(status);
 				return status; //mit warning beenden
 			}

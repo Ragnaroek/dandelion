@@ -27,7 +27,7 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.part.FileEditorInput;
 
-import de.defmacro.dandelion.internal.LispNature;
+import de.defmacro.dandelion.internal.*;
 import de.defmacro.dandelion.internal.ui.*;
 import de.defmacro.dandelion.internal.ui.editor.*;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -72,7 +72,7 @@ implements INewWizard
 		}
 	}
 
-	public static final String ID = "de.fh_trier.eclipse.lisp.newWizards.fileWizard";
+	public static final String ID = LispPluginActivator.NS + ".newWizards.fileWizard";
 	public static final String LISP_FILE_SUFFIX = ".lisp";
 
 	@SuppressWarnings("UwF")

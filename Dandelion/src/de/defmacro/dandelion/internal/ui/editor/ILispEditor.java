@@ -24,6 +24,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.dom.ISexpModel;
 import de.defmacro.dandelion.internal.ui.text.StructureException;
 
@@ -38,7 +39,7 @@ extends IEditorPart, ITextEditor
 	/**
 	 * Eindeutige ID fuer den Lisp Editor.
 	 */
-	public static final String ID = "de.fh_trier.eclipse.lisp.editor";
+	public static final String ID = LispPluginActivator.NS + ".editor";
 	
 	/**
 	 * Teilt dem Editor ein neues Modell mit.

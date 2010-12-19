@@ -48,17 +48,17 @@ public class LispPreferences
 	/**
 	 * Boolean-Attribut. In der Outline-View sollen nur Top-Level Forms angezeigt werden.
 	 */
-	public static final String OUTLINE_HIDE_SUBLEVEL_FORMS = "de.fh_trier.eclipse.lisp.preferences.hideSubLevel";
+	public static final String OUTLINE_HIDE_SUBLEVEL_FORMS = LispPluginActivator.NS + ".preferences.hideSubLevel";
 	
 	/**
 	 * Boolean-Attribut. Sortierung der angezeigten Typen nach Namen.
 	 */
-	public static final String OUTLINE_SORT_BY_NAME = "de.fh_trier.eclipse.lisp.preferences.sortByName";
+	public static final String OUTLINE_SORT_BY_NAME = LispPluginActivator.NS + ".preferences.sortByName";
 	
 	/**
 	 * Boolean-Attribut. Sortierung der angezeigten Typen nach Typ.
 	 */
-	public static final String OUTLINE_SORT_BY_TYPE = "de.fh_trier.eclipse.lisp.preferences.sortByType";
+	public static final String OUTLINE_SORT_BY_TYPE = LispPluginActivator.NS + ".preferences.sortByType";
 	
 	/**
 	 * String[].
@@ -67,7 +67,7 @@ public class LispPreferences
 	 * @see #decodeType
 	 * @see #encodeType 
 	 */
-	public static final String OUTLINE_SHOW_TYPES_ON_TOPLEVEL = "de.fh_trier.eclipse.lisp.preferences.show_types_toplevel";
+	public static final String OUTLINE_SHOW_TYPES_ON_TOPLEVEL = LispPluginActivator.NS + ".preferences.show_types_toplevel";
 	
 	/**
 	 * String[].
@@ -76,32 +76,32 @@ public class LispPreferences
 	 * @see #decodeType
 	 * @see #encodeType 
 	 */
-	public static final String OUTLINE_SHOW_TYPES_ON_SUBLEVEL = "de.fh_trier.eclipse.lisp.preferences.show_types_sublevel";
+	public static final String OUTLINE_SHOW_TYPES_ON_SUBLEVEL = LispPluginActivator.NS + ".preferences.show_types_sublevel";
 	
 	/**
 	 * Preference-Key fuer Einstellung ob Completion Proposals in Upper oder Lower-Case vorgenommen
 	 * werden.
 	 */
-	public static final String P_UPPER_CASE_PROPOSAL = PLUGIN_NS + ".preferences.upper_case_proposal";
+	public static final String P_UPPER_CASE_PROPOSAL = ID + ".preferences.upper_case_proposal";
 	
-	private static final String P_EVAL_SERVER_COUNT = PLUGIN_NS + ".preferences.server.count";
-	private static final String P_EVAL_SERVER_NAME = PLUGIN_NS + ".preferences.server.name";
-	private static final String P_EVAL_SERVER_HOST = PLUGIN_NS + ".preferences.server.host";
-	private static final String P_EVAL_SERVER_PORT = PLUGIN_NS + ".preferences.server.port";
-	private static final String P_EVAL_SERVER_VERSION = PLUGIN_NS + ".preferences.server.version";
+	private static final String P_EVAL_SERVER_COUNT = ID + ".preferences.server.count";
+	private static final String P_EVAL_SERVER_NAME = ID + ".preferences.server.name";
+	private static final String P_EVAL_SERVER_HOST = ID + ".preferences.server.host";
+	private static final String P_EVAL_SERVER_PORT = ID + ".preferences.server.port";
+	private static final String P_EVAL_SERVER_VERSION = ID + ".preferences.server.version";
 	
-	private static final String P_EVAL_SERVER_DEFAULT = PLUGIN_NS + ".preferences.server.default";
+	private static final String P_EVAL_SERVER_DEFAULT = ID + ".preferences.server.default";
 	
-	private static final String P_CONFIG_EXTERN = PLUGIN_NS + ".preferences.config.extern";
-	private static final String P_CONFIG_EXECUTABLE = PLUGIN_NS + ".preferences.config.executable";
-	private static final String P_CONFIG_LOGGING = PLUGIN_NS + ".preferences.config.logging";
-	private static final String P_CONFIG_LOGGING_SEVERITY = PLUGIN_NS + ".preferences.config.logseverity";
-	private static final String P_CONFIG_EXECUTABLE_FILE = PLUGIN_NS + ".preferences.config.executable.file";
+	private static final String P_CONFIG_EXTERN = ID + ".preferences.config.extern";
+	private static final String P_CONFIG_EXECUTABLE = ID + ".preferences.config.executable";
+	private static final String P_CONFIG_LOGGING = ID + ".preferences.config.logging";
+	private static final String P_CONFIG_LOGGING_SEVERITY = ID + ".preferences.config.logseverity";
+	private static final String P_CONFIG_EXECUTABLE_FILE = ID + ".preferences.config.executable.file";
 	
 	/**
 	 * Unpassender Wert, sollte besser .preferences.config.commands heissen (seit Version 1.0.5 Verhalten geaendert)
 	 */
-	private static final String P_COMMANDS = PLUGIN_NS + ".preferences.config.nonexecutable.commands";
+	private static final String P_COMMANDS = ID + ".preferences.config.nonexecutable.commands";
 	
 	
 	/**

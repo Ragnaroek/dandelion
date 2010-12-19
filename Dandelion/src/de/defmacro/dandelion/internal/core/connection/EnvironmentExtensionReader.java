@@ -31,7 +31,8 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class EnvironmentExtensionReader 
 {
-	private static final String SERVER_EXTENSION_POINT = "de.fh_trier.eclipse.lisp.servers";
+	private static final String SERVER_EXTENSION_POINT = "de.defmacro.dandelion.servers";
+	
 	private Map<IEnvironment, IEnvironmentConfiguration> fResultMap;
 	
 	/**

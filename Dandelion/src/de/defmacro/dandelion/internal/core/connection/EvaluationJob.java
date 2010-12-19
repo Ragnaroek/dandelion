@@ -166,7 +166,7 @@ extends AbstractEvaluationJob
 			}
 		}
 		
-		return new Status(IStatus.OK, LispPluginActivator.PLUGIN_ID, IStatus.OK, "Evaluation succeeded", null);
+		return new Status(IStatus.OK, LispPluginActivator.ID, IStatus.OK, "Evaluation succeeded", null);
 	}
 	
 	/**

@@ -41,13 +41,13 @@ import de.defmacro.dandelion.internal.ui.dialogs.VisibleTypeSelectionDialog;
 public class OutlineVisibleTypeActions 
 implements IViewActionDelegate
 {
-	public static final String ACTION_TOPLEVEL_ID = "de.fh_trier.eclipse.lisp.views.outline.typesToplevel";
-	public static final String ACTION_SUBLEVEL_ID = "de.fh_trier.eclipse.lisp.views.outline.typesSublevel";
+	public static final String ACTION_TOPLEVEL_ID = LispPluginActivator.NS + ".views.outline.typesToplevel";
+	public static final String ACTION_SUBLEVEL_ID = LispPluginActivator.NS + ".views.outline.typesSublevel";
 		
 	private IViewPart fViewPart;
 	
 	/**
-	 * Initialsiert die Aktion.
+	 * Initialisiert die Aktion.
 	 */
 	public void init(IViewPart view) 
 	{

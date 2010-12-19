@@ -16,7 +16,6 @@
 //TODO Verbesserte Fehlermeldung wenn defpackage noch noch nicht evaluiert wurde und vorher evaluiert wird
 //TODO Laden kompletter Datei aus Kontextmenue
 //FIXME Lisp-Outline Symbole erscheinen auch in anderen Outlines!
-//TODO Refactoring: package namen -> de.fh-trier -> auf neue domain
 //TODO Interne Ids auf neuen Domain-Namespace
 //TODO GUI-Dialog Executable oder Parameterstart ausgewaehlt => automatisch localhost in server und nicht aenderbar!! (Feld enabled = false)
 //TODO Aenderung Eval-Server Preferences ermoeglichen (Server aus Plugin, aenderbar???)

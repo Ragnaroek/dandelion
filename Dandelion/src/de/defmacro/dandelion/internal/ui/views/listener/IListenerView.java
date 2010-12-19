@@ -21,6 +21,7 @@ package de.defmacro.dandelion.internal.ui.views.listener;
 
 import org.eclipse.ui.IViewPart;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.connection.*;
 
 /**
@@ -34,7 +35,7 @@ extends IViewPart, IBackgroundEvaluationListener, IEnvironmentManagementListener
 	/**
 	 * Eindeutige ID in Eclipse.
 	 */
-	public static final String ID = "de.fh_trier.eclipse.lisp.views.listenerView";
+	public static final String ID = LispPluginActivator.NS + ".views.listenerView";
 	
 	/**
 	 * EvalServer zu der dieser Listener gehoert.

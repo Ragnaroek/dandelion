@@ -36,7 +36,7 @@ public class LispProjectWizard
 extends Wizard 
 implements INewWizard
 {
-	public static final String ID = "de.fh_trier.eclipse.lisp.newWizards.projectWizard";
+	public static final String ID = LispPluginActivator.NS + ".newWizards.projectWizard";
 	
 	@SuppressWarnings("UwF")
 	private LispProjectWizardPage fWizardPage;

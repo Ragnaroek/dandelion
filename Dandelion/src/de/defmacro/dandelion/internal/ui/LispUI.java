@@ -78,7 +78,7 @@ public class LispUI
 	 */
 	public static void showErrorDialog(final Shell shell, final String message)
 	{
-		openDialogAndLog(shell, new Status(IStatus.ERROR, LispPluginActivator.PLUGIN_ID, 0, message, null), true);
+		openDialogAndLog(shell, new Status(IStatus.ERROR, LispPluginActivator.ID, 0, message, null), true);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class LispUI
 	 */
 	public static void showErrorDialog(final Shell shell, final String message, final Throwable ex)
 	{		
-		openDialogAndLog(shell, new Status(IStatus.ERROR, LispPluginActivator.PLUGIN_ID, 0, message, ex),  true);
+		openDialogAndLog(shell, new Status(IStatus.ERROR, LispPluginActivator.ID, 0, message, ex),  true);
 	}
 	
 	/**

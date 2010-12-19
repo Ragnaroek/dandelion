@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.dom.*;
 import de.defmacro.dandelion.internal.ui.*;
 
@@ -37,7 +38,7 @@ public class LispOutlineLabelDecorator
 extends LabelProvider
 implements ILabelDecorator
 {
-	public static final String ID = "de.fh_trier.eclipse.lisp.decorators.outlineDecorator";
+	public static final String ID = LispPluginActivator.NS + ".decorators.outlineDecorator";
 	
 	private static class Key
 	{

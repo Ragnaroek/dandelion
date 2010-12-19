@@ -143,6 +143,6 @@ extends Job
 	 * @return Ein {@link IStatus}-Objekt
 	 */
 	protected IStatus error(final String message, final Exception e) {
-		return new Status(IStatus.ERROR, LispPluginActivator.PLUGIN_ID, 0, message, e);
+		return new Status(IStatus.ERROR, LispPluginActivator.ID, 0, message, e);
 	}
 }

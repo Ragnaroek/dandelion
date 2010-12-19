@@ -55,7 +55,7 @@ implements ISelectionChangedListener, ILispEditor
 {	
 	private static final String ERROR_ANNOTATION = "org.eclipse.jdt.ui.error";
 	private static final String WARNING_ANNOTATION = "org.eclipse.jdt.ui.warning";
-	private static final String EDITOR_SCOPE = "de.fh_trier.eclipse.lisp.contexts.lispEditorScope";
+	private static final String EDITOR_SCOPE = LispPluginActivator.NS + ".contexts.lispEditorScope";
 	
 	private IAction fOpenListenerAction = new Action("Open Listener") {
 		@Override
@@ -157,7 +157,7 @@ implements ISelectionChangedListener, ILispEditor
 				}
 			}
 		};
-		action.setActionDefinitionId("de.fh_trier.eclipse.lisp.commands.editor.format");
+		action.setActionDefinitionId(LispPluginActivator.NS + ".commands.editor.format");
 		setAction("QuickFormat", action);
 	}
 

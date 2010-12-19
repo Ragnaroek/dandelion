@@ -52,7 +52,7 @@ implements IWorkbenchPreferencePage
 	/**
 	 * Eindeutige ID der PreferencePage aus Manifest.
 	 */
-	public static final String ID = "de.fh_trier.eclipse.lisp.preferences.LispServerPreferences";
+	public static final String ID = LispPluginActivator.NS + ".preferences.LispServerPreferences";
 	
 	private final EnvironmentManager fManager = LispCore.getEnvironmentManager();
 	private TableViewer  fTable;

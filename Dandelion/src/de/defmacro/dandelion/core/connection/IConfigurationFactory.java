@@ -24,13 +24,13 @@ import java.util.List;
 
 /**
  * Klassen die dieses Interface implementieren 
- * stellen die Konfiguratation für die Verwendung am Erweiterungspunkt <code>de.fh_trier.eclipse.lisp.servers</code>
+ * stellen die Konfiguratation für die Verwendung am Erweiterungspunkt <code>de.defmacro.dandelion.servers</code>
  * bereit.
  * 
  * Seit Version 1.1 veraendertes Verhalten!
  * @author Michael Bohn
  * @since 1.0
- * @version 1.0.5
+ * @version 1.1
  */
 public interface IConfigurationFactory 
 {		

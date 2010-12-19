@@ -32,7 +32,7 @@ import de.defmacro.dandelion.internal.core.connection.*;
  */
 /*package*/ class LispProjectPreferences 
 {
-	private static final String QUALIFIER = "de.fh_trier.eclipse.lisp.projectPreferences";
+	private static final String QUALIFIER = LispPluginActivator.NS + ".projectPreferences";
 	
 	private static final QualifiedName HOST = new QualifiedName(QUALIFIER, "host");
 	private static final QualifiedName PORT = new QualifiedName(QUALIFIER, "port");
@@ -78,7 +78,7 @@ import de.defmacro.dandelion.internal.core.connection.*;
 			//manuell veraendert werden
 			return new Environment(host, Integer.parseInt(port), name, version);
 		} catch (Exception e) { //error translation
-			throw new CoreException(new Status(IStatus.ERROR, LispPluginActivator.PLUGIN_ID, 0, e.getMessage(), e));
+			throw new CoreException(new Status(IStatus.ERROR, LispPluginActivator.ID, 0, e.getMessage(), e));
 		}
 	}
 }

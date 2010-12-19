@@ -36,9 +36,9 @@ import de.defmacro.dandelion.internal.preferences.LispPreferences;
 public class OutlineToggleActions 
 implements IViewActionDelegate, IActionDelegate2
 {
-	public static final String OUTLINE_HIDE_SUBLEVEL_ID = "de.fh_trier.eclipse.lisp.views.outline.hideSubLevel";
-	public static final String OUTLINE_SORT_BY_NAME_ID = "de.fh_trier.eclipse.lisp.views.outline.sortAlphab";
-	public static final String OUTLINE_SORT_BY_TYPE_ID = "de.fh_trier.eclipse.lisp.views.outline.sortType";
+	public static final String OUTLINE_HIDE_SUBLEVEL_ID = LispPluginActivator.NS + ".views.outline.hideSubLevel";
+	public static final String OUTLINE_SORT_BY_NAME_ID = LispPluginActivator.NS + ".views.outline.sortAlphab";
+	public static final String OUTLINE_SORT_BY_TYPE_ID = LispPluginActivator.NS + ".views.outline.sortType";
 	
 	/**
 	 * Initialisiert die Aktion.

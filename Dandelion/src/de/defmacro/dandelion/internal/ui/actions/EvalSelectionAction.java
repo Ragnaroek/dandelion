@@ -19,6 +19,7 @@
 
 package de.defmacro.dandelion.internal.ui.actions;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.ui.*;
 import de.defmacro.dandelion.internal.ui.editor.ILispSourceSelection;
 import de.defmacro.dandelion.internal.ui.text.StructureException;
@@ -31,7 +32,7 @@ import de.defmacro.dandelion.internal.ui.text.StructureException;
 public class EvalSelectionAction 
 extends EvalAction 
 {	
-	private static final String EVAL_SELECTION_COMMAND_ID = "de.fh_trier.eclipse.lisp.commands.editor.evalSelection";
+	private static final String EVAL_SELECTION_COMMAND_ID = LispPluginActivator.NS + ".commands.editor.evalSelection";
 	
 	/**
 	 * Erzeugt eine neuen Selektion fuer

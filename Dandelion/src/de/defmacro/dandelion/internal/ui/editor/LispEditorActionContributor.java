@@ -24,6 +24,7 @@ import org.eclipse.jface.action.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.ui.actions.*;
 
 /**
@@ -35,7 +36,7 @@ public class LispEditorActionContributor
 extends EditorActionBarContributor 
 {
 	private static final String LISP_GROUP_NAME = "Lisp";
-	private static final String LISP_GROUP_ID = "de.fh_trier.eclispe.lisp.menuContribution";
+	private static final String LISP_GROUP_ID = LispPluginActivator.NS +  ".menuContribution";
 	
 	private ILispEditorAction fEvalSelectionAction;
 	private ILispEditorAction fEvalFileAction;

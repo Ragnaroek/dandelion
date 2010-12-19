@@ -29,6 +29,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.LispCore;
 import de.defmacro.dandelion.internal.core.connection.*;
 import de.defmacro.dandelion.internal.core.meta.*;
@@ -39,7 +40,7 @@ public class AproposView
 extends ViewPart
 implements SelectionListener, IEnvironmentManagementListener
 {
-	public static final String ID = "de.fh_trier.eclipse.lisp.views.aproposView";
+	public static final String ID = LispPluginActivator.NS + ".views.aproposView";
 	
 	private static final String ALL_PACKAGES = "All Packages";
 	private static final String TEXT_MODE_AND = "and";

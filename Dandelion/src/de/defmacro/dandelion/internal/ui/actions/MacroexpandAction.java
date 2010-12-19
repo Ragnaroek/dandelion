@@ -22,6 +22,7 @@ package de.defmacro.dandelion.internal.ui.actions;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.Job;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.connection.*;
 import de.defmacro.dandelion.internal.ui.*;
 import de.defmacro.dandelion.internal.ui.editor.*;
@@ -35,7 +36,7 @@ import de.defmacro.dandelion.internal.ui.text.StructureException;
 public class MacroexpandAction 
 extends AbstractMacroexpandAction
 {
-	private static final String MACROEXPAND_COMMAND_ID = "de.fh_trier.eclipse.lisp.commands.editor.macroexpand";
+	private static final String MACROEXPAND_COMMAND_ID = LispPluginActivator.NS + ".commands.editor.macroexpand";
 	
 	/**
 	 * Erzeugt eine neue Aktion fuer die Expandierung von

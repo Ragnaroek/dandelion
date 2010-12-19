@@ -40,15 +40,15 @@ extends AbstractUIPlugin
 	/**
 	 * Der Namespace fuer dier Plugin-Erweiterungspunkte.
 	 */
-	@Deprecated
-	public static final String PLUGIN_NS = "de.fh_trier.eclipse.lisp";
+	//@Deprecated
+	//public static final String PLUGIN_NS = "de.fh_trier.eclipse.lisp";
 	public static final String NS = "de.defmacro.dandelion";
 	
 	/**
 	 * Die eindeutige ID des Plugins.
 	 */
-	@Deprecated
-	public static final String PLUGIN_ID = "de.fh_trier.eclipse.lisp";
+	//@Deprecated
+	//public static final String PLUGIN_ID = "de.fh_trier.eclipse.lisp";
 	public static final String ID = NS;
 	
 	private static LispPluginActivator plugin;
@@ -121,7 +121,7 @@ extends AbstractUIPlugin
 	 */
 	public static void log(final int severity, final String message, final Throwable error)
 	{
-		log(new Status(severity, PLUGIN_ID, 0, message, error));
+		log(new Status(severity, ID, 0, message, error));
 	}
 	
 	/**
@@ -131,7 +131,7 @@ extends AbstractUIPlugin
 	 */
 	public static void logError(final String message, final Throwable error)
 	{
-		log(new Status(IStatus.ERROR, PLUGIN_ID, 0, message, error));
+		log(new Status(IStatus.ERROR, ID, 0, message, error));
 	}
 	
 	/**

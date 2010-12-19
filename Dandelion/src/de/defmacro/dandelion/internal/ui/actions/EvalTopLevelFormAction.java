@@ -19,6 +19,7 @@
 
 package de.defmacro.dandelion.internal.ui.actions;
 
+import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.ui.*;
 import de.defmacro.dandelion.internal.ui.editor.ILispSourceSelection;
 import de.defmacro.dandelion.internal.ui.text.StructureException;
@@ -30,7 +31,7 @@ import de.defmacro.dandelion.internal.ui.text.StructureException;
 public class EvalTopLevelFormAction 
 extends EvalAction 
 {
-	private static final String EVAL_TOPLEVEL_COMMAND_ID = "de.fh_trier.eclipse.lisp.commands.editor.evalToplevel";
+	private static final String EVAL_TOPLEVEL_COMMAND_ID = LispPluginActivator.NS + ".commands.editor.evalToplevel";
 	
 	/**
 	 * Erzeugt einen neue Aktion fuer Evaluierung

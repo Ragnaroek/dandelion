@@ -388,7 +388,7 @@ extends StatusDialog
 	
 	private IStatus makeStatus(final String message)
 	{
-		return new Status(IStatus.ERROR, LispPluginActivator.PLUGIN_ID, 0, message, null);
+		return new Status(IStatus.ERROR, LispPluginActivator.ID, 0, message, null);
 	}
 	
 	private void forceLocalhost()

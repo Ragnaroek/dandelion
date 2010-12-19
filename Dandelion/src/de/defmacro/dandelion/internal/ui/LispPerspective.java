@@ -37,7 +37,7 @@ implements IPerspectiveFactory
 	/**
 	 * Eindeutige ID der Perspektive aus Manifest.
 	 */
-	public static final String PERSPECTIVE_ID = "de.fh_trier.eclipse.lisp.lispPerspective";
+	public static final String PERSPECTIVE_ID = LispPluginActivator.NS + ".lispPerspective";
 	
 	/**
 	 * @see IPerspectiveFactory#createInitialLayout(IPageLayout)

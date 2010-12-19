@@ -32,8 +32,8 @@ implements IProjectNature
 	/**
 	 * Nature-ID aus Erweiterungspunktdefinition.
 	 */
-	public static final String ID = "de.fh_trier.eclipse.lisp.natures.lispNature";
-	
+	public static final String ID = LispPluginActivator.NS + ".natures.lispNature";
+											
 	private IProject fProject;
 	
 	/**

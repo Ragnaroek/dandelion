@@ -137,17 +137,11 @@ implements IEvalHistory
 		this.fMaxEntrys = maxEntrys;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#addEntry(java.lang.String)
-	 */
 	public void addEntry(final String form)
 	{
 		addEntry(form, System.currentTimeMillis());
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#addEntry(java.lang.String, long)
-	 */
 	public void addEntry(final String form, final long timestamp)
 	{
 		//neueste Eintraege stehen oben
@@ -159,49 +153,31 @@ implements IEvalHistory
 		fQueue.add(new HistoryEntry(form, timestamp));
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#getEntry(int)
-	 */
 	public HistoryEntry getEntry(final int pos)
 	{
 		return fQueue.get(pos);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#getTimestamp(int)
-	 */
 	public long getTimestamp(final int pos)
 	{
 		return getEntry(pos).getTimestamp();
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#getForm(int)
-	 */
 	public String getForm(final int pos)
 	{
 		return getEntry(pos).getForm();
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#getShortedForm(int, int, boolean)
-	 */
 	public String getShortedForm(final int pos, final int maxChars, final boolean discardNewlines)
 	{
 		return getEntry(pos).getShortedForm(maxChars, discardNewlines);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#getSize()
-	 */
 	public int getSize()
 	{
 		return fQueue.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.fh_trier.eclipse.lisp.internal.ui.views.listener.IEvalHistory#toArray()
-	 */
 	public HistoryEntry[] toArray() 
 	{
 		return fQueue.toArray(new HistoryEntry[fQueue.size()]);

@@ -40,14 +40,14 @@ implements ILabelDecorator
 	/**
 	 * Eindeutige ID des Decorators aus Manifest.
 	 */
-	public static final String ID = "de.fh_trier.eclipse.lisp.decorators.resourceDecorator";
+	public static final String ID = LispPluginActivator.NS + ".decorators.resourceDecorator";
 	
 	/**
 	 * Der Schluessel fuer die Markierung einer Ressource.
 	 * Wird gesetzt um Fehler in der Ressource anzuzeigen. Der Decorator legt dann ein enstprechendes Bild
 	 * ueber das Ressourcen-Bild.
 	 */
-	public static final QualifiedName MALFORMATION_MARK = new QualifiedName("de.fh_trier.eclipse.lisp","__malformation");
+	public static final QualifiedName MALFORMATION_MARK = new QualifiedName(LispPluginActivator.NS,"__malformation");
 	
 	/**
 	 * Wert fuer Markierung Ressource um Anzuzeigen das sie Fehler enthaelt.

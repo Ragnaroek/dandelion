@@ -66,7 +66,7 @@
 ;###########################################
 
 ;Pfad fuer die Erstellung der executable und mem-Dateien
-(defparameter *binary-path* "/tmp/environment")
+(defparameter *binary-path* "/Users/mb/tmp/env")
 
 ;Test laden ja/nein
 (defparameter *load-tests* NIL)

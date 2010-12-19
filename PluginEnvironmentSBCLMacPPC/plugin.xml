@@ -2,12 +2,12 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="de.fh_trier.eclipse.lisp.servers">
+         point="de.defmacro.dandelion.servers">
       <server
             host="localhost"
             name="SBCL"
-            port="30222"
-            version="1.0.22">
+            port="30234"
+            version="1.0.45">
          <configuration
                class="de.defmacro.dandelion.env.sbcl.mac.ppc.Configuration"
                logging="true"

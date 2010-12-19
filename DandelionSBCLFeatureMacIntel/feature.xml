@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.defmacro.dandelion.feature.sbcl.mac.intel"
+      label="Dandelion and SBCL (MacOS X, Intel)"
+      version="1.0.45"
+      provider-name="Michael Bohn">
+
+   <description>
+      Dandelion Plugin bundled with CLISP Environment (MacOS X, PPC)
+   </description>
+
+   <copyright>
+      (c) 2010, Michael Bohn
+   </copyright>
+
+   <license url="http://www.gnu.org/licenses/gpl.txt">
+      Dandelion is free software distributed under the terms of the GNU Public License.
+http://www.gnu.org/licenses/gpl.txt
+   </license>
+
+   <url>
+      <update label="Sourceforge Update-Site" url="http://dandelion-ecl.sourceforge.net/update/"/>
+      <discovery label="Sourceforge" url="http://sourceforge.net/projects/dandelion-ecl"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="de.defmacro.dandelion"/>
+   </requires>
+
+   <plugin
+         id="de.defmacro.dandelion"
+         download-size="467"
+         install-size="467"
+         version="1.2.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.defmacro.dandelion.env.sbcl.mac.intel"
+         download-size="16700"
+         install-size="16700"
+         version="1.0.45"/>
+
+</feature>

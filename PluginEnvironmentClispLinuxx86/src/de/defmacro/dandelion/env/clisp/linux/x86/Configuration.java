@@ -34,6 +34,6 @@ extends AbstractConfigurationFactory
 
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_clisp_2.4.4");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_clisp_2.4.8");
 	}
 }

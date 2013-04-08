@@ -1,0 +1,21 @@
+Fortran to Lisp Translation: installation instructions
+------------------------------------------------------
+
+1. Go to the f2cl source directory.
+2. Use the target Common Lisp compiler to compile each of the files
+   f2cl1.l through f2cl7.l and macros.l .
+3. Edit the file f2cl0.l to reflect the root directory of the
+   f2cl file system (*f2cl_dir*) and the extension for your Common
+   Lisp compiled code (*ext*).
+4. Load f2cl0.l into Common Lisp.
+5. The translator functions are now available to be used.
+
+6. Important note: when compiling or executing translated code the macros 
+   in the file macros.l should be available.
+
+For more information about f2cl, including user instructions, read the
+article f2cldoc.* in the f2cl/doc directory or the tests in f2cl/val.
+   
+
+Bugs and comments: senac@waikato.ac.nz
+--------------------------------------------------------------------

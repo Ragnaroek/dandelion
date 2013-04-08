@@ -1,0 +1,328 @@
+This file notes some of the differences between what we currently do
+and what is described in f2cldoc.latex.  We should eventually either
+update the document or create a new document.
+
+Section 2
+
+The translated routine now looks like:
+
+(defun chsone (bins ebins nbins knstrn df chsq prob)
+  (declare (type single-float prob chsq df)
+           (type f2cl-lib:integer4 knstrn nbins)
+           (type (array single-float (*)) ebins bins))
+  (prog ((j 0))
+    (declare (type f2cl-lib:integer4 j)
+             (type
+              (function (single-float single-float)
+               (values single-float &rest t))
+              gammq))
+    (setf df (coerce (- nbins 1 knstrn) 'single-float))
+    (setf chsq 0.0)
+    (f2cl-lib:fdo (j 1 (+ j 1))
+                  ((> j nbins) nil)
+      (tagbody
+	 (if (<= (f2cl-lib:fref ebins (j) ((1 nbins))) 0.0)
+	     (error "bad expected number"))
+	 (setf chsq
+	       (+ chsq
+		  (/
+		   (expt
+		    (- (f2cl-lib:fref bins (j) ((1 nbins)))
+		       (f2cl-lib:fref ebins (j) ((1 nbins))))
+		    2)
+		   (f2cl-lib:fref ebins (j) ((1 nbins))))))
+       label11))
+    (setf prob (gammq (* 0.5 df) (* 0.5 chsq)))
+    (go end_label)
+   end_label
+    (return (values bins ebins nbins knstrn df chsq prob))))
+
+The main difference being that F2CL library routines are prefixed with
+the package.  We also corrected an error in the original when
+assigning a value to df.  The code used to assign an integer type to a
+single-float variable, which is not legal Lisp.
+
+Section 3
+
+Although we require spaces around most Fortran "keywords" and treat
+the "keywords" as true reserved keywords (that is, you can't use if as
+a variable name), and we do no allow spaces embedded within them
+(Fortran ignores spaces everywhere except strings), we do make one
+exception.  Spaces in numbers are ignored.  This is mostly because
+there is lots of Fortran code that puts spaces in numbers (mostly in
+data statements) for readibility and converting this by hand is a
+pain.
+
+
+Section 4.1
+
+We handle SAVE statements a little bit differently.  Rather than using
+a defvar, we use lexical scoping like so:
+
+   (let ((i 0) (j 0))
+      (defun f (x y ...)
+        ...))
+
+This works the same as before and we don't get into problem that after
+converting, compiling, and then loading the routine again, nothing
+happens.  This is because of the defvar.  (The original code should
+probably have at least used a defparameter instead of defvar.)
+
+Section 4.4
+
+Parameter statements are no longer passed as keyword arguments to the
+function.  Instead, we put them in a closure as we did for SAVE'ed
+variables.  
+
+This author didn't like all these extra arguments to the function
+when, in fact, the parameter statements are constants in the Fortran
+code.  While having the extra args does make the Lisp code more
+flexible by allowing the user the change the parameter values at
+run-time, this isn't how Fortran behaves.  You need to recompile to
+get the changes.
+
+Section 4.5
+
+We still do not handle equivalence statements.  Some ideas on how to
+do this:  Simulate what Fortran would do by creating an array of bytes
+for the variables that are equivalenced.  Add appropriate macrology so
+that whenever the variables are referenced, we extract the appropriate
+bytes and convert them to the desired type.  For Lisps that allow
+arbitrary access to bytes in memory (like CMUCL), this should be
+reasonably fast.  For other Lisps, we would would have to extract each
+individual byte and build up the resulting number from the pieces.
+Slow, but accurate.
+
+For common blocks, we don't just declare the variables in common
+blocks as specials.  We create a structure with the desired variables
+and types.  Then create a single defvar with the name of the common
+block.  This means you can't use different names for the variables in
+the common block even though Fortran allows such.
+
+Thus, the common block
+
+    COMMON /foo/ a(10), b, i(4)
+
+is translated to
+
+    (defstruct foo
+      (a (make-array 10 :element-type 'single-float))
+      (b (make-array 4 :element-type 'integer4)))
+
+    (defvar *foo-common-block* (make-foo))
+
+We do not handle common blocks in exactly the same as Fortran, which
+is just essentially a named section of bytes in memory.  We could
+probably use the same ideas above for equivalences to simulate true
+Fortran common blocks.
+
+Also, Fortran says the definition of the elements of a common block
+can be split over several common statements.  We support that now
+(at the expense of checking for inconsistently declared common
+blocks).  You'll have to manually check this.
+
+To mimic Fortran common blocks more closely, the :common-as-array
+option can be used.  This changes how f2cl handles common blocks.  A
+rather common use of common blocks has the same common block using
+different variable names.  For example, on routine might have
+
+    COMMON /foo/ a(10), b, i(4)
+
+and another might say
+
+    COMMON /foo/ b(9), c, d, j(2), k(2)
+
+In Fortran, this is perfectly acceptable.  Normally, f2cl expects all
+common blocks to use the same variable names, and then f2cl creates a
+structure for the common block using the variable names as the names
+of the slots.  However, for a case like the above, f2cl gets confused.
+Hence, :common-as-array.  We treat the common block as an array of
+memory.  So this gets converted into a structure somewhat like
+
+    (defstruct foo
+      (part-0 (make-array 11 :element-type 'real))
+      (part-1 (make-array 4 :element-type 'integer4)))
+
+(In a more general case, we group all contiguous variables of the same
+type into one array.  f2cl and Lisp cannot handle the case where a
+real and integer value are allocated to the same piece of memory.)
+
+Then in the individual routines, symbol-macrolets are used to create
+accessors for the various definitions.  Hence, for the second version,
+we would do something like
+
+      (symbol-macrolet 
+        (b (make-array 9 :displaced-to 
+                       (foo-part-0 *foo*)
+                       :diplaced-offset 0))
+        (c (aref (foo-part-0 *foo*) 9))
+        (d (aref (foo-part-0 *foo*) 10))
+        (j (make-array 2 :displaced-to
+                       (foo-part-1 *foo*)
+                       :displaced-offset 0))
+        (k (make-array 2 :displaced-to
+                       (foo-part-1 *foo*)
+                       :displaced-offset 2))
+        ...)
+
+Thus, we access the right parts of the common block, independent of
+the name.  Note that this has a performance impact since we used
+displaced arrays.
+  
+
+
+Section 4.8
+
+All Fortran arrays are faithfully simulated in Lisp.  We store all
+multi-dimensional arrays as a single-dimension array in Lisp.  The
+fset and fref macros extract the correct element from the array.
+Thus, if the Fortran code was written to efficiently process the array
+in Fortran's column-major order, the Lisp code will have the same
+efficiency. 
+
+Also by doing this, we can do the Fortran array-slicing that is very
+common.  (That is, x(10) can denote either the single element x(10) or
+the array consisting of the elements x(10), x(11), ....)  For these
+slices, we create a displaced-array to the desired elements.  
+
+However, f2cl cannot determine whether to do this or not without
+knowing the subroutine, so user intervention is required.  The default
+is to assume that, if such a reference is passed to a routine, array
+slicing is intended.  The called routine must have declared as an
+array and not a simple-array.  Appropriate options can be specified
+during the conversion to declare arrays as either array or
+simple-array.
+
+For the cases where slicing is not used, f2cl can be told not to do
+slicing even if the array reference is in the arg list of a function.
+
+Finally, sometimes in the same routine, an array is sometimes sliced
+and sometimes not.  The user must then modify the Fortran code for
+f2cl to convert it properly.  Array slicing must be turned on, and all
+code where array slicing must be hand-modified like:
+
+    y = f(x(10),z)
+    call sub(x(15),n)
+
+becomes
+   
+    temp = x(10)
+    y = f(temp,z)
+    call sub(x(15),n)
+
+assuming the function wants a single value x(10) and the subroutine
+sub wants an array for the first arg.
+
+F2CL now correctly handles arrays whose beginning and ending indices
+are specified, like DIMENSION A(4:200).
+
+Section 4.9
+
+For assignments, we try to be careful so that the implicit type
+conversion actually happens.  For example X = 3*I is converted to
+
+	(setf x (coerce (* 3 i) 'single-float))
+
+This is required since if x is declared as a single-float, we can only
+store a single-float there.
+
+This is acheived by f2cl trying to keep track of the types of
+expresions and putting coerce expressions as needed.
+
+Section 4.10
+
+We support the extended do-enddo syntax:
+
+  do k = 1, 10
+    stuff
+  end do
+
+This is done by converting this during the translation process to a
+standard do loop with a statement number that exceeds the width of the
+statement number field.  Thus, there can never be an accidental re-use
+of a statement number.
+
+The do-while syntax from Fortran 90 (and Fortran 77 extensions) is
+supported too:
+
+  do while (k .lt. 10)
+    stuff
+  end do
+
+This is handled basically the same as extended-do above.
+
+Section 4.12
+
+Since Fortran is call-by-reference, all function calls must be treated
+just like subroutine calls, except there is one extra return value
+(the function value itself).
+
+Section 4.13
+
+Since Fortran is call-by-reference, we need to make sure that if the
+subroutine assigned a value to a parameter that we actually assign the
+new value to the caller.
+
+Thus 
+
+      CALL SUB(A, N, N + N)
+
+becomes
+
+      (multiple-value-bind (var-0 var-1 var-2)
+          (sub a n (+ n n))
+        (declare (ignore var-0 var-2))
+        (when var-1 (setf n var-1)))
+
+Thus, if sub changes the second arg N, we change it as well here.
+
+Note, though, that if f2cl knows about sub already (because it was
+converted before in the same session), f2cl can be smarter.  If f2cl
+knows that sub never modifies its second arg, the generated code is
+
+      (multiple-value-bind (var-0 var-1 var-2)
+          (sub a n (+ n n))
+        (declare (ignore var-0 var-1 var-2)))
+
+Thus, we do not have to check for var-1.  For this to work, f2cl must
+convert sub appropriately.  This means that if sub doesn't modify an
+argument, it returns the value NIL.  For arrays, NIL is always
+returned.
+ 
+
+Section 4.15
+
+We've tried enhance formatted output by handling implied do loops.
+Hollerith strings in format statements are handled correctly.
+(Hollerith strings in code don't work at all.)
+
+Some of the options to WRITE are handled like FMT =, UNIT =, etc. ,
+but still need work. 
+
+In most Fortrans, printing 1e300 in a field where the exponent field
+has length 2 will produce something like
+
+  1.000+300
+
+However, Lisp will just produce ******* because it isn't allowed to
+drop the exponent marker.  (We could make this work the way we want.) 
+
+This area still needs much work.
+
+We also support the format Iw.m.
+
+Section 5
+
+We now support some simple cases of ENTRY statements.  This is done by
+creating a main function (via LABELS) with the desired body and a new
+function for each entry point.  The main function takes an extra
+parameter indicating which entry point we want to use.  The additional
+functions just call this main function with the desired first
+parameter and returns the expected number of values.
+
+Block data subprograms are also supported.  We basically treat them as
+subroutines with the special name /blockdata/ for the unnamed block
+data or /blockdata-name/ for the block data named "name".
+
+
+

@@ -1,0 +1,84 @@
+C
+C      HOMPACK is a suite of FORTRAN 77 subroutines for solving nonlinear
+C systems of equations by homotopy methods.  There are subroutines for
+C fixed point, zero finding, and general homotopy curve tracking problems,
+C utilizing both dense and sparse Jacobian matrices, and implementing
+C three different algorithms: ODE-based, normal flow, and augmented
+C Jacobian.  The (driver) subroutines called by the user are given in the 
+C table below, and are well documented internally.  The user need not
+C be concerned with any other subroutines in HOMPACK.
+C
+C
+C                  Problem type
+C --------|--------|--------|--------|--------|--------|
+C      x = f(x)    |    F(x) = 0     |rho(a,lambda,x)=0|
+C --------|--------|--------|--------|--------|--------|
+C  dense  | sparse | dense  | sparse | dense  | sparse |  Algorithm
+C --------|--------|--------|--------|--------|--------|---------------------
+C  FIXPDF | FIXPDS | FIXPDF | FIXPDS | FIXPDF | FIXPDS | ODE based
+C --------|--------|--------|--------|--------|--------|---------------------
+C  FIXPNF | FIXPNS | FIXPNF | FIXPNS | FIXPNF | FIXPNS | normal flow
+C --------|--------|--------|--------|--------|--------|---------------------
+C  FIXPQF | FIXPQS | FIXPQF | FIXPQS | FIXPQF | FIXPQS | augmented Jacobian
+C --------|--------|--------|--------|--------|--------|---------------------
+C
+C
+C The sparse subroutines use the packed skyline storage scheme standard in
+C structural mechanics, but any sparse storage scheme can be used by
+C replacing some of the low-level HOMPACK routines with user-written
+C routines.  The stepping subroutines STEP?? may be of interest to some
+C users with special curve tracking needs.
+C
+C * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+C * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ORGANIZATIONAL DETAILS.  HOMPACK is organized in two 
+different ways: by algorithm/problem type and by subroutine level. There 
+are three levels of subroutines. The top level consists of drivers, one for 
+each problem type and algorithm type. Normally these drivers are called by 
+the user, and the user need know nothing beyond them. They allocate storage 
+for the lower level routines, and all the arrays are variable dimension, so 
+there is no limit on problem size. The second subroutine level implements 
+the major components of the algorithms such as stepping along the homotopy 
+zero curve, computing tangents, and the end game for the solution at 
+lambda = 1 . A sophisticated user might call these routines directly to 
+have complete control of the algorithm, or for some other task such as 
+tracking an arbitrary parametrized curve over an arbitrary parameter range.
+The lowest subroutine level handles the numerical linear algebra, and 
+includes some BLAS routines. All the linear algebra and associated data 
+structure handling are concentrated in these routines, so a user could 
+incorporate his own data structures by writing his own versions of these 
+low level routines. 
+
+The organization of HOMPACK by algorithm/problem type is shown in the
+above table, which lists the driver name for each algorithm and problem type.
+Using brackets to indicate the three subroutine levels described above, 
+the natural grouping of the HOMPACK routines is:
+
+[FIXPDF] [FODE, ROOT, SINTRP, STEPS] [DCPOSE]
+
+[FIXPDS] [FODEDS, ROOT, SINTRP, STEPDS] [GMFADS,
+     MFACDS, MULTDS, PCGDS, QIMUDS, SOLVDS]
+
+[FIXPNF] [ROOTNF, STEPNF, [TANGNF]] [ROOT]
+
+[FIXPNS] [ROOTNS, STEPNS, TANGNS] [GMFADS,
+     MFACDS, MULTDS, PCGDS, PCGNS, QIMUDS, ROOT, SOLVDS]
+
+[FIXPQF] [ROOTQF, STEPQF, TANGQF] [QRFAQF, QRSLQF, R1UPQF, UPQRQF]
+
+[FIXPQS] [ROOTQS, STEPQS, TANGQS] [GMFADS, MULTDS, PCGQS, SOLVDS]
+
+[POLSYS] [POLYNF, POLYP, ROOTNF, STEPNF, TANGNF] 
+     [DIVP, FFUNP, GFUNP, HFUNP, HFUN1P, INITP, MULP, OTPUTP, POWP,
+     RHO, RHOJAC, ROOT, SCLGNP, STRPTP]
+
+The BLAS subroutines used by HOMPACK are DAXPY, DCOPY, DDOT, DNRM2, DSCAL, 
+D1MACH, IDAMAX.
+
+The user written subroutines, of which exactly two must be supplied 
+depending on the driver chosen, are F, FJAC, FJACS, RHO, RHOA, RHOJAC, 
+RHOJS.
+
+For testing, there are three main test programs MAINF, MAINP, and MAINS,
+and one data file INNHP.DAT (read by MAINP).

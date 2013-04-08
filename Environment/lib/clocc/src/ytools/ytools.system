@@ -1,0 +1,89 @@
+;;; -*- Lisp -*-
+;;;
+;;; YTools --- more than a library of useful utilities; a way of life.
+;;;
+;;; $Id: ytools.system,v 2.3 2006/05/20 01:44:24 airfoyle Exp $
+;;; $Source: /cvsroot/clocc/clocc/src/ytools/ytools.system,v $
+;;;
+
+(in-package :cl-user)
+
+(defmacro set-yt-global (name val)
+  `(set (intern (symbol-name ',name) (find-package :ytools))
+	,val))
+
+(mk:defsystem "YTOOLS"
+    :source-pathname "clocc:src;ytools"
+    :binary-pathname "clocc:bin;ytools"
+;;;;    :source-pathname (translate-logical-pathname "clocc:src;ytools;")
+;;;;    :binary-pathname (translate-logical-pathname "clocc:bin;ytools;")
+    :source-extension "lisp"
+
+    :initially-do
+    (progn (load (translate-logical-pathname
+		    "clocc:src;ytools;ytload;ytload.lisp"))
+	   (set-yt-global config-directory*
+			  (namestring (translate-logical-pathname
+				         "clocc:src;ytools;")))
+	   (set-yt-global ytload-directory*
+			  (namestring
+			     (translate-logical-pathname
+			        "clocc:src;ytools;ytload;")))
+	   ;;; Preset some config variables --
+	   (set-yt-global ytools-home-dir*
+			  (namestring (translate-logical-pathname
+				          "clocc:src;ytools;")))
+	   (set-yt-global standard-bin-path* "../../bin/")
+	   (set-yt-global bin-idio* "")
+	   (yt-install :ytfm :if-installed nil)
+	   (yt-load :ytfm :if-loaded nil)
+	   (yt-install :ytools :if-installed nil))
+
+    :components
+    ((:system "ytfm"
+	:source-pathname "clocc:src;ytools;"
+	:binary-pathname "clocc:bin;ytools;"
+	:source-extension "lisp"
+
+	:components
+	((:file "base")
+         (:file "util" :depends-on ("base"))
+	 (:file "datafun" :depends-on ("base" "util"))
+         (:file "chunk" :depends-on ("base" "util"))
+	 (:file "pathname" :depends-on ("base" "datafun" "chunk"))
+	 (:file "slurp" :depends-on ("base" "datafun" "chunk" "pathname"))
+	 (:file "files" :depends-on ("base" "util" "datafun" "chunk" "pathname"
+                                     "slurp"))
+         (:file "fload" :depends-on ("base" "datafun" "chunk" "pathname"
+                                     "slurp" "files"))
+	 (:file "depend" :depends-on ("base" "datafun" "chunk" "pathname"
+                                      "slurp" "files" "fload"))
+	 (:file "module" :depends-on ("base" "util" "datafun" "chunk"
+                                      "pathname"
+                                      "slurp" "files" "fload" "depend"))))
+
+	:finally-do
+	(progn (depends-on-disable)))
+     (:module "core-ytools"
+	:source-pathname "./"
+	:binary-pathname "./"
+	:components
+	((:file "binders" :depends-on ())
+	 (:file "mapper" :depends-on ("setter" "binders" "repeat" "outin"))
+	 (:file "misc" :depends-on ("setter" "binders" "repeat" "outin"))
+	 (:file "multilet" :depends-on ("signal" "object" "misc" "setter" "binders"
+					"mapper" "repeat" "outin" "setter"))
+	 (:file "object" :depends-on ("mapper" "repeat" "outin" "setter"))
+	 (:file "outin")
+	 (:file "repeat" :depends-on ("outin" "binders"))
+	 (:file "setter" :depends-on ("binders" "repeat" "outin"))
+	 (:file "signal" :depends-on ("object" "setter" "repeat"))))
+     (:file "nilscompat" :depends-on ("core-ytools"))
+     (:file "fileutils" :depends-on ("core-ytools"))
+     (:file "bq" :depends-on ("core-ytools")))
+
+    :finally-do
+    (setq *readtable* (eval (intern (symbol-name ':ytools-readtable*)
+					   (find-package :ytools)))))
+
+

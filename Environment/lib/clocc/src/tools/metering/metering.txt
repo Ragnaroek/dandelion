@@ -1,0 +1,553 @@
+                           METERING USER'S MANUAL
+
+                                taken from
+
+
+                      PORTABLE UTILITIES FOR COMMON LISP
+                       USER GUIDE & IMPLEMENTATION NOTES
+
+                                Mark Kantrowitz
+
+                                   May 1991
+
+                                 CMU-CS-91-143
+
+
+
+
+                          School of Computer Science
+
+                          Cargnegie Mellon University
+
+                           Pittsburgh, PA 15213-3890
+
+                               mkant+@cs.cmu.edu
+
+
+
+ 3. METERING: Code Timing and Consing Profiler                                 8
+
+    3.1.  Installing METERING..............................................    8
+    3.2.  Using METERING...................................................    8
+        3.2.1.  Suggested Usage............................................    8
+        3.2.2.  METERING Primitives........................................    8
+    3.3.  An Example of METERING Output....................................    9
+    3.4.  Usage Notes......................................................    9
+        3.4.1.  Clock Resolution...........................................    9
+        3.4.2.  Calculating Monitoring Overhead............................    9
+    3.5.  Implementation Notes.............................................   10
+
+
+
+ METERING
+      A  portable  code  profiling  tool,  for  gathering  timing  and   consing
+      statistics  while  a program is running. Monitors the use of functions and
+      macros, calculating the number  of  calls,  CPU  time,  and  storage  use.
+      Inclusive  and  exclusive function call statistics. The METERING system is
+      based on the MONITOR program written by Chris McConnell  and  the  PROFILE
+      program   written   by  Skef  Wholey  and  Rob  MacLachlan,  with  several
+      extensions.
+
+
+
+ 3. METERING: Code Timing and Consing Profiler
+
+ The  METERING system is a portable Common Lisp code profiling tool.  It gathers
+
+ timing and consing statistics  for  specified  functions  while  a  program  is
+
+ running.  The METERING system is the result of a merging of the capabilities of
+
+ the MONITOR program written by Chris McConnell and the PROFILE program  written
+
+ by Skef Wholey and Rob MacLachlan and extending the resulting program. Portions
+
+ of the documentation from those programs were incorporated into this chapter.
+
+ 3.1. Installing METERING
+
+ Before using METERING there are a  number  of  small,  implementation-dependent
+
+ macros you may want to customize for your Lisp.
+
+
+ The  METERING  system  will collect timing statistics in any valid Common Lisp.
+
+ The macro get-time is called to find  the  total  number  of  ticks  since  the
+
+ beginning  of time. The constant time-units-per-second is used to convert ticks
+
+ into    seconds.        These    default    to    get-internal-run-time     and
+
+ internal-time-units-per-second, respectively.
+
+
+ To  collect consing statistics, define a get-cons macro for your implementation
+
+ of Lisp. The get-cons macro has been defined for CMU Common Lisp, Lucid  Common
+
+ Lisp  (3.0), and Macintosh Allegro Common Lisp (1.3.2). If you write a get-cons
+
+ macro for a particular version of Common Lisp, we'd  appreciate  receiving  the
+
+ code.  This  macro  should  return  the  total number of bytes consed since the
+
+ beginning of time.
+
+
+ The METERING system works by encapsulating the  definitions  of  the  monitored
+
+ functions.  By  default,  this encapsulation captures the arguments in an &rest
+
+ arg, and then applies the old definition to the arguments. In most  Lisps  this
+
+ will  result  in  additional  consing.    To  reduce  the extra consing, when a
+
+ required-arguments function is available we use it to find out  the  number  of
+
+ required  arguments,  and  use &rest to capture only the non-required arguments
+
+ (if any). The required-arguments function should return two values:  the  first
+
+ is the number of required arguments, and the second is non-nil if there are any
+
+ non-required  arguments  (e.g.,  &optional,  &rest,   and   &key   args).   The
+
+ required-arguments  function  has  been  defined for CMU Common Lisp, Macintosh
+
+ Allegro Common Lisp (1.3.2), Lucid Common Lisp (3.0), and Allegro Common Lisp.
+
+
+ Since the encapsulation process creates closures, performance and accuracy  are
+
+ greatly  improved  if  the code is compiled. Accordingly, the user is warned if
+
+ the source is loaded instead of compiling it first.
+
+ 3.2. Using METERING
+
+ This section describes all of the basic METERING commands and  variables  which
+
+ control   their  behavior.  METERING  includes  functions  for  monitoring  and
+
+ unmonitoring functions, as  well  as  functions  for  displaying  a  report  of
+
+ profiling statistics, including number of calls, CPU time, and storage usage.
+
+
+
+ 3.2.1. Suggested Usage
+
+ The easiest way to use the METERING system is to load it and evaluate either
+        (mon:with-monitoring (<name>*) ()
+            <form>*)
+
+ or
+        (mon:monitor-form <form>)
+
+ The  former  allows you to specify which functions will be monitored, while the
+
+ latter monitors all  functions  in  the  current  package.  Both  automatically
+
+ produce a table of statistics. Variations on these functions can be constructed
+
+ from the monitoring primitives, which are described in Section 3.2.2.
+
+
+ Start by monitoring big pieces of the  program,  then  carefully  choose  which
+
+ functions to be monitored next.
+
+
+ If  you  monitor functions that are called by other monitored functions, decide
+
+ whether you want inclusive or exclusive statistics.  The  former  includes  the
+
+ monitoring  time  of  inner  functions  from  their  callers,  while the latter
+
+ subtracts it. It is important to be aware of what kind of  statistics  you  are
+
+ displaying, since the difference can be confusing.
+
+
+ If  the  per-call  time reported is less than 1/10th of a second, then consider
+
+ the clock resolution and profiling overhead before you believe  the  time.  You
+
+ may  need  to  run  your program many times in order to average out to a higher
+
+ resolution.
+
+
+
+ 3.2.2. METERING Primitives
+
+ The with-monitoring and monitor-form macros are the main external interface  to
+
+ the METERING system.
+ with-monitoring ((&rest functions)                                      [Macro]
+                   (&optional (nested :exclusive) (threshold 0.01)
+                    (key :percent-time))
+                   &body body)
+
+     The named functions are monitored, the body forms executed, a table of
+     results printed, and the functions unmonitored. The nested, threshold,
+     and key arguments are passed to report-monitoring.
+
+ monitor-form (form &optional (nested :exclusive)                        [Macro]
+                (threshold 0.01) (key :percent-time))
+
+     Monitor the execution of all functions in the current package during
+     the evaluation of form. A table of results is printed. The nested,
+     threshold, and key arguments are passed to report-monitoring.
+
+
+ The  functions  monitor,  unmonitor,  and  monitor-all are primitives which are
+
+ called by with-monitoring and monitor-form.
+ *monitored-functions* ()                                             [Variable]
+
+     List of all functions that are currently being monitored.
+
+ monitor (&rest names)                                                   [Macro]
+
+     The named functions are set up for monitoring by augmenting their
+     function definitions with code that gathers statistical information
+     about code performance. As with the trace macro, the names are not
+     evaluated. If a function is already monitored, unmonitors it before
+     remonitoring (useful when a function has been redefined). If a name is
+     undefined, gives a warning and ignores it. If no names are specified,
+     returns a list of all monitored functions. If a name is not a symbol,
+     it is evaluated to return the appropriate closure. This allows the
+     monitoring of closures stored anywhere, such as in a variable, array,
+     or structure. Most other metering packages do not handle this.
+
+ unmonitor (&rest names)                                                 [Macro]
+
+     Remove the monitoring on the named functions. If no names are
+     specified, all currently monitored functions are unmonitored.
+
+ monitor-all (&optional (package *package*))                          [Function]
+
+     Monitors all functions in the specified package, which defaults to the
+     current package.
+
+ monitored (function-place)                                           [Function]
+
+     Predicate which tests whether a function is monitored.
+
+
+ The following two functions are used to erase accumulated statistics.
+ reset-monitoring-info (name)                                         [Function]
+
+     Resets the monitoring statistics for the specified function.
+
+ reset-all-monitoring ()                                              [Function]
+
+     Resets the monitoring statistics for all monitored functions.
+
+
+ The functions report-monitoring  and  display-monitoring-results  are  used  to
+ print     a     statistical     report     on    the    monitored    functions.
+
+ display-monitoring-results  may  be  called  to  view  the  data   created   by
+
+ report-monitoring in various ways.
+ report-monitoring (&optional names (nested :exclusive)               [Function]
+                     (threshold 0.01) (key :percent-time)
+                     ignore-no-calls)
+
+     Creates a table of monitoring information for the current state of the
+     specified list of functions, and displays the table using
+     display-monitoring-results. If names is :all or nil, uses all currently
+     monitored functions.
+
+     Takes the following arguments:
+
+        - nested specifies whether nested calls of monitored functions are
+          included in the times of monitored functions.
+
+             * If :inclusive, the per-function information is for the
+               entire duration of the monitored function, including any
+               calls to other monitored functions. If functions A and B are
+               monitored, and A calls B, then the accumulated time and
+               consing for A will include the time and consing of B.[If a
+               function calls itself recursively, the time spent in the
+               inner call(s) may be counted several times.]
+
+             * If :exclusive, the information excludes time attributed to
+               calls to other monitored functions. This is the default.
+
+        - threshold specifies that only functions which have been executed
+          more than threshold amount of the time will be reported. Defaults
+          to 1%. If a threshold of 0 is specified, all functions are
+          listed, even those with 0 or negative running times. See relevant
+          note in Section 3.4.2.
+
+        - key specifies that the table be sorted by one of the following
+          sort keys:
+
+             * :function. Alphabetically by function name.
+
+             * :percent-time. By percent of total execution time.
+
+             * :percent-cons. By percent of total consing.
+
+             * :calls. By number of times the function was called.
+
+             * :time-per-call. By average execution time per function.
+
+             * :cons-per-call. By average consing per function.
+
+             * :time. Same as :percent-time.
+
+             * :cons. Same as :percent-cons.
+
+ display-monitoring-results (&optional (threshold 0.01)               [Function]
+                              (key :percent-time) (ignore-no-calls t))
+
+     Prints a table showing for each named function:
+
+        - the total CPU time used in that function for all calls
+
+        - the total number of bytes consed in that function for all calls
+
+        - the total number of calls
+
+        - the average amount of CPU time per call
+
+        - the average amount of consing per call
+
+        - the percent of total execution time spent executing that function
+
+        - the percent of total consing spent consing in that function
+
+     Summary totals of the CPU time, consing, and calls columns are printed.
+     An estimate of the monitoring overhead is also printed. May be run even
+     after unmonitoring all the functions, to play with the data.
+
+ 3.3. An Example of METERING Output
+
+ The following is an example of what the table looks like:
+                                                  Cons
+                    %     %                       Per      Total   Total
+   Function         Time  Cons  Calls  Sec/Call   Call     Time    Cons
+   ----------------------------------------------------------------------
+   FIND-ROLE:       0.58  0.00    136  0.003521      0  0.478863       0
+   GROUP-ROLE:      0.35  0.00    365  0.000802      0  0.292760       0
+   GROUP-PROJECTOR: 0.05  0.00    102  0.000408      0  0.041648       0
+   FEATURE-P:       0.02  0.00    570  0.000028      0  0.015680       0
+   ----------------------------------------------------------------------
+   TOTAL:                        1173                   0.828950       0
+   Estimated total monitoring overhead: 0.88 seconds
+
+ 3.4. Usage Notes
+
+ This section comments on some aspects of the implementation that may affect the
+
+ accuracy of the statistics.
+
+
+
+ 3.4.1. Clock Resolution
+
+ On most machines, the length of a clock tick is much longer than  the  time  it
+
+ takes  a  simple  function  to  run.  For  example,  on an IBM RT-APC the clock
+
+ resolution is 1/100th of a second, on a Decstation 3100 it  is  1/1000th  of  a
+
+ second, and on a Symbolics 3640 it is 1/977th of a second. This means that if a
+
+ function is called only a few times, then only the first few decimal places are
+
+ really meaningful.
+
+
+
+ 3.4.2. Calculating Monitoring Overhead
+
+ Every time a monitored function is called, the added monitoring code takes some
+
+ amount of time to run. This can result in inflated  times  for  functions  that
+
+ take little time to run. Also, in many Lisps the function get-internal-run-time
+
+ conses, which can affect the consing statistics. Accordingly,  an  estimate  of
+
+ the overhead due to monitoring is subtracted from the time and storage reported
+
+ for each function.
+
+
+ Although this correction works fairly well, it is not completely accurate. This
+
+ can  result  in  times  that become increasingly meaningless for functions with
+
+ shorter runtimes. For example, subtracting the estimated overhead may result in
+
+ negative  times  for  some  functions.  This should only be of concern when the
+
+ estimated profiling overhead is many times larger than the reported  total  CPU
+
+ time.
+
+
+ If  you monitor functions that are called by monitored functions, in :inclusive
+
+ mode the monitoring overhead for the inner functions are  subtracted  from  the
+
+ CPU  time  for  the  outer  function.(This is accomplished by counting for each
+
+ function not only the number of calls to the  function  itself,  but  also  the
+
+ number  of  calls  to monitored functions. This can become rather confusing for
+
+ recursive functions.) In :exclusive  mode  this  is  not  necessary,  since  we
+
+ subtract the monitoring time of inner functions, overhead and all.
+
+
+ Otherwise,  the  estimated  monitoring  overhead is not counted in the reported
+
+ total CPU time. The sum of total CPU time and the estimated monitoring overhead
+
+ should  be  close  to  the  total  CPU  time  for the entire monitoring run (as
+
+ reported by the time macro).
+
+
+ The timing overhead factor is computed at load time. This will be incorrect  if
+
+ the  monitoring  code  is run in a different environment than that in which the
+
+ file was loaded. For example, saving a Lisp image on a high performance machine
+
+ and  running  it  on  a low performance one will result in an erroneously small
+
+ overhead factor.
+
+
+ If the statistics vary widely, possible causes are:
+
+    - Garbage collection. Try turning it off and then running the code.  Be
+      forewarned  that  running  an  encapsulated  function results in some
+      extra consing, and that get-internal-run-time will probably  cons  as
+      well.
+
+    - Swapping.  The  time  it  takes to swap your function into memory can
+      affect the reported  statistics.  If  you  have  enough  memory,  try
+      executing  your  form  once  before  monitoring it so that it will be
+      swapped into memory.
+
+    - Resolution of internal-time-units-per-second. This  value  is  rather
+      coarse in many Lisps, as noted in Section 3.4.1. If this value is too
+      low, the timings become wild. Try executing your test form more times
+      or for a larger number of iterations.
+
+ 3.5. Implementation Notes
+
+ The  overhead  is  calculated  by monitoring stub-function and running it for a
+
+ large number of times (overhead-iterations), storing  the  timing  and  consing
+
+ overhead      into      the      variables      *monitor-time-overhead*     and
+
+ *monitor-cons-overhead*, respectively. Since stub-function is a null  function,
+
+ this  results  in  a  fairly accurate estimate for the overhead of monitoring a
+
+ function. If  you  suspect  that  these  values  are  inaccurate,  try  running
+
+ set-monitor-overhead again.
+ *monitor-time-overhead* ()                                           [Variable]
+
+     The amount of time an empty monitored function costs.
+
+ *monitor-cons-overhead* ()                                           [Variable]
+
+     The amount of cons an empty monitored function costs.
+
+ overhead-iterations 5000                                             [Constant]
+
+     Number of iterations over which the timing overhead is averaged.
+
+ stub-function ()                                                     [Function]
+
+     A null piece of code run monitored to estimate monitoring overhead.
+
+ set-monitor-overhead ()                                              [Function]
+
+     Determines the average overhead of monitoring by monitoring the
+     execution of an empty function many times.
+
+
+ The  key  idea  behind  METERING  is to replace the definition of the monitored
+
+ function with a closure that records the monitoring data and updates  the  data
+
+ with  each  call  to  the  function. As noted in Section 3.1, we can reduce the
+
+ amount of consing done by the &rest arg in each lambda by using the  &rest  arg
+
+ to     capture     only    the    non-required    arguments.    The    function
+
+ make-monitoring-encapsulation returns a lambda expression  which,  when  called
+
+ with  a function name, encapsulates it with a closure that has the right number
+
+ of required arguments.  To create these closures efficiently, we precompute the
+
+ encapsulation-creating functions for up to precomputed-encapsulations number of
+
+ required arguments (with and without optional arguments) and store  them  in  a
+
+ hash   table   for   later   retrieval   by  monitoring-encapsulate.  If,  when
+
+ encapsulating a function, the encapsulation-creating function is not  found  in
+
+ the  hash  table  by  find-encapsulation, a new function is added to the table.
+
+ Since we're precomputing closure  functions  for  common  argument  signatures,
+
+ there is no need to call compile for each monitored function.
+ make-monitoring-encapsulation (min-args optionals-p)                 [Function]
+
+     Makes a function which will appropriately encapsulate any function with
+     min-args required arguments.
+
+ precomputed-encapsulations 8                                         [Constant]
+
+     We create precomputed encapsulations for up to this number of required
+     arguments. Any others will be computed as needed.
+
+ *existing-encapsulations* (make-hash-table :test (function equal))   [Variable]
+
+     Hash table which maps from common argument signatures (required-args .
+     optionals-p) to appropriate precomputed closure functions.
+
+ find-encapsulation (min-args optionals-p)                            [Function]
+
+     Used to find the appropriate precomputed encapsulation function if it
+     exists, or create (and save) a new one if necessary.
+
+ monitoring-encapsulate (name &optional warn)                         [Function]
+
+     Monitors the function Name. If already monitored, unmonitor first.
+
+ monitoring-unencapsulate (name &optional warn)                       [Function]
+
+     Removes monitoring encapsulation code from around Name.
+
+
+ The   variables  *monitor-results*  and  *no-calls*  are  associated  with  the
+
+ functions that create and display monitoring statistics.
+ *monitor-results* ()                                                 [Variable]
+
+     A table of monitoring statistics is stored here.
+
+ *no-calls* ()                                                        [Variable]
+
+     A list of monitored functions which weren't called.
+

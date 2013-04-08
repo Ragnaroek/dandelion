@@ -1,0 +1,32 @@
+cl-f2cl (1.0+cvs.2005.03.03) unstable; urgency=low
+
+  * New CVS release. 
+
+ -- Peter Van Eynde <pvaneynd@debian.org>  Thu,  3 Mar 2005 13:53:18 +0100
+
+cl-f2cl (1.0+cvs.2004.07.09) unstable; urgency=low
+
+  * New maintainer. (Closes: #297355: O: cl-f2cl)
+  * Adopted by Peter Van Eynde
+
+ -- Peter Van Eynde <pvaneynd@debian.org>  Tue,  1 Mar 2005 10:12:05 +0100
+
+cl-f2cl (1.0+cvs.2004.07.08) unstable; urgency=low
+
+  * New upstream (closes:258125)
+
+ -- Kevin M. Rosenberg <kmr@debian.org>  Thu,  8 Jul 2004 11:48:35 -0600
+
+cl-f2cl (1.0+cvs.2003.01.11) unstable; urgency=low
+
+  * New upstream
+  * Update standards version to 3.5.9.0 [no changes needed]
+  * Use compat file rather than DH_COMPAT in rules
+
+ -- Kevin M. Rosenberg <kmr@debian.org>  Mon,  7 Apr 2003 00:19:05 -0600
+
+cl-f2cl (1.0+cvs.2002.11.11) unstable; urgency=low
+
+  * Initial Debian upload.
+
+ -- Kevin M. Rosenberg <kmr@debian.org>  Fri,  8 Nov 2002 09:46:00 -0700

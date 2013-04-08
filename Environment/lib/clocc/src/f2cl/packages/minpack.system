@@ -1,0 +1,132 @@
+;;; -*- Mode: lisp -*-
+;;;
+;;;
+;;; $Id: minpack.system,v 1.11 2006/05/02 22:02:20 rtoy Exp $
+;;; $Log: minpack.system,v $
+;;; Revision 1.11  2006/05/02 22:02:20  rtoy
+;;; Fix typo in source-pathname for minpack-tests.
+;;;
+;;; Revision 1.10  2006/04/28 01:12:58  rtoy
+;;; Use *load-pathname to construct the source path (f2cl.system) or a
+;;; logical pathname to use in the defsystems so that each defsystem can
+;;; find its own files.
+;;;
+;;; Revision 1.9  2002/09/13 17:50:18  rtoy
+;;; From Douglas Crosher:
+;;;
+;;; o Make this work with lower-case Lisps
+;;; o Fix a few typos
+;;; o Make a safer fortran reader.
+;;;
+;;; Revision 1.8  2002/07/02 22:14:09  rtoy
+;;; o Add component for run-minpack-tests
+;;; o The tests are in the MINPACK package, not MINPACK-TESTS package.
+;;;
+;;; Revision 1.7  2002/07/02 21:32:36  rtoy
+;;; Add dependency to minpack.lisp to define the package.
+;;;
+;;; Revision 1.6  2002/07/02 12:31:35  rtoy
+;;; o Put the code in the MINPACK package.
+;;; o Add defsystem for the tests.
+;;;
+;;; Revision 1.5  2002/01/08 04:03:09  rtoy
+;;; Fix some typos and replace a file that we deleted.
+;;;
+;;; Revision 1.4  2002/01/08 03:29:09  rtoy
+;;; o Correct and change the compiler options.  We need array-slicing.
+;;; o Add some more routines.
+;;;
+;;; Revision 1.3  2002/01/07 18:13:53  rtoy
+;;; Set better compiler options for building minpack.
+;;;
+;;; Revision 1.2  2000/08/30 17:02:38  rtoy
+;;; Add some more of the MINPACK files.
+;;;
+;;; Revision 1.1  2000/08/29 16:10:01  rtoy
+;;; Initial rev.
+;;;
+;;; Revision 1.1  2000/07/21 22:13:48  rtoy
+;;; Initial version.
+;;;
+;; Convert a Fortran file to Lisp and compile the Lisp file.
+#+nil
+(defun f2cl-compile (filename &key output-file error-file (array-slicing t) (array-type 'array))
+  (compile-file (f2cl filename :array-slicing array-slicing
+		      :array-type array-type)
+		:output-file output-file :error-file error-file))
+
+(let ((base (make-pathname :directory (pathname-directory *load-pathname*))))
+  (setf (logical-pathname-translations "minpack")
+	(list (list "**;*.*.*"
+		    (merge-pathnames (make-pathname :directory '(:relative "minpack" :wild-inferiors)
+						    :name :wild :type :wild)
+				     base)))))
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+(mk:defsystem minpack
+    :source-pathname "minpack:"
+    :components
+    ((:file "minpack"
+		      :language :lisp)
+     (:module "minpack"
+	      :source-pathname ""
+	      :source-extension "f"
+	      :package :minpack
+	      :language :f2cl
+	      :compiler-options (:include-comments t
+				 :keep-lisp-file t
+				 :relaxed-array-decls nil
+				 :array-type :array
+				 :array-slicing t
+				 :package :minpack)
+	      :components
+	      (
+	       (:file "dpmpar")
+	       (:file "enorm")
+	       (:file "fdjac1" :depends-on ("dpmpar"))
+	       (:file "fdjac2" :depends-on ("dpmpar"))
+	       (:file "qrsolv")
+	       (:file "lmpar" :depends-on ("dpmpar" "enorm" "qrsolv"))
+	       (:file "qrfac" :depends-on ("dpmpar" "enorm"))
+	       (:file "lmdif" :depends-on ("dpmpar" "enorm" "fdjac2" "lmpar" "qrfac"))
+	       (:file "lmdif1" :depends-on ("lmdif"))
+	       (:file "lmder" :depends-on ("dpmpar" "enorm" "lmpar" "qrfac"))
+	       (:file "lmder1" :depends-on ("lmder"))
+	       (:file "dogleg" :depends-on ("dpmpar" "enorm"))
+	       (:file "qform")
+	       (:file "r1mpyq")
+	       (:file "r1updt" :depends-on ("dpmpar"))
+	       (:file "hybrd" :depends-on ("dogleg" "dpmpar" "enorm" "fdjac1"
+					   "qform" "qrfac" "r1mpyq" "r1updt"))
+	       (:file "hybrd1" :depends-on ("hybrd"))
+	       (:file "hybrj" :depends-on ("dogleg" "dpmpar" "enorm" "qform" "qrfac"
+						    "r1mpyq" "r1updt"))
+	       (:file "hybrj1" :depends-on ("hybrj"))
+	       ))))
+
+(mk:defsystem minpack-tests
+    :source-pathname "minpack:"
+    :components
+    ((:module "main"
+	      :source-pathname ""
+	      :package :minpack
+	      :components
+	      ((:file "run-minpack-tests")))
+     (:module "tests"
+	      :source-pathname ""
+	      :source-extension "f"
+	      :package :minpack
+	      :language :f2cl
+	      :compiler-options (:include-comments t
+				 :keep-lisp-file t
+				 :relaxed-array-decls nil
+				 :array-type :array
+				 :array-slicing t
+				 :package :minpack
+				 :declare-common t)
+	      :components
+	      ((:file "tst-lmdif")
+	       (:file "tst-lmder")))))

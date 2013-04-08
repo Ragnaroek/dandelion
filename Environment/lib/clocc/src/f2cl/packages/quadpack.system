@@ -1,0 +1,313 @@
+;;; -*- Mode: lisp -*-
+;;;
+;;; This is a simple defsystem for converting QUADPACK Fortran
+;;; routines to Lisp and compiling the result.
+;;;
+;;; $Id: quadpack.system,v 1.7 2006/04/28 01:12:58 rtoy Exp $
+;;; $Log: quadpack.system,v $
+;;; Revision 1.7  2006/04/28 01:12:58  rtoy
+;;; Use *load-pathname to construct the source path (f2cl.system) or a
+;;; logical pathname to use in the defsystems so that each defsystem can
+;;; find its own files.
+;;;
+;;; Revision 1.6  2003/09/25 04:05:55  rtoy
+;;; Compute the necessary translation for the Fortran directory from the
+;;; current translation for clocc instead of hard-wiring the path.
+;;;
+;;; Revision 1.5  2002/03/19 23:28:32  rtoy
+;;; Add a defsystem to compile the Fortran codes directly via
+;;; f2cl-compile.  Leave the old defsystem around, but with a new name.
+;;;
+;;; Revision 1.4  2000/08/07 17:02:29  rtoy
+;;; Comment out unused functions, make it more palatable to Clisp logical
+;;; pathnames, add some dependencies.
+;;;
+;;; Revision 1.3  2000/07/21 22:12:35  rtoy
+;;; :ARRAY-SLICING should default to NIL.
+;;;
+;;; Revision 1.2  2000/07/21 17:48:29  rtoy
+;;; Add some support for :compiler-options if MK defsystem supports it.
+;;;
+;;; Revision 1.1  2000/07/20 15:42:18  rtoy
+;;; Initial revision
+;;;
+;;;
+
+;;; Change this as appropriate.
+
+;; I (rtoy) was stupid and named the Fortran directory Fortran, which
+;; doesn't work so well with logical pathnames.  This is an attempt to
+;; convert that appropriately by setting up the correct translation.
+(let ((base (make-pathname :directory (pathname-directory *load-pathname*))))
+  (setf (logical-pathname-translations "quadpack")
+	(list (list "**;fortran;*.*.*"
+		    (merge-pathnames (make-pathname :directory '(:relative "quadpack" "Fortran"
+								 :wild-inferiors)
+						    :name :wild
+						    :type :wild)
+				     base))
+	      (list "**;*.*.*"
+		    (merge-pathnames (make-pathname :directory '(:relative :wild-inferiors)
+						    :name :wild :type :wild)
+				     base)))))
+
+
+;; Defsystem for d1mach and i1mach
+(mk:defsystem mach-par
+    :source-pathname (translate-logical-pathname "quadpack:")
+    :source-extension "lisp"
+    :components
+    ((:file "d1mach")
+     (:file "i1mach")))
+
+
+#||
+;; Convert a Fortran file to Lisp and compile the Lisp file.
+(defun f2cl-compile (filename &key output-file error-file (array-slicing t) (array-type 'array))
+  (compile-file (f2cl:f2cl filename :array-slicing array-slicing
+		      :array-type array-type)
+		:output-file output-file))
+
+;; Used only if your defsystem doesn't support :compiler-options 
+(defun f2cl-compile-no-slice (filename &key output-file error-file)
+  (compile-file (f2cl:f2cl filename :array-slicing nil :array-type 'array)
+		:output-file output-file :error-file error-file))
+
+||#
+
+(defvar *quadpack-package* nil)
+(defun quadpack-compile (filename &key output-file error-file
+				  (array-slicing t) (array-type :array))
+  (f2cl:f2cl-compile filename :output-file output-file
+	     ;;:error-file error-file
+		     :array-slicing array-slicing
+		     :array-type array-type
+		     :package *quadpack-package*
+		     ))
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+#+nil
+(mk:define-language :f2cl-no-slice
+    :compiler #'f2cl-compile-no-slice
+    :source-extension "f")
+    
+
+;; Defsystem for quadpack.
+(mk:defsystem quadpack
+    :source-pathname (translate-logical-pathname "quadpack:Fortran;")
+    :depends-on ("mach-par")
+    :components
+    ((:module Fortran
+	      :source-pathname ""
+	      :binary-pathname "lib/"
+	      :source-extension "f"
+	      :language :f2cl
+	      :components
+	      (
+	       ;; Support
+	       (:file "dqwgtf")
+	       (:file "dqcheb")
+	       (:file "dqk15w")
+	       (:file "dqwgts")
+	       (:file "dqwgtc")
+	       (:file "dgtsl")
+	       (:file "xerror")
+	       
+	       ;; Core integration routines
+	       (:file "dqk15")
+	       (:file "dqk31")
+	       (:file "dqk41")
+	       (:file "dqk51")
+	       (:file "dqk61")
+	       (:file "dqk21")
+	       (:file "dqk15i")
+	       (:file "dqelg")
+	       (:file "dqpsrt")
+	       (:file "dqc25s"
+		      :depends-on ("dqcheb" "dqk15w"))
+	       (:file "dqmomo")
+	       (:file "dqc25c"
+		      :depends-on ("dqcheb"
+				   "dqk15w"))
+	       (:file "dqc25f"
+		      :depends-on ("dgtsl"
+				   "dqcheb"
+				   "dqk15w"
+				   "dqwgtf"))
+	       ;; Basic integrators
+	       (:file "dqage"
+		      :depends-on ("dqk15"
+				   "dqk31"
+				   "dqk41"
+				   "dqk51"
+				   "dqk61"
+				   "dqk21"
+				   "dqpsrt"))
+	       (:file "dqagie"
+		      :depends-on ("dqelg"
+				   "dqk15i"
+				   "dqpsrt"))
+	       (:file "dqagpe"
+		      :depends-on ("dqelg"
+				   "dqpsrt"
+				   "dqk21"
+				   ))
+	       (:file "dqagse"
+		      :depends-on ("dqk21"
+				   "dqelg"
+				   "dqpsrt"))
+	       (:file "dqawfe"
+		      :depends-on ("dqagie"
+				   "dqawoe"
+				   "dqelg")
+		      ;; If your defsystem doesn't support :compiler-options, use this:
+		      ;; :language :f2cl-no-slice
+		      ;; If your defsystem does support :compiler-options, use this:
+		      :compiler-options (:array-slicing nil :array-type :array)
+		      )
+	       (:file "dqawoe"
+		      :depends-on ("dqc25f"
+				   "dqpsrt"
+				   "dqelg"))
+	       (:file "dqawse"
+		      :depends-on ("dqc25s"
+				   "dqmomo"
+				   "dqpsrt"))
+	       (:file "dqawce"
+		      :depends-on ("dqc25c"
+				   "dqpsrt"))
+	       ;; Simplified interface routines
+	       (:file "dqng"
+		      :depends-on ("xerror"))
+	       (:file "dqag"
+		      :depends-on ("dqage"
+				   "xerror"))
+	       (:file "dqags"
+		      :depends-on ("dqagse"
+				   "xerror"))
+	       (:file "dqagi"
+		      :depends-on ("dqagie"
+				   "xerror"))
+	       (:file "dqawf"
+		      :depends-on ("dqawfe"
+				   "xerror"))
+	       (:file "dqawo"
+		      :depends-on ("dqawoe"
+				   "xerror"))
+	       (:file "dqaws"
+		      :depends-on ("dqawse"
+				   "xerror"))
+	       (:file "dqawc"
+		      :depends-on ("dqawce"
+				   "xerror"))))))
+
+(mk:defsystem quadpack-lisp
+    :source-pathname (translate-logical-pathname "quadpack:quadpack;Fortran;")
+    :depends-on ("mach-par")
+    :components
+    ((:module Fortran
+	      :source-pathname ""
+	      :binary-pathname "lib/"
+	      :source-extension "f"
+	      :language :f2cl-compile
+	      :components
+	      (
+	       ;; Support
+	       (:file "dqwgtf")
+	       (:file "dqcheb")
+	       (:file "dqk15w")
+	       (:file "dqwgts")
+	       (:file "dqwgtc")
+	       (:file "dgtsl")
+	       (:file "xerror")
+	       
+	       ;; Core integration routines
+	       (:file "dqk15")
+	       (:file "dqk31")
+	       (:file "dqk41")
+	       (:file "dqk51")
+	       (:file "dqk61")
+	       (:file "dqk21")
+	       (:file "dqk15i")
+	       (:file "dqelg")
+	       (:file "dqpsrt")
+	       (:file "dqc25s"
+		      :depends-on ("dqcheb" "dqk15w"))
+	       (:file "dqmomo")
+	       (:file "dqc25c"
+		      :depends-on ("dqcheb"
+				   "dqk15w"))
+	       (:file "dqc25f"
+		      :depends-on ("dgtsl"
+				   "dqcheb"
+				   "dqk15w"
+				   "dqwgtf"))
+	       ;; Basic integrators
+	       (:file "dqage"
+		      :depends-on ("dqk15"
+				   "dqk31"
+				   "dqk41"
+				   "dqk51"
+				   "dqk61"
+				   "dqk21"
+				   "dqpsrt"))
+	       (:file "dqagie"
+		      :depends-on ("dqelg"
+				   "dqk15i"
+				   "dqpsrt"))
+	       (:file "dqagpe"
+		      :depends-on ("dqelg"
+				   "dqpsrt"
+				   "dqk21"
+				   ))
+	       (:file "dqagse"
+		      :depends-on ("dqk21"
+				   "dqelg"
+				   "dqpsrt"))
+	       (:file "dqawfe"
+		      :depends-on ("dqagie"
+				   "dqawoe"
+				   "dqelg")
+		      ;; If your defsystem doesn't support :compiler-options, use this:
+		      ;; :language :f2cl-no-slice
+		      ;; If your defsystem does support :compiler-options, use this:
+		      :compiler-options (:array-slicing nil :array-type :array)
+		      )
+	       (:file "dqawoe"
+		      :depends-on ("dqc25f"
+				   "dqpsrt"
+				   "dqelg"))
+	       (:file "dqawse"
+		      :depends-on ("dqc25s"
+				   "dqmomo"
+				   "dqpsrt"))
+	       (:file "dqawce"
+		      :depends-on ("dqc25c"
+				   "dqpsrt"))
+	       ;; Simplified interface routines
+	       (:file "dqng"
+		      :depends-on ("xerror"))
+	       (:file "dqag"
+		      :depends-on ("dqage"
+				   "xerror"))
+	       (:file "dqags"
+		      :depends-on ("dqagse"
+				   "xerror"))
+	       (:file "dqagi"
+		      :depends-on ("dqagie"
+				   "xerror"))
+	       (:file "dqawf"
+		      :depends-on ("dqawfe"
+				   "xerror"))
+	       (:file "dqawo"
+		      :depends-on ("dqawoe"
+				   "xerror"))
+	       (:file "dqaws"
+		      :depends-on ("dqawse"
+				   "xerror"))
+	       (:file "dqawc"
+		      :depends-on ("dqawce"
+				   "xerror"))))))

@@ -1,0 +1,74 @@
+
+
+
+                                Pictures
+                                        
+                              Release Notes
+
+            Copyright (C) 1990, Texas Instruments Incorporated
+
+
+
+GENERAL
+
+        Pictures is a Common  Lisp system for  object-oriented graphics,
+        using the  X  Window  System.   Pictures  is  a  portable system
+        written in Common  Lisp and  based on  other standard interfaces
+        such as CLX, CLUE, and CLOS.
+
+        Pictures defines a  set of  classes that  represent hierarchical
+        structures of 2D graphical primitives.  Graphical structures can
+        be composed, transformed, modified, and  saved to a file  by the
+        application program.   Pictures  also  defines  a  class of CLUE
+        contacts called "views," which allow graphical structures to  be
+        displayed, manipulated, and edited interactively.
+
+        This implementation of Pictures is available to the public at no
+        charge.   Anyone  interested   may  receive   source  code   and
+        documentation  via  anonymous  ftp  from  CSC.TI.COM,  (internet
+        address 10.7.0.46) in pub/clue.tar.Z.  Pictures sources are also
+        included as  part  of  the  public  distribution of the X Window
+        System, Version 11; see directory contrib/tookits/clue/pictures.
+
+
+
+
+RELATED SYSTEMS
+
+        Common Lisp 
+       
+        Pictures is  written  in  portable  Common  Lisp  and  has  been
+        successfully built using  the following  compilers: TI  Explorer
+        (Release 6.0, 6.1) and Harlequin LispWorks 2.0.
+
+
+        CLOS
+
+        This version of Pictures is compatible with TI CLOS (Release 6.0
+        or later).
+
+
+        CLX
+
+        This version of Pictures requires the  CLX R4 or later (see  X11
+        R4 distribution, directory lib/CLX).
+
+
+        CLUE
+
+        This version of Pictures requires CLUE 7.20 or later. 
+
+
+
+
+
+KNOWN BUGS
+        
+1.      Extents  are   not   calculated   correctly   for  polygons  and
+        filled-polygon-edge methods  when  the  line-width is specified,
+        the cap-style  is  :miter  and  one  of  the corners is an acute
+        angle.  Part of the corner is  not include in the extent.   If a
+        cap-style of :rounded or :beveled is used, there is no problem.
+
+2.      Labels with filled backgrounds leave trash behind after a move
+        due to extent calculation flaw. 

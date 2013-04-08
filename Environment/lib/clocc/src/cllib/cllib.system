@@ -1,0 +1,103 @@
+;;; -*- Lisp -*-
+;;;
+;;; CLLIB - a library of useful utilities
+;;;
+;;; $Id: cllib.system,v 1.43 2007/01/03 17:33:43 sds Exp $
+;;; $Source: /cvsroot/clocc/clocc/src/cllib/cllib.system,v $
+;;;
+;;; when adding a file to CLLIB, one has to modify the following:
+;;; 1. cllib.system (defsystem)
+;;; 2. Makefile ($(SOURCES))
+;;; 3. cllib.html (file list)
+
+(let (tbc)                      ; To Be Compiled
+
+(mk:add-registry-location (translate-logical-pathname "clocc:src;port;"))
+(mk:add-registry-location
+ (translate-logical-pathname "clocc:src;tools;metering;"))
+
+(mk:defsystem cllib
+    :source-pathname (translate-logical-pathname "clocc:src;cllib;")
+    ;; :package :cllib
+    :source-extension "lisp"
+    :depends-on (port metering)
+    :components
+    ((:file "animals" :depends-on
+            ("base" "string" "miscprint" "fileio" "closio" "symb"))
+     (:file "autoload" :depends-on ("base" "fileio"))
+     (:file "base")
+     (:file "base64" :depends-on ("base"))
+     (:file "card" :depends-on
+            ("base" "withtype" "closio" "tilsla" "string" "date" "url"))
+     (:file "check" :depends-on ("base" "log" "math"))
+     (:file "clhs" :depends-on
+            ("base" "withtype" "string" "fileio" "log" "html"))
+     (:file "closio" :depends-on ("base"))
+     (:file "csv" :depends-on ("base" "simple" "log"))
+     (:file "cvs" :depends-on ("base" "string" "fileio" "date" "miscprint"))
+     (:file "data" :depends-on ("base" "csv" "math" "gnuplot"))
+     (:file "date" :depends-on
+            ("base" "simple" "string" "sorted" "log" "withtype" #+cmu"closio"))
+     (:file "datedl" :depends-on
+            ("base" "withtype" "date" "laser" "math" "symb"))
+     (:file "doall" :depends-on ("base"))
+     (:file "elisp" :depends-on ("base" "closio" "list"))
+     (:file "fileio" :depends-on ("base" "withtype" "symb" "log" "string"))
+     (:file "fin" :depends-on ("base" "math" "tilsla" "withtype"))
+     (:file "geo" :depends-on
+            ("base" "withtype" "symb" "fileio" "html" "tilsla" "url"))
+     (:file "getopt" :depends-on ("base" "symb"))
+     (:file "gnuplot" :depends-on ("base" "date" "datedl" "math" "stat"))
+     (:file "gq" :depends-on ("base""withtype" "html" "url" "gnuplot"))
+     (:file "h2lisp" :depends-on ("base" "withtype" "html"))
+     (:file "html" :depends-on ("base" "xml" "url"))
+     (:file "htmlgen" :depends-on ("base"))
+     (:file "inspect" :depends-on
+            ("base" "simple" "closio" "url" "string" "htmlgen"))
+     (:file "iter" :depends-on ("base" "simple" "withtype" "log" "math"))
+     (:file "laser" :depends-on ("base" "log"))
+     (:file "lift" :depends-on ("base" "math" "gnuplot"))
+     (:file "list" :depends-on ("base" "simple"))
+     (:file "log" :depends-on ("base" "withtype" "tilsla" "simple"))
+     (:file "math" :depends-on
+            ("base" "simple" "withtype" "fileio" "log" "list"))
+     (:file "matrix" :depends-on ("base" "withtype"))
+     (:file "miscprint" :depends-on ("base" "simple"))
+     (:file "munkres" :depends-on ("base"))
+     (:file "ocaml" :depends-on ("base"))
+     #+clisp (:file "octave" :depends-on ("base"))
+     (:file "prompt" :depends-on ("base"))
+     (:file "rng" :depends-on ("base" "withtype"))
+     (:file "rpm" :depends-on ("base" "url"))
+     (:file "server" :depends-on ("base" "log" "prompt"))
+     (:file "simple" :depends-on ("base"))
+     (:file "sorted" :depends-on ("base" "tilsla" "math"))
+     (:file "stat" :depends-on ("base" "math" "withtype" "matrix"))
+     (:file "string" :depends-on ("base" "withtype"))
+     (:file "symb" :depends-on ("base"))
+     (:file "tests" :depends-on
+            ("base" "string" "date" "url" "rpm" "elisp" "xml" "cvs" "munkres"
+             "matrix" "simple" "iter" "list"))
+     (:file "tilsla" :depends-on ("base" "withtype"))
+     (:file "url" :depends-on ("base" "withtype" "symb" "string" "fileio"
+                               "log" "simple" "tilsla" "date" "base64"))
+     (:file "withtype" :depends-on ("base"))
+     (:file "xml" :depends-on
+            ("base" "string" "withtype" "closio" "log" "fileio" "url")))
+    :initially-do
+    (progn (mk:system-source-size :cllib :all)
+           (mk:system-source-size :cllib :new-source-and-dependents)
+           (setq tbc (mk:files-in-system :cllib :new-source-and-dependents
+                                         :source)))
+    :finally-do
+    (when tbc
+      (in-package :cllib)
+      (when (member "tests" tbc :test #'string= :key #'pathname-name)
+        (funcall (intern "TEST-ALL" :cllib) :what
+                 (mapcar #'pathname-name tbc)))
+      (let ((auto (translate-logical-pathname "clocc:src;cllib;auto.lisp")))
+        (funcall (intern "AUTOLOAD-GENERATE" :cllib)
+                 (mk:files-in-system :cllib) auto)
+        (compile-file auto))))
+
+)                               ; tbc

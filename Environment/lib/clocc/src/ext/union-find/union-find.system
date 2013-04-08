@@ -1,0 +1,26 @@
+;;; -*- Mode: CLtL -*-
+
+;;; union-find.system --
+;;; Simple implementation of the well known UNION-FIND data structure
+;;; (with weighted path compression).
+;;; See file README for more info.
+;;;
+;;; Author: Marco Antoniotti
+;;;
+;;; Copyright (c) 2000 Marco Antoniotti. All rights reserved.
+;;; This software is released under the terms of the GNU Lesser General
+;;; Public License (LGPL, see file COPYRIGHT for details).
+
+(unless (find-package "MAKE")
+  (error "UNION FIND: MK-DEFSYSTEM is required to use the .system file."))
+
+
+(mk:defsystem "CL.UTIL.UNION-FIND"
+    :source-pathname ""
+    :binary-pathname ""
+    :source-extension "lisp"
+    :components ((:file "union-find-pkg")
+		 (:file "union-find"
+			:depends-on ("union-find-pkg"))))
+
+;;; end of file -- union-find.system --

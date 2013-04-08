@@ -1,0 +1,442 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<TITLE>CLUnit - A Unit Test Tool for Common Lisp</TITLE>
+</HEAD>
+<BODY LINK="#0000ff">
+
+<H1>CLUnit - A Unit Test Tool for Common Lisp</H1>
+<H2>F. A. Adrian<br>ancar technology</H2>
+
+<p>Insuring that code runs and continues to run after changes is
+extremely important in developing systems in a timely and effective
+manner.  Unit testing is well known way to ensure that code works
+properly. Unit testing provides functions that are run to verify
+proper operation of the system under test.  The CLUnit package
+provides a unit test environment for Common Lisp Implementations.
+It provides facilities for defining, organizing, and running tests.</P>
+<P>CLUnit is provided under the terms of the LGPL (see
+<A HREF="http://www.opensource.org/licenses/lgpl-license.html)">
+http://www.opensource.org/licenses/lgpl-license.html)</A>.  As such,
+it may be loaded and compiled into a product for general release.
+However, the code is distributed without any warranty (see the text
+of LGPL for all applicable licensing conditions) and the user assumes
+all risk of usage.</P>
+<P>To start using CLUnit, load the file
+<FONT FACE="Courier" SIZE=3>CLUnit.lisp</FONT>:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(load "CLUnit.lisp")</font>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">Dummy error occurred in test "Error test"
+1 test run; 0 tests passed; 1 test failed.
+Dummy error occurred in test "Error test"
+1 test run; 0 tests passed; 1 test failed.
+2 tests run; 2 tests passed; 0 tests failed.
+11 tests run; 11 tests passed; 0 tests failed.
+CLUnit self-test passed.
+</FONT></pre>
+<p>The first thing that CLUnit does is to run a self-test to ensure
+that it is running properly.</p>
+<H2>Basic Testing</H2>
+<P>Tests are defined using the <FONT FACE="Courier" SIZE=3>
+deftest</FONT> macro.  In its simplest form, the macro takes a test
+description and a test function that is invoked when the test is run.
+If the test function returns a non-nil value, the test is assumed to
+have succeeded.  If it throws an error that escapes from the function
+or returns nil, the test is assumed to have failed:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car 1" :test-fn #'(lambda () (eq (car '(a b)) 'a)))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car 1/*UNCATEGORIZED* #x1011B20&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-named-test "Test car 1")</font>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">T
+</font>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</font>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>As we can see, a test can be defined and run by name and all tests
+thus far defined can be run.  The <FONT FACE="Courier" SIZE=3>
+run-all-tests</FONT> function returns three values – a boolean,
+telling us if all tests have succeeded or not, the number of failed
+tests and the number of tests that passed.  If we define a test
+that fails and then <FONT FACE="Courier" SIZE=3>run-all-tests
+</FONT> again:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car 2" :test-fn #'(lambda () (error "A test error")))</font>
+<font FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car 2/*UNCATEGORIZED* #x10AD190&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">A test error occurred in test "Test car 2"
+2 tests run; 1 test passed; 1 test failed.
+NIL
+1
+1
+</FONT></pre>
+<p>In this case, the error is trapped and the run-all-tests function
+returns the appropriate values.</p>
+<P>Let’s redefine the second test for a more graceful failure.
+By defining the test with the same name, the original test is
+replaced:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car 2" :test-fn #'(lambda () nil))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car 2/*UNCATEGORIZED* #x10C85B0&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">Output did not match expected output in test "Test car 2"
+2 tests run; 1 test passed; 1 test failed.
+NIL
+1
+1
+</FONT></pre>
+<p>Again, the error is detected.  Note that, when a test fails, a
+message is printed giving the description of the failed test and
+the reason for failure.  In addition, the <FONT FACE="Courier" SIZE=3>
+failed-tests</FONT> function will return a list of all tests that
+failed:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(failed-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">(#&lt;ORG.ANCAR.CLUNIT::TEST Test car 2/*UNCATEGORIZED* # x10C85B0&gt;)
+</FONT></pre>
+Now let’s get rid of the failing test:
+<pre>
+<FONT FACE="Courier" SIZE=3>(remove-test "Test car 2")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">(#&lt;ORG.ANCAR.CLUNIT::TEST Test car 1/*UNCATEGORIZED* #x1097258&gt;)
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>And we see that the removed test is no longer in the system.</p>
+<P>Finally, we can get rid of all of the tests:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#000080">0 tests run; 0 tests passed; 0 tests failed.
+T
+0
+0
+</FONT></pre>
+<H2>Categorizing Tests</H2>
+<p>Categories are a useful tool to organize sets of tests.  A category for a test is specified by using the <FONT FACE="Courier" SIZE=3>:category</FONT> keyword in the <FONT FACE="Courier" SIZE=3>deftest</FONT> macro and tests from a specific category are run using the <FONT FACE="Courier" SIZE=3>run-category</FONT> function:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car of nil" :category "Test car"
+&#9;:test-fn #'(lambda () (eq (car nil) nil)))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car of nil/Test car #x10F8630&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car of dotted cons" :category "Test car"
+&#9;:test-fn #'(lambda () (eq (car '(a . b)) 'a)))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car of dotted cons/Test car #x110F688&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Another test" :category "General"
+&#9;:test-fn #'(lambda () t))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Another test/General #x11255C0&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-category "Test car")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">2 tests run; 2 tests passed; 0 tests failed.
+T
+0
+2
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-category "General")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">3 tests run; 3 tests passed; 0 tests failed.
+T
+0
+3
+</FONT></pre>
+<p>By default, tests are categorized under the category named *UNCATEGORIZED*.  Let’s clear the tests again:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT></pre>
+<H2>Better Test Specifications</H2>
+<p>All of the work of the tester can be done using only this
+functionality, but sometimes the testing becomes a bit clunky.
+Suppose we had a function returning multiple values:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(defun my-func () (values 1 2 3))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">MY-FUNC
+</FONT>
+<FONT FACE="Courier" SIZE=3>(my-func)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1
+2
+3
+</FONT></pre>
+To test this function, a test would have to be written as follows:
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test my-func"
+&#9;:test-fn #'(lambda () (equal (multiple-value-list (my-func)) '(1 2 3))))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test my-func/*UNCATEGORIZED* #x103EA68&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>In order to handle multiple values more gracefully, this test can be
+written using the <FONT FACE="Courier" SIZE=3>:output-fn</FONT>
+keyword:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test my-func" :test-fn #'my-func :output-fn #'(lambda () (values 1 2 3)))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test my-func/*UNCATEGORIZED* #x1096640&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</font>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</font>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT></pre>
+<p>This feature can also be used for more mundane uses:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car of list" :category "Test car"
+&#9;:test-fn (lambda () (car '(a b))) :output-fn #'(lambda () 'a))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car of list/Test car #x10CA018&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>The expected output function is always a function of zero arguments
+that returns the values that the output of the test function is
+compared against.  The comparison is done by turning each set of
+values into a list using <FONT FACE="Courier" SIZE=3>
+multiple-value-list</FONT> and comparing the list with a comparison
+function.  This comparison function defaults to
+<FONT FACE="Courier" SIZE=3>#’equal</FONT>, but the user can
+specify another comparison function using the
+<FONT FACE="Courier" SIZE=3>:compare-fn</FONT> keyword:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test compare-fn"
+&#9;:test-fn #'(lambda () "abc")
+&#9;:output-form "abc"
+&#9;:compare-fn #'(lambda (rlist1 rlist2)
+&#9;&#9;&#9;&#9;(reduce #'and (mapcar #'string-equal rlist1 rlist2))))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test compare-fn/*UNCATEGORIZED* #xFB5500&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>Note that the comparison function is comparing two lists holding the
+results of the output and test functions.  As such, the comparison
+functions can often be quite hairy.</p>
+
+<P>Rather than specifying the <FONT FACE="Courier" SIZE=3>
+:output-fn</FONT> keyword, one can use the
+<FONT FACE="Courier" SIZE=3>:output-form</FONT> keyword.
+With respect to the test above, the test would change as follows:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car of list" :category "Test car"
+&#9;:test-fn (lambda () (car '(a b))) :output-form 'a)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car of list/Test car #x10E6370&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>If both <FONT FACE="Courier" SIZE=3>:output-fn </FONT>and
+<FONT FACE="Courier" SIZE=3>:output-form</FONT> keywords are
+specified, the <FONT FACE="Courier" SIZE=3>:output-fn</FONT>
+keyword takes precedence.</p>
+
+<P>Analogously, <FONT FACE="Courier" SIZE=3>:input-fn </FONT>
+and/or <FONT FACE="Courier" SIZE=3>:input-form </FONT>functions
+can be specified:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test +"
+&#9;:input-fn #'(lambda () (values 1 2 3))
+&#9;:test-fn #'+
+&#9;:output-form 6)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test +/*UNCATEGORIZED* #x1105888&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>The test function is applied to the multiple values returned
+by the input function.  The <FONT FACE="Courier" SIZE=3>:input-form
+</FONT>keyword returns only one value so the test function, in this
+case, must be unary:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test car"
+&#9;:input-form '(a b)
+&#9;:test-fn #'car
+&#9;:output-form 'a)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test car/*UNCATEGORIZED* #x1121CD0&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT></pre>
+<p>Specifying an incorrect arity in the test function will result
+in an error:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3><P>(deftest "Test cons"
+&#9;:input-form '(a b)
+&#9;:test-fn #'cons
+&#9;:output-form '(a . b))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test cons/*UNCATEGORIZED* #xFC0EB8&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">Wrong number of arguments occurred in test "Test cons"
+1 test run; 0 tests passed; 1 test failed.
+NIL
+1
+0
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test cons"
+&#9;:input-form (values 'a 'b)
+&#9;:test-fn #'cons
+&#9;:output-form '(a . b))</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test cons/*UNCATEGORIZED* #xFDA318&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">1 test run; 1 test passed; 0 tests failed.
+T
+0
+1
+</FONT>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT></pre>
+<p>After a test failure, one may want to run a test outside the error
+trapping code of <FONT FACE="Courier" SIZE=3>run-all-tests</FONT>
+or <FONT FACE="Courier" SIZE=3>run-category</FONT> to debug a
+test failure.  We use the function <FONT FACE="Courier" SIZE=3>
+run-named-test</FONT> to do this:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(run-named-test "Test cons")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">;;; An error occurred in function _WRONG-NUMBER-OF-ARGS-ERROR:
+;;; Error: Wrong number of arguments
+;;; Entering Corman Lisp debug loop. 
+;;; Use :C followed by an option to exit. Type :HELP for help.
+;;; Restart options:
+;;; 1   Abort to top level.
+
+;;; Debugging stuff…</P>
+</FONT></pre>
+<p>The function <FONT FACE="Courier" SIZE=3>run-named-test</FONT>
+also takes an optional &quot;protected mode&quot; flag to allow the
+user to try an individual test:</p>
+<pre>
+<FONT FACE="Courier" SIZE=3>(run-named-test "Test cons" t)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">Wrong number of arguments occurred in test "Test cons"
+(NIL #&lt;Simple-error #x101EDB8&gt;)
+</FONT></pre>
+<p>This form of the <FONT FACE="Courier" SIZE=3>run-named-test</FONT>
+function returns two values, the first telling whether the function
+succeeded, the second giving the error in case of failure.</p>
+<H2>Miscellaneous Features</H2>
+<p>Other miscellaneous functions include <FONT FACE="Courier" SIZE=3>
+list-all-tests</font> and <FONT FACE="Courier" SIZE=3>
+list-categories</font>:</P>
+<pre>
+<FONT FACE="Courier" SIZE=3>(clear-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">NIL
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test 1" :category "Category 1")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test 1/Category 1 #x1037060&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test 1.2" :category "Category 1")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test 1.2/Category 1 #x1048DF0&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "Test 2" :category "Category 2")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST Test 2/Category 2 #x105BB90&gt;
+</FONT>
+<FONT FACE="Courier" SIZE=3>(list-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">("Test 2/Category 2" "Test 1.2/Category 1" "Test 1/Category 1")
+</FONT>
+<FONT FACE="Courier" SIZE=3>(list-tests "Category 1")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">("Test 1.2/Category 1" "Test 1/Category 1")
+</FONT>
+<FONT FACE="Courier" SIZE=3>(list-categories)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">("Category 1" "Category 2")
+</FONT>
+<FONT FACE="Courier" SIZE=3>(run-all-tests)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">3 tests run; 3 tests passed; 0 tests failed.
+T
+0
+3
+</FONT></pre>
+<p>Note the other (somewhat useless) feature demonstrated above – a test
+without a test function specified always succeeds.</p>
+<H2>Tips and Usage Hints</h2>
+There are a few general usage hints that will help you use CLUnit to
+its best advantage:
+<UL>
+<LI>Test names and categories are strings and compared withs
+<FONT FACE="Courier" SIZE=3>string-equal</font> in the CLUnit
+code.  As such, case sensitivity is not necessarily an issue, but
+proper spelling of category and test names (including embedded spaces)
+is.  It may be helpful to define constants for category names:
+<pre>
+<FONT FACE="Courier" SIZE=3>(defconstant +category-name+ "XXX")</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">+CATEGORY-NAME+
+</FONT>
+<FONT FACE="Courier" SIZE=3>(deftest "A test" :category +category-name+)</FONT>
+<FONT FACE="Courier" SIZE=3 COLOR="#7000c0">#&lt;ORG.ANCAR.CLUNIT::TEST A test/XXX #x1093B58&gt;
+</FONT></pre></LI></UL>
+<UL>
+<LI>Use <FONT FACE="Courier" SIZE=3>remove-test</FONT> sparingly.
+If the feature was important enough to test before, it’s probably
+important enough to tests now.  Only in the cases when the
+functionality has been removed is it usually necessary to remove the
+test.  When in doubt, redefine.</LI>
+<LI>Use <FONT FACE="Courier" SIZE=3>run-named-test</FONT> and
+<FONT FACE="Courier" SIZE=3>run-category</FONT> sparingly.
+The more often you run all tests, the more often you insure that you
+haven’t broken anything else with your changes.  Prefer
+<FONT FACE="Courier" SIZE=3>run-all-tests</FONT>.</LI>
+<LI>Use <FONT FACE="Courier" SIZE=3>:input-fn</FONT>,
+<FONT FACE="Courier" SIZE=3>:input-form</FONT>,
+<FONT FACE="Courier" SIZE=3>:output-fn</FONT>,
+and <FONT FACE="Courier" SIZE=3>:output-form</FONT> to keep test
+functions as simple as possible.</LI></UL>
+<H2>Final Word</H2>
+I hope you enjoy CLUnit and that it helps you to deliver error-free
+code in a timely manner.  If you have any suggestions for improvements
+or changes, please contact me at <A HREF="mailto:fadrian@qwest.net">
+<FONT FACE="Courier" SIZE=3>fadrian@qwest.net</FONT></A>.
+</BODY>
+</HTML>

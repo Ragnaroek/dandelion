@@ -1,0 +1,253 @@
+;;; -*- Mode: lisp -*-
+;;;
+;;; This defsystem converts the FISHPACK Fortran routines
+;;; to Lisp and compiling the result.
+;;;
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+(mk:defsystem fishpack
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :components
+  ((:file "pimach")
+   (:file "merge")
+   (:file "cosgen"
+	  :depends-on ("pimach"))
+   (:file "genbun"
+	  :depends-on ("pimach" "poisd2" "poisp2" "poisn2"))
+   (:file "tri3")
+   (:file "trix")
+   (:file "poisd2"
+	  :depends-on ("cosgen" "trix" "merge"))
+   (:file "poisn2"
+	  :depends-on ("cosgen" "trix" "tri3" "merge"))
+   (:file "poisp2"
+	  :depends-on ("cosgen" "trix" "tri3" "merge"
+				"poisd2" "poisn2"))
+   ;; standard Helmholtz 5-point approximation in Cartesian
+   ;; coordinates using a centered finite difference grid
+   (:file "hwscrt"
+	  :depends-on ("trix" "tri3" "pimach"))
+
+   ;; Helmholtz 5-point approximation in polar coordinates using a
+   ;; centered finite difference grid
+   (:file "hwsplr"
+	  :depends-on ("genbun"))
+
+   ;; modified Helmholtz 5-point approximation in cylindrical
+   ;; coordinates using a centered finite difference grid
+   (:file "hwscyl"
+	  :depends-on ("genbun"))
+
+   ;; Helmholtz 5-point approximation in spherical coordinates and on
+   ;; the surface of the unit sphere using a centered fin
+   (:file "hwsss1")
+   (:file "hwsssp"
+	  :depends-on ("hwsss1"))
+
+   ;; modified Helmholtz 5-point approximation in spherical coordinate
+   ;; assuming axis symmetry and using a centered finite difference
+   ;; grid
+   (:file "hwscs1"
+	  :depends-on ("pimach" "epmach" "blktri"))
+   (:file "epmach"
+	  :compiler-options (:declare-common t)
+	  :depends-on ("store"))
+   
+   (:file "hwscsp"
+	  :depends-on ("hwscs1" "epmach"))
+   (:file "indxa"
+	  :compiler-options (:declare-common t))
+   (:file "indxb")
+   (:file "blktr1"
+	  :depends-on ("indxa" "indxb" "indxc"))
+   (:file "blktri"
+	  :depends-on ("compb" "blktr1")
+	  :compiler-options (:declare-common t))
+   (:file "bsrh")
+   (:file "compb"
+	  :depends-on ("tevls" "ppadd" "indxb"))
+   (:file "cprod")
+   (:file "cprodp")
+   (:file "indxc")
+   (:file "ppadd"
+	  :depends-on ("psgf" "bsrh" "ppsgf"))
+   (:file "ppsgf")
+   (:file "ppspf")
+   (:file "prod")
+   (:file "prodp")
+   (:file "psgf")
+   (:file "store")
+   (:file "tevls")
+
+   (:file "hstcrt"
+	  :depends-on ("poistg"))
+   (:file "poistg"
+	  :depends-on ("postg2"))
+   (:file "postg2")
+
+   (:file "hstplr"
+	  :depends-on ("poistg" "genbun"))
+
+   (:file "hstcyl"
+	  :depends-on ("poistg" "genbun"))
+
+   (:file "hstssp"
+	  :depends-on ("poistg" "genbun"))
+
+   (:file "hstcsp"
+	  :depends-on ("hstcs1"))
+   (:file "hstcs1"
+	  :depends-on ("blktri"))
+
+   ;; This package requires FFTPACK, which f2cl cannot convert because
+   ;; of type punning.
+   #||
+   (:file "hw3crt"
+	  :depends-on ("pois3d"))
+   (:file "pois3d"
+	  :depends-on ("pos3d1"))
+   (:file "pos3d1"
+	  :depends-on ("sinti" "costi" "rffti" "sinqi" "cosqi"
+		       "rfftf" "rfftb" "sint" "sinqf" "sinqb"
+		       "cost" "cosqf" "cosqb" "trid"))
+   (:file "trid")
+   
+   ||#
+
+   (:file "sepx4"
+    :depends-on ("chkpr4" "speli4"))
+   (:file "chkpr4"
+	  :depends-on ("cofx"))
+   (:file "chksn4"
+	  :depends-on ("cofx"))
+   (:file "defe4"
+	  :depends-on ("cofx" "dx4" "dy4"))
+   (:file "dx4"
+	  :compiler-options (:declare-common t))
+   (:file "dy4")
+   (:file "minso4")
+   (:file "ortho4")
+   (:file "speli4"
+	  :depends-on ("cofx" "chksn4" "tris4" "ortho4" "genbun" "minso4" "defe4"))
+   (:file "tris4")
+   (:file "cofx")
+   ))
+
+(mk:defsystem tst-fishpack-hwscrt
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthwscrt")))
+
+(mk:defsystem tst-fishpack-hwscyl
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthwscyl")))
+
+(mk:defsystem tst-fishpack-hwsplr
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthwsplr")))
+
+(mk:defsystem tst-fishpack-hwsssp
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthwsssp")))
+
+(mk:defsystem tst-fishpack-hwscsp
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthwscsp")))
+
+(mk:defsystem tst-fishpack-hstcrt
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthstcrt")))
+
+(mk:defsystem tst-fishpack-hstplr
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthstplr")))
+
+(mk:defsystem tst-fishpack-hstcyl
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthstcyl")))
+
+(mk:defsystem tst-fishpack-hstssp
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthstssp")))
+
+(mk:defsystem tst-fishpack-hstcsp
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthstcsp")))
+
+;; WARNING: This test doesn't work because it requires FFTPACK.  But
+;; FFTPACK can't be translated by f2cl because it plays games like
+;; passing a real array to a routine that expects an integer array.
+(mk:defsystem tst-fishpack-hw3crt
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tsthw3crt")))
+
+(mk:defsystem tst-fishpack-sepx4
+  :source-pathname (merge-pathnames (make-pathname :directory '(:relative "fishpack" "ex"))
+				    (make-pathname :directory (pathname-directory *load-pathname*)))
+  :source-extension "f"
+  :language :f2cl
+  :depends-on ("fishpack")
+  :components
+  ((:file "tstsepx4" :depends-on ("cofx4"))
+   (:file "cofx4")
+   ))

@@ -1,0 +1,4911 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pictures Reference Manual
+
+
+
+
+PICTURES	1
+TYPES	3
+GRAPHIC CLASS	5
+TRANSFORMS	27
+UTILITIES	31
+SCENES	33
+CIRCLE CLASS	39
+POLYPOINT	47
+POLYLINE	55
+POLYGON	57
+BSPLINE	59
+RECTANGLE	61
+ELLIPSE	65
+GRAPHIC-IMAGE	69
+LABEL	73
+FONT FAMILY	79
+LINE	83
+GRAPHIC STATE	85
+VIEW	95
+VIEW ATTRIBUTE METHODS	96
+VIEW GRAPHIC METHODS	99
+VIEW ACTION METHODS	102
+
+
+
+
+
+
+PICTURES 
+
+Pictures is a Lisp based graphic  system that supports the SLE  environment.
+It is built with Common Lisp, Common Lisp Object System (CLOS), Common  Lisp
+User Environment (CLUE)  and Common  Lisp X-windows  (CLX).  Its  goal to to
+provide a set of  tools that assist  the programmer in  creating interactive
+graphical interfaces.
+
+The graphic system is object oriented.  It uses CLOS to create an  extensive
+hierarchy of object classes.  An understanding of CLOS will assist the  user
+in understanding the structure of the object system.
+
+There are two base classes in the Pictures object system: view and  graphic.
+A view class is responisble for the  display of the graphics on the  screen.
+The graphic class stores the geometry and display information.  The  graphic
+class information is display independent and can be modified without  a view
+class.
+
+
+Graphic Class
+
+All of the graphic object's geometry data is display independent.  The  base
+graphic class  named  graphic  and  the  rest  of  the  graphic  classes are
+subclasses of this  class.  Listed  in Figure  1 are  the predefined classes
+built on the the graphic class.   Indentation is used to indicate  the class
+hierarchy.   Figure  2  gives   a  pictorial  representation   of  the class
+hierarchy.
+
+
+
+Figure 1
+
+	scene
+
+	circle
+		filled-circle 
+			filled-circle-edge
+
+	graphic-image
+
+	label
+
+	line
+
+	polypoint
+		polyline
+		polygon
+			rectangle
+				ellipse
+				filled-rectangle
+					filled-ellipse
+					filled-rectangle-edge
+						filled-ellipse-edge  
+				rounded-rectangle
+					filled-rounded-rectangle
+						filled-rounded-rectangle-edge
+			filled-polygon
+				filled-polygon-edge
+		bspline
+			closed-bspline
+				filled-bspline
+
+
+
+Figure 2
+
+                                                 
+
+
+The scene graphic  class is  unique because  it does  not have any geometric
+information.  The  scene  is  a  sequence  of  graphic  objects which can be
+manipulated as a group.  Scenes are  used to create a display  hierarchy for
+the view because a scene can contain another scene or scenes.
+
+
+View Class
+
+The base display class  is named view.   The view is  derived from the  CLUE
+contact class.  A  view represents  a "viewport"  onto the  world coordinate
+system of a specified graphic object.  A view is the basis for all user  and
+application operations for displaying and interacting with graphic  objects,
+such as  panning,  zooming,  selecting,  editing,  refreshing,  etc.  A view
+allows a  user  to  select  one  or  more  graphic objects, to modify object
+geometry by  direct  manipulation,  and  to  edit application-defined object
+properties.
+
+
+
+TYPES
+
+The following a list of types that are used in used in this reference manual
+that are not defined by the Common Lisp standard.  Most of them are  defined
+in the XLIB package (available with CLX) which is used by Pictures.
+
+boolean '(or nil (not nil))
+
+boolean defines a type wich is all inclusive.  It is used for variables that
+can take on a true (non-nil) or false (nil) value.
+
+boole-constant '(member value*)
+
+boole-constant defines a type that is a set of values associated with the 16
+boolean operation-code constants for the  Common Lisp language.  It  is used
+for the  set  of  allowed  source  destination  combination  functions  in a
+graphics state.
+
+value - One of the following:
+
+boole-1	        boole-c1	boole-nand	boole-xor
+boole-2	        boole-c2	boole-nor
+boole-and	boole-clr	boole-orc1
+boole-andc1	boole-eqv	boole-orc2
+boole-andc1	boole-ior	boole-set
+
+
+
+event-specification
+
+An event  specification  is  a  notation  for  describing a specific type of
+event.  Syntactically, it is one of the following:
+
+event-key - A keyword symbol  that is the name  for an event type  (that is,
+the value of the key  slot of an event).   This form of event  specification
+matches any event that has this key.
+
+character -  A  Common  Lisp  character  object.   This  event specification
+matches any :key-press event with this object as its character.
+
+list - A list of the form  (keyword value).  Certain list forms are  already
+defined by CLUE and  are described in  the SLE X  Window System Programmer's
+Reference.
+
+
+extent-rect (structure  (xmin  number)  (ymin  number)  (xmax  number) (ymax
+number))
+
+This structure is used to store the bounds of an extent rectangle.
+
+
+graphic
+
+The base class from which all graphic objects are derived.
+
+
+
+grabber '( graphic )
+
+A class devired from  graphic which translates  events used for  interactive
+manipulation of graphics in a view..
+
+
+
+image '
+
+Device independent two dimensional arrays of pixel data.
+
+
+ocoord '( number )
+
+A type to decribe the  object coordinates of a  graphic.  Object coordinates
+are calculated by  applying the  transform of  the graphic  to the vertices.
+See section on wcoord.
+
+
+pixel '(unsigned-byte 32)
+
+An unsigned integer value that  is a maximum of  32 bit long.  This  gives a
+pixel type of a value from 0 to 4,294,967,295.  Useful values are  dependent
+on the class of colormap
+used.
+
+
+point-seq '(repeat-seq (number) (number))
+
+The point-seq type is used to define sequences of (x, y) pairs of points.
+
+
+repeat-seq 'sequence
+
+A subtype used to define repeating sequences.
+
+
+stringable '(or string symbol)
+
+Used for naming  something.  This  type can  either be  a string or a symbol
+whose symbol-name is used  as the string  containing the name.   The case of
+the characters in the string is ignored when comparing stringables.
+
+
+view '( clue:contact )
+
+The base class used for display graphic objects.
+
+
+wcoord '( number )
+
+A type to decribe a fully transformed object coordinates of a  graphic.  The
+graphic's transform  and  the  transforms  of  the graphic parents have been
+applied to the object coordinate to create a world coordinate (wcoord).  See
+section on ocoord.
+
+
+GRAPHIC CLASS
+
+In general, a graphic object is  simply a data representation which  may not
+necessarily be displayed.   All Pictures  graphic classes  are subclasses of
+the graphic class shown in Figure G- 1.
+
+Figure G-1
+
+                                                 
+
+
+The graphic class represents exactly  those features common to  all graphics
+objects in  Pictures.   Graphics  are  displayed  on  a view.  The view is a
+clue-contact.  The graphics  can be  drawn directly  to the  view using  the
+draw-graphic method.  Graphics displayed in this manner are not attached  to
+the view  and  will  be  erased  when  the  view  is  refreshed.   This is a
+convenient way to create transiet graphics.  A graphic can be attached to  a
+view by making it  the view-graphic of  the view or  by inserting it  into a
+scene that is the view-graphic of the view.
+
+
+In Figure  G-2  an  example  is  given  of  how to create a polygon graphic,
+rectangle graphic and line graphic.  The graphic methods in the rest of this
+section will have code examples that  will use this example as  the starting
+point.  When ever the  draw-graphic method is  called, a screen  dump of the
+view is shown.
+
+Figure G-2
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<RECTANGLE 53052061>
+
+(SETF *line* (make-line 30 30 70 30))
+#<LINE 55605700>
+
+(SETF *polygon* (make-polygon '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYGON 70766553>
+(DESCRIBE *polygon*)
+#<POLYGON 62366141>, an object of class #<STANDARD-CLASS POLYGON>,
+ has slot values of:
+
+	VERTICES:	   #<ART-Q-13 62366156>
+	EXTENT:		   #S(EXTENT-RECT :XMIN NIL :YMIN NIL :XMAX NIL 
+						:YMAX NIL)
+	EXTENT-VALID-P:	   NIL
+	GSTATE:		   NIL
+	PARENT:		   NIL
+	PLIST:		   NIL
+	SENSITIVITY:	   :EDITABLE
+	TRANSFORM:	   NIL
+	VIEWS:		   NIL
+
+(PROGN
+  (SETF clue:*default-host* "freyr")
+  (setf *view* (make-view  :parent
+	(make-contact
+	   'top-level-shell
+	   :parent (clue:open-contact-display 'hello-world  
+		      :display 0 :default-screen 1)
+	   :state :mapped
+	   :wm-title "View"
+	   :x 30
+	   :y 30
+	   :width 100
+	   :height 100)
+	   :width 100
+	  :height 100
+	  ))
+	      (SETF (contact-background *view*) (screen-white-pixel 
+               (contact-screen *view*)))
+  (process-next-event (contact-display *view*))
+  (SETF (display-after-function (contact-display *view*)) #'display-
+force-output)
+  (draw-graphic *rectangle* *view*)
+  (draw-graphic *polygon* *view*))
+
+               
+
+
+GRAPHIC METHODS
+
+
+draw-graphic (graphic graphic) view &optional min-x min-y width height
+
+	view -Type view min-x, min-y, width, height - Type number
+
+Draw the graphic  object in  the given  view.  If  min-x, min-y,  width, and
+height are given, then only  parts of the object  that lie within the  given
+rectangle need to be drawn.
+
+draw-graphic-clipped (graphic graphic) view min-x min-y width height
+
+	view -Type view.  min-x, min-y, width, height - Type number
+
+Draw the graphic in the view with the clipping rectangle.
+
+
+graphic-extent (graphic graphic)
+
+Returns: extent-rectangle -Type extent-rect or null.
+
+Return the  extent-rectangle  for  the  graphic  in object coordinates.  The
+extent-rectangle is  an  extent-rect  that  stores  the  lower  left  object
+coordinate and  upper  right  object  coordinate  of  the smallest enclosing
+rectangle.  To obtain  the extent-rectangle  in world  coordinates, use  the
+world-extent method.
+
+(graphic-extent *polygon*)
+
+#S(EXTENT-RECT :XMIN 10 :YMIN 10 :XMAX 50 :YMAX 50)
+
+
+
+world-extent (graphic graphic) &optional result-extent
+
+	result-extent - Type extent-rect
+
+	Returns: extent - Type extent-rect or null
+
+Returns the extent of the given graphic in world coordinates.  The extent is
+placed in result-extent  if provided,  otherwise a  new extent  rectangle is
+returned.  A nil value means that the extent is undefined.
+
+
+graphic-combined-world-extents graphic &rest graphics
+
+	graphic - Type graphic
+
+	Returns: extent - Type extent-rect
+
+Returns the combined extents of the given graphics in world coordinates..
+
+
+graphic-contains-p (graphic graphic) x y &optional (arpeture 1)
+
+	x, y - Type wcoord arpeture - Type number 
+Returns: 
+	contains-p - Type boolean
+
+Determines whether the given coordinates lie on the given graphic.  Arpeture
+is used to increase the size of the picking area for some graphics
+
+(graphic-contains-p *polygon* 10 10)
+T
+(graphic-contains-p *polygon* 14 14)
+NIL
+(graphic-contains-p *rectangle* 60 60)
+T
+
+graphic-intersects-p (graphic graphic) min-x min-y width height
+
+	min-x, min-y, width, height - Type number
+
+Returns:
+	intersects-p - Type boolean
+
+If the given graphic  intersects the rectangle  given in world  coordinates,
+then return true, otherwise, return nil.
+
+(graphic-intersects-p *polygon* 30 40 35 55)
+T
+
+
+graphic-within-p (graphic graphic)  min-x min-y width height
+
+	min-x, min-y, width, height - Type number
+
+Returns:
+	intersects-p - Type boolean
+
+If the given  graphic lies  completely within  the rectangle  given in world
+coordinates, then return true, otherwise, return nil.
+
+(graphic-within-p *polygon* 0 0 100 100)
+T
+(graphic-within-p *polygon* 30 40 35 55)
+NIL
+
+
+graphic-fixed-point (graphic graphic) fixed-point &optional world-coordinate
+
+fixed - Type (member :southwest, :west, :northwest, :south, :center, :north,
+	:southeast, :east or :northeast)
+
+Returns:
+	x, y - Type ocoord or wcoord
+
+Returns the object coordinates or world coordinates if world-coordinate is t
+at the  given  fixed-point  on  the  graphic  extent.   The fixed-point is a
+location on the extent  of the graphic.   Show in the  figure below are  the
+different locations  on  the  extent  described  by the rectangle drawn with
+dashed segments.
+
+
+                          
+
+(graphic-fixed-point *polygon* :east)
+50
+30.0
+
+
+graphic-view (graphic graphic) 
+
+Returns:
+	view - Type view
+
+Returns or (with setf) changes the first view associated with the graphic.
+
+
+graphic-views (graphic graphic) 
+
+Returns:
+	views - Type list of view
+
+Returns or (with setf) changes the  views associated with the graphic.
+
+
+graphic-damage (graphic graphic) 
+
+Records graphic as a damaged region in each view to which it is attached.
+
+
+repair-graphic (graphic graphic) 
+
+Invokes repair-view for all views to which the graphic is attached.
+
+
+graphic-parent (graphic graphic) 
+
+Returns:
+	graphic-parent - Type scene
+
+Returns or (with setf) changes the parent of the graphic .  If a graphic  is
+inserted into a scene, the scene becomes the graphic-parent.  (See the scene
+class description for more information.)
+
+
+graphic-plist (graphic graphic) 
+
+Returns:
+	plist - Type list
+
+Returns a list of properties for the given graphic.
+
+
+Graphic State
+
+
+graphic-gstate (graphic graphic) 
+
+Returns:
+	gstate - Type gstate
+
+Returns or (with setf) changes the gstate of the given graphic .  The gstate
+controls visual attributes of the graphic.  See the methods that follow  for
+the attributes that can be set.  Also refer to the section on Graphics State
+for more information about this class.
+
+
+gstate-foreground (graphic graphic) 
+
+Returns:
+	foreground - Type  symbol, pixel, stringable or null
+
+Returns or  (with  setf)  changes  the  foreground value associated with the
+graphic gstate.  This  specifies the  color that  will be  displayed when  a
+graphic is drawn on the screen.  The type pixel points to a position in  the
+color map.  Also refer to the section on Graphics State for more information
+about gstate-foreground.
+
+(SETF (gstate-foreground *polygon*) 
+      (screen-white-pixel (contact-screen *view*)))
+0
+(draw-graphic *polygon* *view*)
+NIL
+               
+
+
+gstate-line-style (graphic graphic) 
+
+Returns:
+	style  - Type (member :solid :dash :double-dash) or null
+
+Returns or  (with  setf)  changes  the  line-style value associated with the
+graphic gstate.   Also  refer  to  the  section  on  Graphics State for more
+information about gstate-line-style.
+
+(SETF (gstate-line-style *polygon*) :dash)
+:DASH
+.
+gstate-dashes (graphic graphic) 
+
+Returns:
+        keyword - :DASHES 
+	dashes - Type card8, sequence or null
+
+Returns or (with setf)  changes the dash  value associated with  the graphic
+gstate.  This sequence  determines the  pattern of  the dashes  for a dashed
+line.  Also refer  to the  section on  Graphics State  for more  information
+about gstate-dashes.
+
+(graphic-reset *polygon*)
+T
+(SETF (gstate-dashes *polygon*) '(2 4))
+(2 4)
+(draw-graphic *polygon* *view*)
+NIL
+
+              
+
+
+gstate-function (graphic graphic) 
+
+Returns:
+function - Type boole-constant or null
+
+Returns  or  (with  setf)   changes  the  boolean-constant   function  value
+associated with the graphic  gstate.  The function  detemines how pixels  on
+the screen are displayed when one pixel  is drawn on another.  In the  table
+below the results are given for each function with S being the source  pixel
+and D being the  destination pixel.  Also  refer to the  section on Graphics
+State for more information about gstate-function.
+
+Symbol	Result
+
+boole-1	S
+boole-2	D
+boole-andc1	(logandc1 S D)
+boole-andc2	(logandc2 S D)
+boole-and	(logand S D)
+boole-c1	(lognot S)
+boole-c2	(lognot D)
+boole-clr	0
+boole-eqv	(logeqv S D)
+boole-ior	(logior S D)
+boole-nand	(lognand S D)
+boole-nor	(lognor S D)
+boole-orc1	(logorc1 S D)
+boole-orc2	(logorc2 S D)
+boole-set	1
+boole-xor	(logxor S D)
+
+The following code is a demonstration  of boole-xor when an object  is drawn
+sucessive times.
+
+(SETF (gstate-function *polygon*) boole-xor)
+6
+(draw-graphic *polygon* *view*)
+NIL
+
+               
+
+(draw-graphic *polygon* *view*)
+NIL
+
+              
+
+
+gstate-line-width (graphic graphic) 
+
+Returns:
+	line-width  - Type number or null
+
+Returns or  (with  setf)  changes  the  line-width value associated with the
+graphic gstate.  The line-width is in world-coordinate units.  Also refer to
+the section on Graphics State for more information about gstate-line-width.
+
+(graphic-reset *polygon*)
+T
+(SETF (gstate-line-width *polygon*) 8)
+4
+(draw-graphic *polygon* *view*)
+NIL
+
+              
+
+gstate-cap-style (graphic graphic) 
+
+Returns:
+	style  - Type (member :not-last :butt :round :projecting) or null
+
+Returns or  (with  setf)  changes  the  cap-style  value associated with the
+graphic gstate.  The cap style  determines how the end  of a line is  drawn.
+Also refer  to  the  section  on  Graphics  State for more information about
+gstate-cap-style.
+
+(view-refresh *view*)
+NIL
+(SETF (gstate-line-width *line*) 8)
+8
+(SETF (gstate-cap-style *line*) :round)
+:round
+(draw-graphic *line* *view*)
+NIL
+               
+(view-refresh *view*)
+NIL
+(SETF (gstate-cap-style *line*) :butt)
+:BUTT
+(draw-graphic *line* *view*)
+NIL
+               
+
+
+gstate-join-style (graphic graphic) 
+
+Returns:
+	style  - Type (member :miter :round :bevel) or null
+
+Returns or  (with  setf)  changes  the  join-style value associated with the
+graphic gstate.   The  join  style  defines  how  two  lines  will be joined
+together.  Also refer to the section on Graphics State for more  information
+about gstate-joinstyle.
+
+(SETF (gstate-line-width *polygon*) 6)
+6
+(SETF (gstate-join-style *polygon*) :round)
+:ROUND
+(view-refresh *view*)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+(SETF (gstate-join-style *polygon*) :bevel)
+:BEVEL
+(view-refresh *view*)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+
+
+gstate-fill-style (graphic graphic) 
+
+Returns:
+	style  - Type (member :solid :tiled :opaque-stippled :stippled) or null
+
+Returns or  (with  setf)  changes  the  fill-style value associated with the
+graphic gstate.  The  fill style  will determine  the color  or pattern that
+will be drawn with a filled graphic.  Also refer to the section on  Graphics
+State for more information about fill-style.
+
+(SETF (gstate-fill-style *rectangle*) :tiled)
+:TILED
+
+
+gstate-tile (graphic graphic) 
+
+Returns:
+	tile  - Type symbol, image or null
+
+Returns or (with setf)  changes the tile  value associated with  the graphic
+gstate.  A image may be chosen to use as a pattern when a filled graphic  is
+drawn.  Also refer  to the  section on  Graphics State  for more information
+about gstate-tile.
+
+(SETF (gstate-tile *rectangle*) 25%gray)
+#S(IMAGE-Z :WIDTH 4 :HEIGHT 4 :PLIST (:NAME 25%GRAY)    
+           :PIXARRAY #<ART-1B-4-4 41230330>)
+(SETF (gstate-fill-style *rectangle*) :tiled)
+:TILED
+(draw-graphic *rectangle* *view*)
+NIL 
+               
+
+
+gstate-stipple (graphic graphic) 
+
+Returns:
+	stipple  - Type symbol, image  or null
+
+Returns or (with setf) changes the stipple value associated with the graphic
+gstate A stipple is a bitmap  that has a depth of  one .  It can be  used to
+create a foreground  or background  pattern.  Also  refer to  the section on
+Graphics State for more information about gstate-stipple.
+
+(view-refresh *view*)
+NIL
+(SETF (gstate-stipple *rectangle*) 50%gray)
+#S(IMAGE-Z :WIDTH 2 :HEIGHT 2 :PLIST (:NAME 50%GRAY) 
+         :PIXARRAY #<ART-1B-2-2 24454716>)
+(SETF (gstate-fill-style *rectangle*) :stippled)
+:STIPPLED
+(draw-graphic *rectangle* *view*)
+NIL
+
+              
+
+
+gstate-fill-rule (graphic graphic) 
+
+Returns:
+	rule  - Type (member :even-odd :winding) or null
+
+Returns or  (with  setf)  changes  the  fill-rule  value associated with the
+graphic gstate.  The fill rule is used to determine how a non-convex  filled
+polygon will be  filled.  Also  refer to  the section  on Graphics State for
+more information about gstate-fill-rule.
+
+
+gstate-background (graphic graphic) 
+
+Returns:
+	background  - Type symbol, pixel stringable or null
+
+Returns or  (with  setf)  changes  the  background value associated with the
+graphic gstate.  This  specifies the  color that  will be  displayed when no
+graphic is  being  displayed  on  the  screen.   It  is  used  with tiles or
+stipples.  The type pixel points to a position in the color map.  Also refer
+to  the  section  on  Graphics  State  for  more  information  about gstate-
+background.
+
+(view-refresh *view*)
+NIL
+(SETF (gstate-stipple *rectangle*) 50%gray)
+#S(IMAGE-Z :WIDTH 2 :HEIGHT 2 :PLIST (:NAME 50%GRAY)
+           :PIXARRAY #<ART-1B-2-2 24454716>)
+(SETF (gstate-fill-style *rectangle*) :stippled)
+:STIPPLED
+(draw-graphic *rectangle* *view*)
+NIL
+              
+
+(view-refresh *view*)
+NIL
+(SETF (gstate-background *rectangle* ) 
+      (screen-black-pixel (contact-screen *view*)))
+1
+(draw-graphic *rectangle* *view*)
+NIL
+               
+
+
+
+gstate-value (graphic graphic) keyword 
+
+Returns:
+	value - Type keyword  and for (with setf) a type list of one keyword, 
+	attribute pair.
+
+Returns the value associated with the keyword in the gstate of graphic.  The
+section on Graphics State gives the acceptable keyword, attribute pairs.
+
+(SETF (gstate-value :foreground) 3)
+3
+(gstate-value *rectangle* :foreground)
+3
+
+
+(setf gstate-value) attribute (graphic graphic) keyword
+
+	keyword - Type (member foreground background function line-width 
+		cap-style join-style fill-style fill-rule tile stipple dashes)
+	attibute - Type depends on the keyword.
+
+Returns:
+	value - Type depends on the keyword.
+
+Changes the value associated  with the keyword  in gstate.  See  the list of
+keywords and their  attributes under  make-gstate.  This  function should be
+used with caution because no type checking is performed.
+
+(SETF (gstate-value *rectangle* :foreground) 3)
+3
+
+
+graphic-combined-gstate (graphic graphic) 
+
+Returns:
+	gstate - A gstate
+
+Return the fully  combined gstate  for the  given graphic  (See the Graphics
+State section for more  information about gstate.   The method is  used when
+writing draw-graphic methods.
+
+Graphic objects can  be inserted  into a  scene.  If  the scene  the graphic
+object is  a  member  of  has  graphic-gstate, this graphic-gstate will take
+precedence  over  the   graphic-gstate  of   the  graphic   object.   If   a
+graphic-gstate attribute is not defined  for the scene, the  graphic- gstate
+of the graphic object will be used.  Recently combined gstates maybe cached.
+This cache reflects  display hierarchy  of the  graphic.  The  gstate of the
+root scene is at the  "bottom" of the cache  and the combined gstate  of the
+graphic is at the  top of the  cache.  Therefore repeated  references to the
+same graphic do  not have  to recalculate  the combined  gstate and are very
+fast.  Graphics  at  the  same  level  as  the  graphics  only  require  one
+calculation to get the combined gstate, making depth first scene  transverse
+very fast.
+
+
+
+
+Graphic Transforms
+
+
+graphic-transform (graphic graphic) 
+
+Returns:
+	transform - Type transform
+
+Returns or (with setf) changes the transform associated with the graphic.  A
+nil transform represents the common case of the identity transform.
+
+(graphic-transform *rectangle*)
+NIL
+(SETF (graphic-transform *rectangle*) (make-transform))
+#<TRANSFORM 14337015>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+|  0.00    0.00    1.00|
++-                    -+
+(graphic-transform *rectangle*)
+#<TRANSFORM 14337015>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+|  0.00    0.00    1.00|
++-                    -+
+
+
+move-transform (graphic graphic) delta-x delta-y 
+
+	delta-x, delta-y  - Type ocoord
+
+Returns:
+	transform - Type transform
+
+Translate the graphic  by the  given distances.   The translation  occurs by
+adding the delta-x and delta-y values to the graphic transform matrix.  This
+has the  visual  effect  of  moving  the  graphic  delta-x, delta y from its
+previous position.  The new transform is returned.
+
+(view-refresh *view*)
+NIL
+(graphic-transform *polygon*)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+(graphic-transform *polygon*)
+NIL
+(move-transform *polygon* 30 10)
+#<TRANSFORM 75157170>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+| 30.00   10.00    1.00|
++-                    -+
+(graphic-transform *polygon*)
+#<TRANSFORM 75157170>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+| 30.00   10.00    1.00|
++-                    -+
+(draw-graphic *polygon* *view*)
+NIL
+               
+
+rotate-transform (graphic graphic) angle &optional (fixed-x 0) (fixed-y 0))
+
+	angle, fixed-x, fixed-y - Type wcoord.
+
+Returns:
+	transform - Type transform
+
+Rotate the graphic by  the given angle  (in radians) around  the given fixed
+point.  Rotation allows  the programmers  to change  the display  angle of a
+graphic .  To rotate the graphic about a point on the graphic-extent use the
+graphic-fixed-point method with  world- coordinate  set to  true to  get the
+world coodinate of the point.
+
+(SETF (graphic-transform *polygon*) nil)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+
+(MULTIPLE-VALUE-BIND (x y) 
+  (graphic-fixed-point *polygon* :southwest t)
+  (rotate-transform *polygon*  (radians 45) x y))
+#<TRANSFORM -76510254>
++-                    -+
+|  0.87    0.50    0.00|
+| -0.50    0.87    0.00|
+|  6.34   -3.66    1.00|
++-                    -+
+(graphic-transform *polygon*)
+#<TRANSFORM -76510254>
++-                    -+
+|  0.87    0.50    0.00|
+| -0.50    0.87    0.00|
+|  6.34   -3.66    1.00|
++-                    -+
+(draw-graphic *polygon* *view*)
+NIL
+              
+(SETF (graphic-transform *polygon*) nil)
+NIL
+(view-refresh *view*)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+(rotate-transform *polygon*  (radians 30))
+#<TRANSFORM -76416773>
++-                    -+
+|  0.87    0.50    0.00|
+| -0.50    0.87    0.00|
+|  0.00    0.00    1.00|
++-                    -+
+(draw-graphic *polygon* *view*)
+NIL
+               
+
+
+scale-transform (graphic graphic) scale-x scale-y &optional 
+				  (fixed-x 0) (fixed-y 0))
+
+	scale-x, scale-y, Type ocoord.
+	fixed-x, fixed-y - Type wcoord
+
+Returns:
+	transform - Type transfor˜“m
+
+Scale the graphic by the given  scale factors around the given  fixed point.
+Scaling modifies the scale portion of  the graphic transform.  To scale  the
+graphic about  a  point  on  the  graphic-extent use the graphic-fixed-point
+method with world-coordinate set to true  to get the world coodinate  of the
+point.
+
+(SETF (graphic-transform *polygon*) nil)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+(scale-transform *polygon* 1.5 2)
+#<TRANSFORM -76636740>
++-                    -+
+|  1.50    0.00    0.00|
+|  0.00    2.00    0.00|
+|  0.00    0.00    1.00|
++-                    -+
+(draw-graphic *polygon* *view*)
+NIL
+               
+(SETF (graphic-transform *polygon*) nil)
+NIL
+(view-refresh *view*)
+NIL
+(SETF (graphic-transform *polygon*) nil)
+NIL
+(draw-graphic *polygon* *view*)
+NIL
+               
+(MULTIPLE-VALUE-BIND (x y) 
+  (graphic-fixed-point *polygon* :southwest t)
+  (scale-transform *polygon* 1.5 2 x y))
+#<TRANSFORM 61140524>
++-                    -+
+|  1.50    0.00    0.00|
+|  0.00    2.00    0.00|
+| -5.00  -10.00    1.00|
++-                    -+
+(draw-graphic *polygon* *view*)
+               
+
+
+normalize-graphic (graphic graphic) 
+
+Normalize the graphic by applying its transform to its geometry, changing it
+accordingly, and then setting its transform to nil (the identity transform).
+
+(print-seq (vertices *rectangle*))
+20 40 55 40 55 95 20 95
+(move-transform *rectangle* 10 20)
+#<TRANSFORM 13070517>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+| 10.00   20.00    1.00|
++-                    -+
+(print-seq (vertices *rectangle*))
+20 40 55 40 55 95 20 95
+(graphic-transform *rectangle*)
+#<TRANSFORM 13070517>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+| 10.00   20.00    1.00|
++-                    -+
+(normalize-graphic *rectangle*)
+NIL  (CONTINUED ON NEXT PAGE)
+(graphic-transform *rectangle*)
+NIL
+
+(print-seq (vertices *rectangle*))
+30.0 60.0 65.0 60.0 65.0 115.0 30.0 115.0
+T
+
+
+graphic-world-transform (graphic graphic) 
+
+Returns:
+	transform - Type transform
+
+Returns the fully-composed  transform to  compute world  coordinates for the
+graphic.
+
+Graphic objects can  be inserted  into a  scene.  If  the scene  the graphic
+object is  a  member  of  has  a  graphic  transform, this graphic transform
+multiplies with the graphic-transform of  the graphic object.  If  a graphic
+transform is  not  defined  for  the  scene,  the  graphic- transform of the
+graphic will be  used.  Recently  combined transforms  may be  cached.  This
+cache reflects the display hierarchy of  the graphic.  The transform of  the
+root scene is at the  "bottom" of the cache  and the final transform  of the
+graphic is at the  top of the  cache.  Therefore repeated  references to the
+same graphic do  not have  to recalculate  the final  transform and are very
+fast.  Graphics  at  the  same  level  as  the  graphics  only  require  one
+calculation to get the final transform, making depth first scene  transverse
+very fast.
+
+
+scene-elements (graphic graphic) 
+
+Returns:
+	elements - Type sequence of graphic
+
+Returns the sequence of elements contained by graphic.  Nil is returned  for
+graphic that is not of type scene.
+
+
+
+Graphic Sensitivity
+
+
+graphic-sensitivity (graphic graphic) 
+
+Returns:
+	sensitivity - Type (member :hidden :viewable :editable)
+
+Returns or (with setf)  changes the sensitivity  of the given  graphic.  The
+sensitivity of  the  graphic  determines  both  the  display and the editing
+states of a graphic.  For viewing states a graphic can be :hidden when it is
+not :hidden it is :viewable in all other states.  The editing states include
+:selectable which means a graphic can  be selected and :editable allows  for
+modification of  the  graphic.   For  graphic  of  type  scene an additional
+sensitivity of :subselectable is allowed.  Subselectable means that graphics
+within a  scene  can  be  edited  or  selected.  Therefore, a graphic may be
+:hidden, :viewable (and therefore  not :hidden), :selectable  (and therefore
+also  :viewable),  :subselectable  (and  therefore  also  :viewable  )   or,
+:editable (and therefore also  :viewable, :selectable ).   The default value
+is :editable.
+
+
+editable-p graphic
+
+graphic - Type graphic
+
+Returns
+	editable-p - boolean	
+
+Returns  true  if  graphic  and  all  of  its  ancestors  are   editable and
+subselectable.
+
+
+selectable-p graphic	
+
+graphic - Type graphic
+
+Returns
+	selectable-p - boolean
+
+Return  true  if  graphic  is  :selectable  and  all  of  its  ancestors are
+:subselectable.
+
+
+viewable-p graphic 	
+
+graphic - Type graphic
+
+Returns
+viewable-p - boolean
+
+Return true if graphic and all of its ancestors are not :hidden.
+
+
+subselectable-p graphic	
+
+graphic - Type scene
+
+Returns
+	subselectable-p -boolean
+
+Return true if graphic and all of its ancestors are :subselectable.
+
+
+
+GRAPHIC EVENTS
+
+
+defevent class event-spec &rest action
+
+	class - Type symbol
+	event-spec - Type event-specification 
+	action - Type function
+
+Creates a class event translation  for the class.  Each  additional argument
+is either  an  action  name  symbol  or  a  list  of  the  form (action-name
+argument*).  The new  event translation  replaces any  existing class  event
+translation for the same event specification.  The action is a function that
+is called to  proccess an  input event  received by  a graphic instance.  An
+action function accepts an argument list consisting of a graphic instance, a
+view instance and  possibly additional  arguments.  An  action implements  a
+response to the given event that is performed by all instances of a  graphic
+class.  Actions  are  often  generic  functions  with  methods  defined  for
+specific graphic classes.
+
+(DEFMETHOD say-hi ((graphic graphic)(view view) 
+                   &optional (name "graphic"))
+  (FORMAT t "~a says hi~%" name))
+#<method (METHOD SAY-HI (GRAPHIC VIEW))>
+(DEFEVENT rectangle (:button-press :button-1) (say-hi ))
+(((:BUTTON-PRESS CLUEI::BUTTON-PRESS-MATCH 1 0 0) (SAY-HI)))
+(DESCRIBE-EVENT-TRANSLATIONS 'rectangle)
+From RECTANGLE 
+         (:BUTTON-PRESS CLUEI::BUTTON-PRESS-MATCH 1 0 0) (SAY-HI)
+NIL
+
+
+undefevent class event-spec &rest actions
+
+	class - Type symbol
+	event-spec - Type event-specification 
+	action - Type function
+
+Deletes a class event translation for  the class.  The actions are  ignored,
+but they allow the same syntax as defevent to be used.
+
+(undefevent rectangle (:button-press :button-1) (say-hi ))
+NIL
+(DESCRIBE-EVENT-TRANSLATIONS 'rectangle)
+NIL
+
+add-event (graphic graphic)  event-spec &rest action
+
+	event-spec - Type event-specification
+	action - Type function
+
+Create an event  translation associating  the event  specification with  the
+given action symbols in  the graphic's plist.   Each additional argument  is
+either and action name symbol of a list of the for (action-name  argument*).
+If an event translation  for the given  event specification already  exists,
+then its previous  action is  replaced by  the new  action Otherwise,  a new
+event translation  is  created  and  added  to  the  plist.  The action is a
+function that is  called to  proccess an  input event  received by a graphic
+instance.  An  action  function  accepts  an  argument  list consisting of a
+graphic instance, a  view instance  and possibly  additional arguments.   An
+action implements a  response to  the given  event that  is performed by all
+instances of  a  graphic  class.   Actions  are often generic functions with
+methods defined for specific graphic classes.
+
+(DEFMETHOD say-hi ((graphic graphic)(view view) 
+                   &optional (name "graphic"))
+  (FORMAT t "~a says hi~%" name))
+#<method (METHOD SAY-HI (GRAPHIC VIEW))>
+(add-event *rectangle* '(:button-press :button-1)
+	       '(say-hi ))
+(graphic-plist *rectangle*)
+(:EVENT-TRANSLATIONS 
+    (((:BUTTON-PRESS CLUEI::BUTTON-PRESS-MATCH 1 0 0) (SAY-HI))))
+
+delete-event (graphic graphic) event-spec
+
+event-spec - Type event-specification
+
+Removes any event translation for the event specification from the graphic's
+plist.  No error occurs if the event translation does not exist.
+
+(delete-event *rectangle* '(:button-press :button-1))
+(graphic-plist *rectangle*)
+(:EVENT-TRANSLATIONS NIL)
+
+TRANSFORMS
+
+The geometry  of  graphic  objects  in  a  scene  is specified in the "world
+coordinate  system."  The  world  coordinate  system  is  (conceptually)  an
+unbounded 2D Cartesian plane represented by pairs of floating point  values.
+Each graphic object contains both geometrical information, which defines its
+shape in a local "object coordinate  system," and a transform object,  which
+represents a coordinate system transformation.  The world coordinates for  a
+graphic object  are  computed  by  applying  its  transform  to  its  object
+coordinates.  When  a  graphic  object  is  contained  in a scene, its world
+coordinates are further transformed by the transforms of its parent and each
+of its ancestors.
+
+The standard computer graphics  technique used in  views is to  treat object
+coordinates as homogeneous  vectors of  the form  (x y  1) and  to represent
+coordinate system transformations as 3x3 homogeneous matrices of the form:
+	 _           _
+	|             |
+	| t11  t12  0 |
+	|             |
+	|             |
+	| t21  t22  0 |
+	|             |
+	|             |
+	| t31  t32  1 |
+	 -           -
+
+Displaying a scene involves traversing the scene's hierarchical structure of
+graphic objects to compute their  world coordinates.  During traversal,  the
+object  coordinates  of  each  object   are  transformed  by  the   "current
+transformation matrix", C, to compute the corresponding world coordinates:
+
+	(object-x object-y 1) x C = (world-x world-y 1)
+
+C is  computed  by  recursively  pre-multiplying  object transform matrices.
+That is,  if  P  is  the  top-  level  scene  being  traversed and G is some
+descendant of  P,  then  the  current  transformation  matrix  C(G) which is
+applied to G is defined as follows.
+
+	C(P) = (graphic-transform P)
+
+	C(G) = (graphic-transform G) x C((graphic-parent G))
+
+In order  to  display  a  graphic  object,  its  world  coordinates  must be
+transformed into the "view coordinate system"  of a view contact.  The  view
+coordinate system  is  the  display  coordinate  system  of  a window.  View
+coordinates are usually represented by pairs of signed 16-bit integers thus,
+the view coordinate system is inherently discrete and bounded.
+
+For each view object, its  "viewing transformation" is the  transform object
+used  to  transform   a  graphic   object's  world   coordinates  into  view
+coordinates.   For  each   object  G,   the  viewing   transformation  V  is
+post-multiplied with the  current (world)  transformation C(G)  to form  the
+"display transformation,"  D(G),  which  is  used  to  compute the (integer)
+coordinates sent in output requests to the X server:
+
+	D(G) = C(G) x V
+
+	(object-x object-y 1) x D(G) = (display-x display-y 1)
+
+During the traversal, the with-current-transform  macro is used to  bind the
+current world transformation  and the  current display  transformation.  All
+graphic draw/erase methods  must use  the display-transform  function or the
+display-transform-sequence function to convert  object coordinates into  the
+view coordinates sent in output requests.
+
+
+TRANSFORM CONSTRUCTOR
+
+
+make-transform &key t11, t12, t21, t22, t31, t32
+
+	t11, t12, t21, t22, t31, t32 - Type number
+
+Returns:
+	transform - Type transform
+
+Create a new transform object.  With  no initargs, this creates an  identity
+transform.  The initargs that are recognized are t11, t12, t21, t22, t31, or
+t32 followed by a number.
+
+
+
+TRANSFORM METHODS
+
+
+move-transform (transform transform) delta-x delta-y 
+
+	delta-x, delta-y - Type number
+
+Result:
+transform - Type transform
+
+Modify the transform, translating the  previous transformation by the  given
+distances.  The new value of the transform is returned.
+
+
+rotate-transform (transform transform) angle &optional 
+					(fixed-x 0) (fixed-y 0)
+
+angle, fixed-x, fixed-y - Type number
+
+Returns:
+	transform - Type transform
+
+Modify the  transform,  rotating  the  previous  transformation by the given
+angle (in  radians)  around  the  given  fixed  point.  The new value of the
+transform is returned.
+
+
+scale-transform (transform transform) scale-x scale-y 
+                                      &optional (fixed-x 0) (fixed-y 0)
+
+scale-x, scale-y, fixed-x, fixed-y - Type number
+
+Return:
+	transform - Type transform
+
+Modify the transform, scaling the previous transformation by the given scale
+factors around the  given fixed  point.  The  new value  of the transform is
+returned.
+
+
+
+TRANSFORM FUNCTIONS
+
+
+compose-transform transform-1 transform-2 &optional (result transform-2)
+
+	transform-1, transform-2, result -- Type transform
+
+Result:
+	transform - Type boolean or transform
+
+Change  the  result  transform   to  be  the   product  of  (transform-1   x
+transform-2).  If result is not given, then the result replaces transform-2,
+this is equivalent to using copy- transform (transform-1, result).  If  both
+transform-2 and result are nil, then a new transform is created to hold  the
+result.  A nil transform represents  the identity transform.  The  new value
+of result is returned.
+
+
+copy-transform transform-1 &optional transform-2
+
+transform-1, transform-2 -- Type transform
+
+Result:
+	transform - Type transform
+
+Copy transform-1 into transform-2.  Either  or both can be  nil.  Return the
+new transform-2.
+
+
+scale-point transform x y
+
+	transform-- Type transform
+	x, y - Type number
+
+Result:
+	x, y - Type number
+
+Returns the result of applying transform  to the given point, by  only using
+the x  and  y  scaling  components  from  the  transform  and scales x and y
+accordingly.
+
+
+transform-point transform x y
+
+	transform-- Type transform
+	x, y - Type number
+
+Result:
+	x, y - Type number
+
+Returns the result of applying transform to the given point.
+
+
+transform-point-seq transform sequence &optional  (result sequence)
+
+	transform-- Type transform
+	sequence, result - Type point-seq
+
+Result:
+	sequence - Type point-seq
+
+Destructively changes  the  sequence  by  applying  the transform to the x,y
+sequence or preserves the  sequence if the  result sequence is  to store the
+transformed sequence into result.
+
+radians degrees
+
+	degrees - Type number
+
+Returns:
+	radians - Type number
+
+Convert degrees to radians.
+
+UTILITIES 
+
+These are a set of of utilities are are of general usefulness in Pictures
+
+
+graphic-save ( graphic graphic) format 
+                                &optional (stream *graphic-save-stream*)
+
+	format - Type (member :nested-forms
+	stream - Type stream 
+
+Returns:
+	completion - Type boolean
+
+Returns true  of  a  graphic  was  successfully  saved or null if otherwise.
+Stream defaults to *standard-output*).
+
+
+graphic-restore  format &optional (stream *graphic-save-stream*)
+
+	format - Type (member :nested-forms
+	stream - Type stream 
+
+Returns:
+	graphic - Type graphic
+
+Returns a newly created graphic.
+
+
+
+
+SCENES 
+
+Scene  objects  allow  graphic  objects  to  be  arranged  in   hierarchical
+structures.  A graphic is a "child" of a scene (its "parent") if the graphic
+is a member of the scene's sequence  of elements.  A scene is an  "ancestor"
+of a graphic (its "descendant") if it is the graphic's parent or an ancestor
+of its parent.  A "top-level" graphic is one whose parent is nil.
+
+Read-access to the sequence of scene elements is given by the scene-elements
+method.  Modification of the sequence of scene elements is supported  by the
+scene-insert/delete methods.  These  methods are  responsible for  reporting
+the appropriate damaged regions to any view containing the scene.
+
+
+BASE CLASS
+
+Graphic
+
+
+SCENE CONSTRUCTORS
+
+make-scene &key  elements  gstate  parent  (sensitivity :editable) transform
+           plist view edge- gstate
+ 
+
+	elements - Type list of graphic
+	edge-gstate, gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+	view -Type view
+
+Returns:
+	scene - Type scene
+
+Returns a new scene.  
+
+(PROGN
+  (SETF clue:*default-host* "freyr")
+  (setf *view* (make-view  :parent
+	(make-contact
+	'top-level-shell
+	:parent (clue:open-contact-display 'hello-world  
+	:display 0
+	:default-screen 1)
+	:state :mapped
+	:wm-title "View"
+	:x 30
+	:y 30
+	:width 100
+	:height 100)
+	:width 100
+	:height 100
+	))
+  (SETF (contact-background *view*) 
+     (screen-white-pixel (contact-screen *view*)))
+  (process-next-event (contact-display *view*))
+  (SETF (display-after-function 
+    (contact-display *view*)) #'display-force-output))
+
+#<DTP-FUNCTION DISPLAY-FORCE-OUTPUT 14212626>
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 42672343>
+
+(SETF *line* (make-line 30 30 70 30))  (CONTINUED ON NEXT PAGE)
+#<LINE 42676004>
+
+(SETF *polygon* (make-polygon '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYGON 43470446>
+
+(SETF *scene* (make-scene :elements (LIST *polygon* *line*)))
+#<SCENE 44204044>
+
+(draw-graphic *rectangle* *view*)
+NIL
+
+(draw-graphic *scene* *view*)
+NIL
+
+               
+(move-transform *scene* 10 20)
+#<TRANSFORM 40047250>
++-                    -+
+|  1.00    0.00    0.00|
+|  0.00    1.00    0.00|
+| 10.00   20.00    1.00|
++-                    -+
+
+(draw-graphic *scene* *view*)
+NIL
+
+(draw-graphic *rectangle* *view*)
+NIL
+               
+
+
+SCENE METHODS
+
+
+scene-elements ( scene scene)
+
+Returns:
+	elements - Type sequence
+
+Returns or (with setf) changes the sequence of elements contained by scene.
+
+(scene-elements *scene*)
+#<ART-Q-10 50060210>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<LINE 42606035>
+
+
+scene-insert ( scene scene)  graphic &optional position
+
+	position - Type graphic, integer or nil 
+	graphic - Type graphic
+Returns:
+	graphic - Type graphic
+
+Inserts the graphic at the  given position in the  scene.  If position is  a
+graphic, then graphic is  inserted immediately after  it.  If position  nil,
+then graphic is inserted at the end of the elements sequence.  The parent of
+graphic is changed to scene and the graphic is returned.
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<LINE 42606035>
+
+(scene-insert *scene* *rectangle*)
+#<FILLED-RECTANGLE 42606023>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<LINE 42606035> #<FILLED-RECTANGLE 42606023>
+
+
+scene-delete ( scene scene)  position
+
+	position - Type integer, nil or graphic
+
+Returns:
+	graphic - Type graphic
+
+Removes the graphic at  the given position  from the scene.   If position is
+nil the last graphic  in the scene  is deleted.  If  position is a  graphic,
+then that graphic is deleted.  The deleted graphic is returned.
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<LINE 42606035> #<FILLED-RECTANGLE 42606023>
+
+(scene-delete *scene* *line*)
+#<LINE 42606035>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023>
+
+
+	scene-graphic ( scene scene) position
+
+	position -- Type (integer 1 *)
+
+Returns:
+	graphic - Type graphic or null
+
+Returns the graphic at the given position  in the scene.  If pos is  greater
+then the number of scene elements, nil is returned.
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035>
+
+(scene-graphic *scene* 1)
+#<FILLED-RECTANGLE 42606023>
+
+(scene-graphic *scene* 0)
+#<POLYGON 42606052>
+
+(scene-graphic *scene* 3)
+NIL
+
+(scene-graphic *scene* 2)
+#<LINE 42606035>
+
+
+scene-reparent ( scene scene)  new-parent &rest elements
+
+	new-parent - Type scene
+	elements - Type list
+
+Returns:
+	new-elements - Type list
+
+Move each of the scene-elements and elements into the new-parent scene.
+
+(SETF *new-scene* (make-scene))
+#<SCENE 2216474>
+
+(print-seq (scene-elements *new-scene*))
+NIL
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035>
+
+(scene-reparent *scene* *new-scene*)
+#<SCENE 43631110>
+
+(print-seq (scene-elements *new-scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035>
+
+(print-seq (scene-elements *scene*))
+NIL
+
+(scene-reparent  *new-scene* *scene*)
+#<SCENE 2216474>
+
+(print-seq (scene-elements *new-scene*))
+NIL
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035>
+
+(SETF *circle* (make-circle 40 50 20))
+#<CIRCLE 52146231>
+
+(scene-reparent *scene* *new-scene* *circle*)
+#<SCENE 43631110>
+
+(print-seq (scene-elements *new-scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035> 
+#<CIRCLE 52146231>
+
+(print-seq (scene-elements *scene*))
+NIL
+
+
+scene-restack ( scene scene)  old-position new-position
+
+	old-position, new-position - Type integer
+
+For the given scene, delete the graphic in old-position and re-insert  it in
+new-position.
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035> 
+#<CIRCLE 42214105>
+
+(scene-restack *scene* 0 2)
+#<POLYGON 42606052>
+
+(print-seq (scene-elements *scene*))
+ #<FILLED-RECTANGLE 42606023> #<LINE 42606035> #<POLYGON 42606052> 
+#<CIRCLE 42214105>
+
+(scene-restack *scene* 2 0)
+#<POLYGON 42606052>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 42606052> #<FILLED-RECTANGLE 42606023> #<LINE 42606035> 
+#<CIRCLE 42214105>
+
+
+scene-ungroup ( scene scene) 
+
+Reparent all elements of  scene to the  parent of scene.   Delete scene from
+its parent.
+
+*scene*
+#<SCENE 42015403>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 4212265> #<FILLED-RECTANGLE 4212350> #<LINE 4212277> 
+#<CIRCLE 4213500>
+
+(graphic-parent *line*)
+#<SCENE 42015403>
+
+(graphic-parent *polygon*)
+#<SCENE 42015403>
+
+(scene-ungroup *scene*)
+NIL
+
+(print-seq (scene-elements *scene*))
+NIL
+
+(graphic-parent *line*)
+NIL
+
+(graphic-parent *polygon*)
+NIL
+
+(SETF *scene* (make-scene :elements (LIST *polygon* *line*)))
+#<SCENE 43557606>
+
+(print-seq (scene-elements *scene*))
+ #<POLYGON 4212265> #<LINE 4212277>
+
+(SETF *new-scene* (make-scene))
+#<SCENE 43576110>
+
+(print-seq (scene-elements *new-scene*))
+NIL
+
+(scene-insert *new-scene* *scene*)
+#<SCENE 43557606>
+
+(print-seq (scene-elements *new-scene*))
+ #<SCENE 43557606>
+
+(graphic-parent *polygon*)
+#<SCENE 43557606>
+
+(graphic-parent *line*)
+#<SCENE 43557606>
+
+(scene-ungroup *scene*)
+#<SCENE 43557606>
+
+(print-seq (scene-elements *new-scene*))
+ #<POLYGON 4212265> #<LINE 4212277>
+
+(print-seq (scene-elements *scene*))
+NIL
+
+(graphic-parent *line*)
+#<SCENE 43576110>
+
+(graphic-parent *polygon*)
+#<SCENE 43576110>
+
+
+CIRCLE CLASS
+
+A circle is a circular edge defined by a center point and a radius.  Circles
+can be moved,  rotated, and  scaled.  In  order to  preserve their  circular
+nature only the length of radius is scaled
+
+The filled-circle  class  is  a  filled  figure  whose  shape is that of the
+defining circle (the circular boundary is not drawn).  A  filled-circle-edge
+is like a filled-circle  except that the  circular boundary is  drawn within
+the filled  interior.   The  boundary  of  a  filled-circle-edge has its own
+distinct gstate.
+
+
+CIRCLE BASE CLASS
+
+Graphic
+
+
+FILLED-CIRCLE BASE CLASSES
+
+Graphic, Circle
+
+
+FILLED-CIRCLE-EDGE BASE CLASSES
+
+Graphic, Circle, Filled-circle
+
+
+CIRCLE CONSTRUCTORS
+
+make-circle  center-x  center-y  radius  &key  gstate  parent   (sensitivity
+	:editable) transform plist
+
+	center-x, center-y, radius - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	circle - Type circle
+
+Returns a new circle with the given center-x, center-y and radius.
+
+
+make-filled-circle center-x center-y radius &key gstate  parent (sensitivity
+	:editable) transform plist
+
+	center-x, center-y, radius - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+
+Returns:
+	circle - Type filled-circle
+
+Returns a new circle with the given center-x, center-y  and radius.
+
+
+make-filled-circle-edge  center-x   center-y   radius   &key  gstate  parent
+	(sensitivity :editable) transform plist edge-gstate
+
+	center-x, center-y, radius - Type number
+	edge-gstate, gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	circle - Type filled-circle-edge
+
+Returns a new circle with the given center-x, center-y  and radius.
+
+
+
+CIRCLE METHODS
+
+circle-center-x  (circle circle)
+
+Returns:
+	x - Type ocoord
+
+Returns or (with setf) changes the x coordinate of the center of the circle.
+
+
+circle-center-y  (circle circle)
+
+Returns:
+	y - Type ocoord
+
+Returns or (with setf) changes the y coordinate of the center of the circle.
+
+
+circle-radius (circle circle)
+
+Returns:
+	radius - Type ocoord
+
+Returns or (with setf) changes length of  the radius of the circle.
+
+
+FILLED-CIRCLE-EDGE METHODS
+
+edge-gstate (circle filled-circle-edge)
+
+Returns:
+	value - Type gstate 
+
+Return or (with setf) change the gstate associated with the boundary of  the
+given circle
+
+
+
+
+SEQUENCE
+
+A sequence object is  a series of  x,y coordinate pairs  stored in either  a
+list of a one  dimensional array.  The  methods for the  sequence class will
+allow you to manipulate the x,y pairs within the sequence.
+
+vertex-x (sequence sequence) position
+
+	position - Type integer
+
+Returns:
+	x - Type number
+
+Returns or (with setf) changes the  ith vertex-x of the given  sequence.  If
+2i is greater than  the length the  point-sequence of sequence,  then nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of  the point-sequence and the y value  is set to
+0.
+
+(SETF *sequence*  '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 10 30
+
+(vertex-x *sequence* 4)
+10
+
+(SETF (vertex-x *sequence* 4) 15)
+15
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 15 30
+
+(SETF (vertex-x *sequence* 10) 15)
+15
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 15 30 15 0
+
+
+vertex-y (sequence sequence) position
+
+	position - Type integer
+
+Returns:
+	y - Type number
+
+Returns or (with setf) changes the  ith vertex-y of the given  sequence.  If
+2i is greater than  the length the  point-sequence of sequence,  then nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of  the point-sequence and the x value  is set to
+0.
+
+
+(SETF *sequence*  '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 10 30
+
+(vertex-y *sequence* 4)
+10
+
+(SETF (vertex-y *sequence* 4) 15)
+15
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 15 30
+
+(SETF (vertex-y *sequence* 10) 15)
+15
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 15 30 15 0
+
+
+vertex-i( sequence sequence) i
+
+	i - Type integer 
+
+Returns:
+	x, y - Type ocoord or nil
+
+Returns or (with setf) changes the ith vertex of the given sequence.  If  2i
+is greater  than  the  length  the  point-sequence  of sequence, then nil is
+returned.  For the setf method, if i is greater than the number of vertices,
+then a new vertex is added at the end of the point sequence.  The values for
+the setf method are a list.  This list can be be an length of 2 or  greater.
+The sebsequent  values  in  the  point-seq  will  be  replace  with  the new
+point-seq's.  
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 10 30
+
+(vertex-i *sequence* 2)
+50
+30
+
+(SETF (vertex-i *sequence* 2) '(40 20))
+40
+20
+
+(vertex-i *sequence* 2)
+40
+20
+
+(print-seq *sequence*)
+ 10 10 50 10 40 20 25 50 10 30
+
+
+insert-vertex  ( sequence sequence) new-x new-y i
+
+	new-x, new-y - Type ocoord
+	i - Type integer
+
+Returns:
+	x, y - Type ocoord
+
+The new-x and new-y will be inserted  at the i position in the  point-seq of
+sequence.  If  2i  is  greater  than  the  length  of  the point-sequence of
+sequence, it will be added at the end of the point-sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 10 30
+
+(insert-vertex *sequence* 13 56 2)
+13
+56
+
+(print-seq *sequence*)
+ 10 10 50 10 13 56 50 30 25 50 10 30
+
+(insert-vertex *sequence* 45 99 100)
+45
+99
+
+(print-seq *sequence*)
+ 10 10 50 10 13 56 50 30 25 50 10 30 45 99
+
+
+delete-vertex ( sequence sequence) i
+
+	i - Type integer
+
+Returns:
+	x, y - Type ocoord
+
+The i  vertex  is  removed  from  the  point-seq  of the sequence.  If 2i is
+greater than the point-sequence of sequence, nothing will happen.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(print-seq *sequence*)
+ 10 10 50 10 50 30 25 50 10 30
+
+(delete-vertex *sequence* 1)
+50
+10
+
+(print-seq *sequence*)
+ 10 10 10 50 30 25 50 10
+
+(delete-vertex *sequence* 100)
+NIL
+NIL
+
+(print-seq *sequence*)
+ 10 10 10 50 30 25 50 10
+
+
+
+
+Returns or (with setf) changes the  ith vertex-y of the given  sequence.  If
+2i is greater than  the length the  point-sequence of sequence,  then nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of  the point-sequence and the x value  is set to
+0.
+
+
+length-vertices ( sequence sequence)
+
+Returns:
+	length - Type number
+
+Returns the length of the vertices of the sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(length-vertices *sequence*)
+5
+
+
+point-seq-x-max ( sequence sequence)
+
+Returns:
+	x - Type number
+
+Returns the minimum value for x in the vertices of the sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(point-seq-x-max *sequence*)
+5
+
+
+point-seq-x-max ( sequence sequence)
+
+Returns:
+	y - Type number
+
+Returns the minimum value for y in the vertices of the sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(point-seq-x-max *sequence*)
+3
+
+point-seq-x-min ( sequence sequence)
+
+Returns:
+	x - Type number
+
+Returns the maximum value for x in the vertices of the sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(point-seq-x-min *sequence*)
+50
+
+point-seq-y-min ( sequence sequence)
+
+Returns:
+	y - Type number
+
+Returns the maximum value for y in the vertices of the sequence.
+
+(SETF *sequence* '(10 10 50 10 50 30 25 50 10 30))
+(10 10 50 10 50 30 25 50 10 30)
+
+(point-seq-y-min *sequence*)
+50
+
+
+
+
+
+POLYPOINT
+
+A polypoint object is an ordered sequence of unconnected points  (vertices).
+Points are  drawn  in  the  order  in  which  they  appear  in the sequence.
+Polypoints are fully transformable, however, scaling a polypoint serves only
+to move the vertices points do not  become larger or smaller as a  result of
+scaling.
+
+
+
+POLYPOINT CONSTRUCTORS
+
+make-polypoint point-sequence  &key  gstate  parent  (sensitivity :editable)
+				transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	polypoint - Type polypoint
+
+Returns a new polypoint with the given point-sequence.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 52775113>
+
+
+POLYPOINT METHODS
+
+
+vertices ( polypoint polypoint)i
+
+i - Type integer
+
+Returns:
+	vertices - Type point-seq
+
+Returns or (with setf) changes the vertices.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 52775113>
+
+(vertices *polypoint*)
+#<ART-Q-13 52775160>
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+
+length-vertices ( polypoint polypoint)
+
+Returns:
+	length - Type number
+
+Returns the length of the vertices of the polypoint.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 52234404>
+
+(length-vertices *polypoint*)
+5
+
+
+vertex-i( polypoint polypoint) i
+
+i - Type integer 
+
+Returns:
+	x, y - Type ocoord or nil
+
+Returns or (with setf) changes the ith vertex of the given polypoint.  If 2i
+is greater  than  the  length  the  point-sequence of polypoint, then nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of  the point-sequence.  The values for the  setf
+method are a  list.  This  list can  be be  an length  of 2 or greater.  The
+sebsequent values in the point-seq will be replace with the new point-seq's.
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+(vertex-i *polypoint* 2)
+50
+30
+
+(SETF (vertex-i *polypoint* 2) '(40 20))
+40
+20
+
+(vertex-i *polypoint* 2)
+40
+20
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 40 20 25 50 10 30
+
+
+vertex-x ( polypoint polypoint) i
+
+i - Type integer 
+
+Returns:
+	x - Type ocoord or nil
+
+Returns or (with setf) changes the ith vertex-x of the given polypoint.   If
+2i is greater than the length  the point-sequence of polypoint, then  nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of  the point-sequence and the y value  is set to
+0.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 43003751>
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+(vertex-x *polypoint* 4)
+10
+
+(SETF (vertex-x *polypoint* 4) 15)
+15
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 15 30
+
+(SETF (vertex-x *polypoint* 10) 15)
+15
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 15 30 15 0
+
+
+
+vertex-y ( polypoint polypoint) i
+
+i - Type integer 
+
+Returns:
+	y - Type ocoord or nil
+
+Returns or (with setf) changes the ith vertex-y of the given polypoint.  If
+2i is greater than the length the point-sequence of polypoint, then nil is
+returned.
+
+For the setf method, if i is greater than the number of vertices, then a new
+vertex is added at the end of the point-sequence and the x value is set to
+0.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 52050101>
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+(SETF (vertex-y *polypoint* 3) 15)
+15
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 15 10 30
+
+(SETF (vertex-y *polypoint* 30) 13)
+13
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 15 10 30 0 13
+
+
+insert-vertex  ( polypoint polypoint) new-x new-y i
+
+	new-x, new-y - Type ocoord
+	i - Type integer
+
+Returns:
+	x, y - Type ocoord
+
+The new-x and new-y will be inserted  at the i position in the  point-seq of
+polypoint.  If  2i  is  greater  than  the  length  of the point-sequence of
+polypoint, it will be added at the end of the point-sequence.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 14363102>
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+(insert-vertex *polypoint* 13 56 2)
+13
+56
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 13 56 50 30 25 50 10 30
+
+(insert-vertex *polypoint* 45 99 100)
+45
+99
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 13 56 50 30 25 50 10 30 45 99
+
+
+delete-vertex ( polypoint polypoint) i
+
+	i - Type integer
+
+Returns:
+	x, y - Type ocoord
+
+The i vertex  is removed  from the  point-seq of  the polypoint.   If 2i  is
+greater than the point-sequence of polypoint, nothing will happen.
+
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 30 25 50 10 30)))
+#<POLYPOINT 52206505>
+
+(print-seq (vertices *polypoint*))
+ 10 10 50 10 50 30 25 50 10 30
+
+(delete-vertex *polypoint* 1)
+50
+10
+
+(print-seq (vertices *polypoint*))
+ 10 10 10 50 30 25 50 10
+
+(delete-vertex *polypoint* 100)
+NIL
+NIL
+
+(print-seq (vertices *polypoint*))
+ 10 10 10 50 30 25 50 10
+
+
+
+	min-x-vertex ( polypoint polypoint)
+
+Returns:
+	x - Type number
+
+Returns the minimum value for x in the vertices of the polypoint.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 3 25 50 5 30)))
+#<POLYPOINT 52771112>
+
+(min-x-vertex *polypoint*)
+5
+
+
+min-y-vertex ( polypoint polypoint)
+
+Returns:
+	y - Type number
+
+Returns the minimum value for y in the vertices of the polypoint.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 3 25 50 5 30)))
+#<POLYPOINT 55157062>
+
+(min-y-vertex *polypoint*)
+3
+
+max-x-vertex ( polypoint polypoint)
+
+Returns:
+	x - Type number
+
+Returns the maximum value for x in the vertices of the polypoint.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 3 25 50 5 30)))
+#<POLYPOINT 55170441>
+
+(max-x-vertex *polypoint*)
+50
+
+
+max-y-vertex ( polypoint polypoint)
+
+Returns:
+	y - Type number
+
+Returns the maximum value for y in the vertices of the polypoint.
+
+(SETF *polypoint* (make-polypoint '(10 10 50 10 50 3 25 50 5 30)))
+#<POLYPOINT 55405740>
+
+(max-y-vertex *polypoint*)
+50
+
+
+
+
+
+POLYLINE
+
+A polyline  is  an  ordered  sequence  of  points connected by straight line
+segments.  The first and last points in the sequence are not connected  by a
+line.
+
+The polyline class  inherits from  the polypoint  class so  that the methods
+described for polypoints are also available for polylines.
+
+POLYLINE BASE CLASS
+
+Polypoint, Graphic
+
+
+POLYLINE CONSTRUCTOR
+
+make-polyline point-sequence  &key  gstate  parent  (sensitivity  :editable)
+		transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	polyline - Type polyline
+
+Returns a new polyline with the given point-sequence.
+
+
+
+
+POLYGON
+
+A polygon  is  an  ordered  sequence  of  points  connected by straight line
+segments.  The first and last points on the sequence are connected by a line
+to form a closed figure.  The filled- polygon class is a filled figure whose
+shape is that of the defining polygon (the polygonal boundary is not drawn).
+A filled-polygon-edge is  like a  filled-polygon except  that the  polygonal
+boundary  is  drawn   within  the   filled  interior.    The  boundary  of a
+filled-polygon-edge has its own distinct gstate.
+
+All the polygon classes inherit from the polypoint class so that the methods
+described for polypoints are  also available for  polygons, filled-polygons,
+and filled-polygon-edges:
+        
+
+POLYGON BASE CLASSES
+
+Polypoint, Graphic
+
+FILLED-POLYGON BASE CLASSES
+
+Polygon, Polypoint, Graphic
+
+
+FILLED-POLYGON-EDGE BASE CLASSES
+
+Filled-polygon, Polygon, Polypoint, Graphic
+
+
+POLYGON CONSTRUCTORS
+
+make-polygon  point-sequence  &key  gstate  parent  (sensitivity  :editable)
+		transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	polygon - Type polygon
+
+Returns a new polygon with the given point-sequence.  
+
+
+make-filled-polygon   point-sequence   &key   gstate   parent   (sensitivity
+			:editable) transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	filled-polygon - Type filled-polygon
+
+Returns a new filled-polygon with the given point-sequence.
+
+
+make-filled-polygon-edge  point-sequence  &key  gstate   parent (sensitivity
+			:editable) transform plist edge-gstate
+
+	point-sequence - Type point-seq
+	gstate, edge-gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	filled-polygon-edge - Type filled-polygon-edge
+
+Returns a new filled-polygon-edge with the given point-sequence.
+
+
+FILLED POLYGON EDGE METHODS
+
+edge-gstate (filled-polygon-edge filled-polygon-edge)
+
+Returns:
+	value - Type gstate 
+
+Returns or (with setf)  changes the gstate  associated with the  boundary of
+the given filled-polygon-edge
+
+BSPLINE
+
+A bspline  is  a  sequence  of  points  connected by cubic curves.  Although
+several different types of parametric  cubic curves are possible,  the curve
+definition used is the B-spline.  The advantages of the B-spline are greater
+smoothness, easier  interactive  definition,  convex  hull boundedness (this
+allows efficient  extent  testing  to  speed  up selection and display), and
+invariant of shape  after transformation  of control  points.  One potential
+disadvantage of the B-spline is that the curve does not generally  intersect
+the control points.  However, in practice, this problem can be substantially
+reduced by "tripling" the first and  last control points, a technique  which
+causes the curve to  pass through the  first and last  control points.  This
+tripling can be done automatically, so  that no "extra" control points  need
+to be specified.
+
+A closed-bspline is a spline in which the first and last control points  are
+connected by a  closing curve.   A filled-bspline  is a  filled figure whose
+shape is that of the defining  bspline (the bspline boundary is  not drawn).
+A filled-bspline-edge  is  like  a  filled-bspline  except  that the bspline
+boundary is drawn  in addition  to the  filled interior.   The boundary of a
+filled-bspline- edge has its own gstate.
+
+All the bspline classes inherit from the polypoint class so that the methods
+described for polypoints are  also available for  bsplines, closed-bsplines,
+filled-bsplines, and filled-bspline- edges:
+
+
+
+BSPLINE BASE CLASSES
+
+Polypoint, Graphic
+
+
+CLOSED-BSPLINE BASE CLASSES
+
+Bspline, polylpoint, Graphic
+
+
+FILLED-BSPLINE BASE CLASSES
+
+Closed-bspline, Bspline, polylpoint, Graphic
+
+
+FILLED-BSPLINE-EDGE BASE CLASSES
+
+Filled-bspline, Closed-bspline, Bspline, polylpoint, Graphic
+
+
+
+SPLINE CONSTRUCTORS
+
+make-bspline point-sequence &key gstate parent (sensitivity :editable)
+	transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	bspline - Type bspline
+
+Returns a bspline with the given point-sequence.
+
+
+make-closed-bspline   point-sequence   &key   gstate   parent   (sensitivity
+		:editable) transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	bspline - Type closed-bspline
+
+Returns a new closed-bspline object with the given point-sequence.
+
+
+make-filled-bspline   point-sequence   &key   gstate   parent   (sensitivity
+		:editable) transform plist
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	bspline - Type filled-bspline
+
+Returns a new filled-bspline object with the given point-sequence.
+
+
+make-filled-bspline-edge  point-sequence  &key  gstate   parent (sensitivity
+			:editable) transform plist edge-gstate
+
+	point-sequence - Type point-seq
+	gstate, edge-gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	bspline - Type filled-bspline-edge
+
+Returns a new filled-bspline-edge object with the given point-sequence.
+
+
+
+FILLED-BSPLINE-EDGE METHODS
+
+edge-gstate (filled-bspline-edge filled-bspline-edge)
+
+Returns:
+	value - Type gstate 
+
+Returns or (with setf)  changes the gstate  associated with the  boundary of
+the given filled-bspline-edge
+ 
+
+RECTANGLE
+
+A rectangle  represents  the  common  but  simplified  case of a rectangular
+polygon that is, a four-sided polygon with ninety degree angles between each
+pair of  adjacent  sides.   Rectangles  can  be  moved, rotated, and scaled.
+Orthogonal rectangles (i.e., those whose  sides are parallel with  the world
+coordinate axes) are usually faster to draw than rotated rectangles.
+
+The filled-rectangle class  is a  filled figure  whose shape  is that of the
+defining  rectangle   (the   rectangular   boundary   is   not   drawn).   A
+filled-rectangle-edge is like a filled-rectangle except that the rectangular
+boundary  is  drawn   within  the   filled  interior.    The  boundary  of a
+filled-rectangle- edge has its own distinct gstate.
+
+
+RECTANGLE BASE CLASSES
+
+Polygon, Polypoint, Graphic
+
+
+FILLED-RECTANGLE BASE CLASSES
+
+Rectangle, Polygon, Polypoint, Graphic
+
+
+FILLED-RECTANGLE-EDGE BASE CLASSES
+
+Filled-rectangle, Rectangle, Polygon, Polypoint, Graphic
+
+
+
+RECTANGLE CONSTRUCTORS
+
+
+make-rectangle x-min  y-min  width  height  &key  gstate parent (sensitivity
+			:editable) transform plist
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	rectangle - Type rectangle
+
+Returns a new rectangle object with x-min and y-min defining a corner  of an
+orthogonal (unrotated) rectangle and with the given width and height.
+
+
+make-filled-rectangle  x-min   y-min   width   height   &key  gstate  parent
+			(sensitivity :editable) transform plist
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	rectangle - Type filled-rectangle
+
+Returns a new filled-rectangle object with x-min and y-min defining a corner
+of an orthogonal (unrotated) rectangle and with the given width and height.
+
+
+make-filled-rectangle-edge  x-min  y-min  width  height  &key  gstate parent
+			(sensitivity :editable) transform plist edge-gstate
+
+	x-min, y-min, width, height - Type number
+	gstate, edge-gstate- Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	rectangle - Type filled-rectangle-edge
+
+Returns a new filled-rectangle-edge object  with x-min and y-min  defining a
+corner of an orthogonal (unrotated)  rectangle and with the  given width and
+height.
+
+
+RECTANGLE METHODS
+
+
+rectangle-size (rectangle rectangle)
+
+Returns:
+	width, height - Type number
+
+Returns the  width  and  height  of  the  rectangle.   If  the  rectangle is
+orthogonal (sides parallel to the  screen) then width is  the size in the  x
+direction and height is the size in the y direction.
+
+SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 40076553>
+
+(rectangle-size *rectangle*)
+35.0
+55.0
+
+
+rectangle-width (rectangle rectangle)
+
+Returns
+	width - Type number
+
+Returns or (with setf) changes the width of the rectangle.  If the rectangle
+is orthogonal (sides parallel to the screen) then width is the size in the x
+direction.  The rectangle-width will always be the length of the vector from
+the origin to  the first  vertex.  When  the rectangle  is rotated  90°, the
+visual height will be the rectangle-width.
+
+                                         
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 40271307>
+
+(rectangle-width *rectangle*)
+35.0
+
+
+rectangle-height (rectangle rectangle)
+
+Returns
+	height - Type number
+
+Returns or  (with  setf)  changes  the  height  of  the  rectangle.   If the
+rectangle is orthogonal (sides  parallel to the  screen) then height  is the
+size in the y direction.  The rectangle- height will always be the length of
+the vector  from  the  origin  to  the  last  vertex.  When the rectangle is
+rotated 90°, the visual width will be the rectangle-height
+
+                                                .
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 42553746>
+
+(rectangle-height *rectangle*)
+55.0
+
+
+rectangle-origin-x (rectangle rectangle)
+
+Returns
+	origin-x - Type number
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 42573523>
+
+(rectangle-origin-x *rectangle*)
+20
+
+(SETF (rectangle-origin-x *rectangle*) 30)
+30
+
+(rectangle-origin-x *rectangle*)
+30
+
+
+Returns or (with setf) changes the  origin-x of the rectangle. .
+
+
+rectangle-origin-y (rectangle rectangle)
+
+Returns
+	origin-y - Type number
+
+Returns or (with setf) changes the  origin-y of the rectangle. .
+
+(SETF *rectangle* (make-filled-rectangle 20 40 35 55))
+#<FILLED-RECTANGLE 43354724>
+
+
+(rectangle-origin-y *rectangle*)
+40
+
+(SETF (rectangle-origin-y *rectangle*) 30)
+30
+
+(rectangle-origin-y *rectangle*)
+30
+
+
+
+FILLED-RECTANGLE-EDGE METHODS
+
+edge-gstate (filled-rectangle-edge filled-rectangle-edge)
+
+Returns:
+	value - Type gstate 
+
+Returns or (with setf)  changes the gstate  associated with the  boundary of
+the given filled-rectangle-edge
+
+ELLIPSE
+
+An ellipse is an  elliptical edge inscribed  within an invisible  rectangle.
+The ellipse is completely defined by the rectangle in which it is inscribed.
+Ellipses can be moved, rotated, and scaled.
+
+The filled-ellipse  class  is  a  filled  figure  whose shape is that of the
+defining   ellipse   (the   elliptical   boundary   is   not   drawn).     A
+filled-ellipse-edge is  like  a  filled-ellipse  except  that the elliptical
+boundary  is  drawn  within  the   filled  interior.   The  boundary   of  a
+filled-ellipse-edge has its own distinct gstate.
+
+All the ellipse classes inherit from the rectangle class so that the methods
+described for rectangles are  also available for  ellipses, filled-ellipses,
+and filled-ellipse-edges:
+        
+
+
+ELLIPSE BASE CLASSES
+
+Graphic
+
+
+FILLED-ELLIPSE BASE CLASSES
+
+Filled-ellipse, Ellipse, Graphic
+
+
+FILLED-ELLIPSE-EDGE BASE CLASSES
+
+Filled-ellipse-edge, Filled-ellipse, Ellipse, Graphic
+
+
+
+ELLIPSE CONSTRUCTORS
+
+
+make-ellipse x-min  y-min  width  height  &key  gstate  parent  (sensitivity
+			:editable) transform plist
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	ellipse - Type ellipse
+
+Returns a new ellipse  object with x-min  and y-min defining  a corner of an
+orthogonal (unrotated) ellipse and the given width and height.
+
+
+make-filled-ellipse x-min y-min width height &key gstate parent (sensitivity
+			:editable) transform plist
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	ellipse - Type filled-ellipse
+
+Returns a new filled-ellipse object with  x-min and y-min defining a  corner
+of an orthogonal (unrotated) ellipse and the given width and height.
+
+
+make-filled-ellipse-edge  x-min  y-min  width  height  &key  gstate   parent
+				(sensitivity :editable) transform plist edge-gstate
+
+	x-min, y-min, width, height - Type number
+	gstate, edge-gstate- Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	ellipse - Type filled-ellipse-edge
+
+Returns a  new  filled-ellipse-edg  object  with  x-min and y-min defining a
+corner of an orthogonal (unrotated) ellipse and the given width and height.
+
+ELLIPSE METHODS
+
+
+ellipse-size (ellipse ellipse)
+
+Returns:
+	width, height - Type float
+
+Returns the  object  coordinate  width  and  height  of the ellipse.  If the
+ellipse is orthogonal (sides parallel to the screen) then width is the  size
+in the x direction and height is the size in the y direction.
+
+
+ellipse-width (ellipse ellipse)
+
+Returns:
+	width,- Type float
+
+Returns or (with setf) changes the  object coordinate width of the  ellipse.
+If the ellipse is  orthogonal (sides parallel  to the screen)  then width is
+the size in the x direction.
+
+
+ellipse-height (ellipse ellipse)
+
+Returns:
+	height,- Type float
+
+Returns or (with setf) changes the object coordinate height of the  ellipse.
+If the ellipse is orthogonal (sides  parallel to the screen) then  height is
+the size in the y direction.
+
+
+ellipse-origin-x (ellipse ellipse)
+
+Returns
+	origin-x - Type number
+
+Returns or (with setf) changes the  origin-x of the ellipse. .
+
+
+ellipse-origin-y (ellipse ellipse)
+
+Returns
+	origin-y - Type number
+
+Returns or (with setf) changes the  origin-y of the ellipse.
+
+
+FILLED-ELLIPSE-EDGE METHODS
+
+edge-gstate (filled-ellipse-edge filled-ellipse-edge)
+
+Returns:
+	value - Type gstate 
+
+Returns or (with setf)  changes the gstate  associated with the  boundary of
+the given filled-ellipse-edge
+
+
+
+
+
+
+GRAPHIC-IMAGE
+
+A  graphic-image  is   a  bitmap   image.   A   graphic-image  is  not fully
+transformable transformations affect only the origin of the image.
+
+
+Figure 1
+                            
+
+
+GRAPHIC-IMAGE BASE CLASS
+
+Graphic
+
+
+GRAPHIC-IMAGE CONSTRUCTOR
+
+
+make-graphic-image  image   &key   &key   base-x   base-y  extent-x extent-y
+                extent-width  extent-height   (gravity   :southwest)  gstate
+		parent (sensitivity :editable) transform plist tile-p
+ 
+	image - Type image
+	base-x, base-y  - Type ocoord
+	extent-x, extent-y, extent-width, extent-height - Type ocoord
+	tile-p - Type boolean
+	gravity - Type (member :southwest :west :northwest :south :center
+				:north	:southeast :east :northeast)
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Returns:
+	graphic-image - Type graphic-image
+
+
+Return a new graphic-image object.  base-x  and base-y give the position  of
+the lower left corner of  the image.  extent-x, extent-y,  extent-width, and
+extent-height define  the  object  coordinate  extent for the graphic-image.
+gravity specifies how the graphic-image is positioned within the extent.
+
+At most one graphic-image position can be specified --- either base-x/base-y
+or extent- x/extent-y.  This is because  each position can be computed  from
+the other.  Defaulting both positions  is equivalent to initializing  base-x
+and base-y to 0.
+
+When tile-p is true and the extents of the graphic-image are larger than the
+image, the image will  drawn repeatedly to  fill the extent  with the image.
+gravity detemines where the image is placed in the extent when the extent is
+larger then  the  image.   In  Figure  2  the graphic-image has a :southwest
+gravity and tile-p is T.  In Figure  1 the gravity is :northwest and  tile-p
+is nil.  Figure 2
+                             
+
+GRAPHIC-IMAGE METHODS
+
+graphic-image-base-x ( graphic-image graphic-image)
+
+Returns:
+	x - Type ocoord
+
+Returns or (with setf) changes the x  value of the lower left corner  of the
+graphic-image.
+
+
+graphic-image-base-y ( graphic-image graphic-image)
+
+Returns:
+	y - Type number
+
+Returns or (with setf) changes the y  value of the lower left corner  of the
+graphic-image.
+
+
+graphic-image-content (graphic-image graphic-image)
+
+Returns:
+	image - Type image
+
+Returns or (with setf) changes the image content of the graphic-image.
+
+
+extent-width ( graphic-image graphic-image)
+
+Returns:
+	width - Type ocoord
+
+Returns or (with setf) changes the width of the extent of the graphic-image.
+
+
+extent-height ( graphic-image graphic-image)
+
+Returns:
+	height - Type ocoord
+
+Returns  or  (with   setf)  changes   the  height   of  the   extent  of the
+graphic-image.
+
+
+graphic-image-extent-x ( graphic-image graphic-image)
+
+Returns:
+	x - Type ocoord
+
+Returns or (with setf) changes the x  value of the lower left corner  of the
+extent of the graphic-image.
+
+
+graphic-image-extent-y ( graphic-image graphic-image)
+
+Returns:
+	y - Type ocoord
+
+Returns or (with setf) changes the y  value of the lower left corner  of the
+extent of the graphic-image.
+
+
+graphic-image-gravity ( graphic-image graphic-image)
+
+Returns:
+	gravity - Type (member :southwest, :west, :northwest, :south, 
+	:center, :north, :southeast, :east or :northeast)
+
+Returns or (with setf)  changes the gravity  for displaying a  graphic-image
+object.  The gravity will determine where the graphic-image is placed in the
+extent
+
+                                       
+graphic-image-tile-p ( graphic-image graphic-image)
+
+Returns:
+	graphic-image-tile-p - Type T or nil
+
+Returns or (with setf) changes the tiling of the frame of the graphic-image.
+Below is shown how the image would be displayed within the extent  according
+to  the  gravity  shown  below  each  outlined  extent  rectangle  and   the
+graphic-image-tile-p set to true.
+
+                                       
+
+
+
+
+
+
+LABEL 
+
+A label object consists of a single line of text, as shown below.
+
+                                       
+
+A label has a  world coordinate size  defined by its  (possibly transformed)
+extent rectangle.  However, the physical size of a text string in a view  is
+ultimately determined by the size of the font used to display it.  A display
+font is  typically  defined  by  bitmaps  and cannot be scaled continuously.
+Thus, the  displayed  size  of  a  label  string generally cannot be made to
+correspond exactly with its  world coordinate extent.   The user chooses  an
+initial font  size  and  when  the  label  is  scaled approximate scaling is
+performed automatically by  selecting a  font from  a specified  font family
+that best matches the ideal view coordinate size of the label.
+
+Because label scaling is  only approximate, the  actual displayed size  of a
+label string  may  differ  from  its  ideal  view  coordinate size, which is
+defined by its  world coordinate  extent rectangle.   If the  actual size is
+smaller than the ideal size, then the label string is positioned within  its
+extent rectangle according  to its  gravity.  If  the actual  size is larger
+than the ideal  size, then  the label  string is  also clipped by the extent
+rectangle.
+
+LABEL BASE CLASS
+
+Graphic
+
+
+LABEL CONSTRUCTORS
+
+
+make-label label-string  &key  base-x  base-y extent-x extent-y extent-width
+                extent-height (font-family 'default) (font-size 10) (gravity
+                :southwest) gstate parent (sensitivity  :editable) transform
+                plist
+ 
+
+	label-string- Type string
+	base-x, base-y  - Type ocoord
+	extent-x, extent-y, extent-width, extent-height - Type ocoord
+	font-size - Type (integer 1 *)
+	font-family - Type null, font-family, or string
+	gravity - Type (member :southwest, :west, :northwest, :south, :center, :north, 
+	:southeast, :east or :northeast)
+	gstate - Type gstate
+	parent - Type null or scene
+	plist - Type list
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	extent-clip-p, reverse-p, filled-background-p  -Type boolean
+
+
+Returns:
+	label - Type label
+
+Returns a new label object.  The label-string is the text that is displayed.
+font-family and  font-size  describe  the  font  used  to display the label.
+font-size is given in points.
+
+base-x and base-y give the position of  the left end of the label  baseline.
+extent-x,  extent-y,  extent-width,  and  extent-height  define  the  object
+coordinate extent  for  the  label.   gravity  specifies  how  the  label is
+positioned within the extent.
+
+At most  one  label  position  can  be specified --- either base-x/base-y or
+extent-x/extent-y.  This is because each  position can be computed  from the
+other, but only  after the  label has  been attached  to at  least one  view
+moreover, the  computed  position  can  be  different  in  different  views.
+Defaulting both positions is equivalent to initializing base-x and base-y to
+0.
+
+If extent width/height is not given,  then a default value is  computed when
+the label is attached to  a view, and is  defined to be the  width/height of
+the label-string in pixels.
+
+The example shown below creates a  label with the base-line origin  at (100,
+100) by setting base-x and base-y.
+
+(setf *label* (make-label "graphic-label" :base-x 100 :base-y 100))
+#<LABEL 52300575>
+
+(DESCRIBE *label*)
+#<LABEL 52300575>, an object of class #<STANDARD-CLASS LABEL>,
+ has slot values of:
+
+	LABEL-STRING:	   "graphic-label"
+	LABEL-BASE-X:	   100
+	LABEL-BASE-Y:	   100
+	LABEL-EXTENT-X:	   NIL
+	LABEL-EXTENT-Y:	   NIL
+	EXTENT-HEIGHT:	   NIL
+	EXTENT-WIDTH:	   NIL
+	LABEL-GRAVITY:	   :SOUTHWEST
+	LABEL-VIEW-SCALE:  1.0
+	LABEL-FONT-SIZE:   10
+	LABEL-FONT-FAMILY: "-adobe-helvetica-medium-r-normal-*"
+	LABEL-FONT:	   NIL
+	EXTENT: #S(EXTENT-RECT :XMIN NIL :YMIN NIL :XMAX NIL :YMAX NIL)
+	EXTENT-VALID-P:	   NIL
+	GSTATE:		   []
+	PARENT:		   NIL
+	PLIST:		   NIL
+	SENSITIVITY:	   :EDITABLE
+	TRANSFORM:	   NIL
+	VIEWS:		   NIL
+
+
+The following code defines  a label with  an extent rectangle  and the label
+centered within the extent rectangle.
+
+(setf *label* (make-label "graphic-label" :extent-x 100 :extent-y 100 
+:extent-height 20
+			  :extent-width 200 :gravity :center))
+#<LABEL 52517652>
+
+(DESCRIBE *label*)
+#<LABEL 52517652>, an object of class #<STANDARD-CLASS LABEL>,
+ has slot values of:
+
+	LABEL-STRING:	   "graphic-label"
+	LABEL-BASE-X:	   NIL
+	LABEL-BASE-Y:	   NIL
+	LABEL-EXTENT-X:	   100
+	LABEL-EXTENT-Y:	   100
+	EXTENT-HEIGHT:	   20
+	EXTENT-WIDTH:	   200
+	LABEL-GRAVITY:	   :CENTER
+	LABEL-VIEW-SCALE:  1.0
+	LABEL-FONT-SIZE:   10
+	LABEL-FONT-FAMILY: "-adobe-helvetica-medium-r-normal-*"
+	LABEL-FONT:	   NIL
+	EXTENT: #S(EXTENT-RECT :XMIN 100 :YMIN 100 :XMAX 300 :YMAX 120)
+	EXTENT-VALID-P:	   T
+	GSTATE:		   []
+	PARENT:		   NIL
+	PLIST:		   NIL
+	SENSITIVITY:	   :EDITABLE
+	TRANSFORM:	   NIL
+	VIEWS:		   NIL
+
+
+LABEL METHODS
+
+
+label-string ( label label)
+
+Returns:
+	string - Type string
+
+Returns the text string for a label object.
+
+
+(setf label-string ( label label)) string &optional change-extent-p
+
+	string - Type string
+	change-extent-p - Type boolean
+
+Returns:
+	string - Type string
+
+Changes the text string for a  label object.  When change-extent-p is  true,
+the extent of the label  is computed when the  label is attached to  a view,
+and is defined to be the width/height of the label-string in pixels.
+
+
+label-font( label label)
+
+Returns:
+	font - Type font or nil
+
+Returns the font for a label object.  A font is an X11 font that is provided
+by the server.  Unless the font is  set, it will remain nil until  the label
+is going to be displayed.
+
+
+(setf label-font ( label label))font &optional change-extent
+
+	font - Type font
+	change-extent - Type boolean
+
+Returns:
+	font - Type font
+
+Change the  font  for  a  label  object.   When change-extent-p is true, the
+extent of the label is computed when the label is attached to a view, and is
+defined to be the width/height of the label-string in pixels.
+
+
+label-font-family ( label label)
+
+Returns:
+	family - Type stringable or font-family
+
+Returns or (with setf) changes the font family for a label object.  See  the
+section on label-font-family for more details.
+
+
+label-font-size ( label label)
+
+Returns:
+	size - Type int16
+
+Returns or (with  setf) changes  the size  of the  font for  a label object.
+Size is described in number of points
+
+
+label-gravity ( label label)
+
+Returns:
+	gravity - Type (member :southwest :west :northwest :south 
+		:center :north :southeast :east or :northeast)
+
+Returns or (with setf)  changes the gravity  for displaying a  label object.
+The gravity will determine where the label is placed in the extent
+
+Below is shown how the string would be displayed within the extent according
+to the gravity shown below each outlined extent rectangle.
+
+                                         
+
+
+label-base-x ( label label)
+
+Returns:
+	x - Type ocoord or null
+
+Returns or (with setf)  changes base-x value  of the left  end of the  label
+string base-line of a  label object.  Changing  the x position  also changes
+the extent-x position.  The  value of base  x position also  is defined with
+respect to the current extent x and  the given view.  By default, the  first
+view to which the label is attached is used.
+
+
+label-base-y ( label label)
+
+Returns:
+	y - Type ocoord or null
+
+Returns or (with setf)  changes base-y value  of the left  end of the  label
+string base-line of a  label object.  Changing  the x position  also changes
+the extent-y position.  The  value of base  y position also  is defined with
+respect to the current extent y and  the given view.  By default, the  first
+view to which the label is attached is used.
+
+
+label-extent-x ( label label)
+
+Returns:
+	x - Type ocoord or null
+
+Returns or (with setf)  changes extent-x value  of the lower  left corner of
+the extent of a label object.
+
+
+label-extent-y ( label label)
+
+Returns:
+	y - Type ocoord or null
+
+Returns or (with setf)  changes extent-y value  of the lower  left corner of
+the extent of a a label object.
+
+
+label-extent-width ( label label)
+
+ Returns:
+	width - Type ocoord or null
+
+Returns or (with setf) changes the width of the extent of a label object.
+
+
+label-extent-height ( label label)
+
+Returns:
+	height - Type ocoord or null
+
+Returns or (with setf) changes the height of the extent of a label object.
+
+
+label-extent-clip-p ( label label)
+
+Returns:
+	clip-p - Type boolean
+
+Returns or (with setf) changes the clip-p flag.  The clip-p flag  determines
+if the extent-  rectangle is  to clip  the label.   This will  slow down the
+performance of the application considerably if it is used.
+
+
+label-filled-background-p ( label label)
+
+Returns:
+	filled-background-p - Type boolean
+
+Returns  or  (with   setf)  changes   the  filled-background-p   flag.   The
+filled-background-p flag  determines  if  the  label  is  to be drawn with a
+filled background.
+
+                                         
+
+
+label-reverse-p ( label label)
+
+Returns:
+	reverse-p - Type boolean
+
+Returns or  (with  setf)  changes  the  reverse-p  flag.  The reverse-p flag
+determines the direction the label is printed in from the origin when in the
+second and third cartesian quadrants.
+
+                                 .
+
+
+
+
+FONT FAMILY
+
+A font family  is a  set of  related fonts  used when  displaying a label at
+different scales.  Each font in a family has a defined size given in pixels.
+The actual font used  to display a  label is the  member of its  font family
+whose size best  approximates the  ideal view  coordinate size  of the label
+string.
+
+There are two different ways to define a font family with a given name.  The
+member of the family can be defined explicitly, by specifying a list of font
+names.  Otherwise,  the  family  members  can  be  specified  implicitly, by
+specifying a font name pattern as the  family name in this case the  members
+of  the  family  are  defined  by  (xlib:list-fonts  display   family-name).
+Similarly, the  pixel  size  of  each  font  in  a  family  can  be  defined
+explicitly, or  it  can  be  determined  implicitly from the font ascent and
+descent.
+
+make-font-family family-name display &rest members
+
+	family-name - Type stringable
+	display - Type display
+Returns:
+	font-family - Type font-family
+
+Returns a new font-family with the given family-name containing fonts in the
+view.   If  no  members  are  specified,  then  the  family  is  defined  by
+(xlib:list-fonts (contact-display view) family-name).  If given, then family
+members defined by a list whose elements  are either font names or lists  of
+the form (font-name pixel-size).  An error is signalled if the family has no
+members.
+
+The code given below demonstrates the typical way of creating a font  family
+using a standard X11 font.  To get  a listing of X11 fonts for  your server,
+use the command (xlib:list-fonts (contact-display view) "*").
+
+(PROGN
+  (SETF clue:*default-host* "freyr")
+  (setf *view* (make-view  :parent (make-contact
+	'top-level-shell
+	:parent (clue:open-contact-display 'hello-world  
+	:display 0
+	:default-screen 1)
+	:state :mapped
+	:wm-title "View"
+	:x 30
+	:y 30
+	:width 100
+	:height 100)
+	:width 100
+	:height 100
+	))
+  (SETF (contact-background *view*) 
+    (screen-white-pixel (contact-screen *view*)))
+  (process-next-event (contact-display *view*))
+  (SETF (display-after-function 
+    (contact-display *view*)) #'display-force-output))
+
+(SETF *font-family* (make-font-family "view-font"
+	(contact-display *view*)
+	"-adobe-times-medium-i-normal-*-*-*-75"))
+#<FONT-FAMILY 56012500>
+
+(DESCRIBE *font-family*)
+#<FONT-FAMILY 56012500>, an object of class #<STANDARD-CLASS FONT-
+FAMILY>,
+ has slot values of:
+
+	FAMILY-NAME:	   "view-font"
+	FAMILY-MEMBERS:	   ((-adobe-times-medium-i-normal-*-8-* 8)
+			    (-adobe-times-medium-i-normal-*-10-* 10)
+			    (-adobe-times-medium-i-normal-*-12-* 12)
+			    (-adobe-times-medium-i-normal-*-14-* 14)
+			    (-adobe-times-medium-i-normal-*-18-* 18)
+			    (-adobe-times-medium-i-normal-*-24-* 24))
+
+This section of  code describes  how to  create a  special font  family that
+mixes different X11 fonts to create a unique font family.
+
+(SETF *font-family* (make-font-family "view-font"
+	(contact-display *view*)
+	"-adobe-courier-bold-o-normal-*-*-*-75"
+	"5x8" "6x9" "7x13" "8x16" "12x24"))
+#<FONT-FAMILY 16350434>
+
+(DESCRIBE *font-family*)
+#<FONT-FAMILY 16350434>, an object of class #<STANDARD-CLASS FONT-FAMILY>,
+ has slot values of:
+
+	FAMILY-NAME:	   "view-font"
+	FAMILY-MEMBERS:
+  ((-adobe-courier-bold-o-normal--8-80-75-75-m-50-iso8859-1 8)
+   (6x9 9)
+   (-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1 10)
+   (-adobe-courier-bold-o-normal--12-120-75-75-m-70-iso8859-1 12)
+   (7x13 13)
+   (-adobe-courier-bold-o-normal--14-140-75-75-m-90-iso8859-1 14)
+   (8x16 16)
+   (-adobe-courier-bold-o-normal--18-180-75-75-m-110-iso8859-1 18)
+   (-adobe-courier-bold-o-normal--24-240-75-75-m-150-iso8859-1 24))
+
+find-font-family family-name display
+
+	family-name - Type  stringable
+	size - Type int16
+	display - Type display
+
+Returns:
+	font-family - Type font-family or null
+
+Returns or (with setf) changes the font-family with the given family-name.
+
+(SETF *font-family* (make-font-family "view-font"
+	(contact-display *view*)
+	"-adobe-courier-bold-o-normal-*-*-*-75"
+	"5x8" "6x9" "7x13" "8x16" "12x24"))
+#<FONT-FAMILY 32327552>
+
+(find-font-family "view-font" (contact-display *view*))
+#<FONT-FAMILY 32327552>
+
+
+find-font family size
+
+	family - Type font-family
+	size - Type card16
+Returns:
+	font - Type font
+
+Returns and (with setf) changes the font in the given family associated with
+the given size, in pixels.  If  no such font exists, then  find-font returns
+the family  member  whose  size  is  closest  to the desired size, and (setf
+find-font) adds a new family  member with the given  size.  If the new  font
+given to (set find-font) is nil, then member associated with the given  size
+(if any) is removed from the family.
+
+(SETF *font-family* (make-font-family "view-font"
+			      (contact-display *view*)
+			      "-adobe-courier-bold-o-normal-*-*-*-75"
+			      "5x8" "6x9" "7x13" "8x16" "12x24"))
+#<FONT-FAMILY 40217224>
+
+(describe *font-family*)
+#<FONT-FAMILY 40217224>, an object of class #<STANDARD-CLASS FONT-FAMILY>,
+ has slot values of:
+
+	FAMILY-NAME:	   "view-font"
+	FAMILY-MEMBERS:	   
+   ((-adobe-courier-bold-o-normal--8-80-75-75-m-50-iso8859-1 8)
+    (6x9 9)
+    (-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1 10)
+    (-adobe-courier-bold-o-normal--12-120-75-75-m-70-iso8859-1 12)
+    (7x13 13)
+    (-adobe-courier-bold-o-normal--14-140-75-75-m-90-iso8859-1 14)
+    (8x16 16)
+    (-adobe-courier-bold-o-normal--18-180-75-75-m-110-iso8859-1 18)
+    (-adobe-courier-bold-o-normal--24-240-75-75-m-150-iso8859-1 24))
+
+(find-font 
+   (find-font-family "view-font" (contact-display *view*)) 21)
+-adobe-courier-bold-o-normal--24-240-75-75-m-150-iso8859-1
+
+(find-font 
+   (find-font-family "view-font" (contact-display *view*)) 20)
+-adobe-courier-bold-o-normal--18-180-75-75-m-110-iso8859-1
+
+
+
+font-family-members  family display
+
+family - Type font-family
+display - Type display
+
+Returns:
+	members - Type list
+
+Returns or (with setf)  changes the list  of fonts belonging  a font family.
+The family members are given by a list whose elements are either font  names
+or lists of the form (font-name  pixel-size).  An error is signalled  if the
+members list is set to nil.
+
+(SETF *font-family* (make-font-family "view-font"
+			      (contact-display *view*)
+			      "-adobe-courier-bold-o-normal-*-*-*-75"
+			      "5x8" "6x9" "7x13" "8x16" "12x24"))
+#<FONT-FAMILY 40217224>
+
+(print-seq 
+   (font-family-members *font-family* (contact-display *view*)))
+((-adobe-courier-bold-o-normal--8-80-75-75-m-50-iso8859-1 8)
+ (6x9 9)
+ (-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1 10)
+ (-adobe-courier-bold-o-normal--12-120-75-75-m-70-iso8859-1 12)
+ (7x13 13) 
+ (-adobe-courier-bold-o-normal--14-140-75-75-m-90-iso8859-1 14)
+ (8x16 16) 
+ (-adobe-courier-bold-o-normal--18-180-75-75-m-110-iso8859-1 18)
+ (-adobe-courier-bold-o-normal--24-240-75-75-m-150-iso8859-1 24))
+
+(SETF (font-family-members *font-family* (contact-display *view*))
+      (LIST "rk24"
+	    "variable"
+	    "-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1"))
+((-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1 10)
+ (variable 14) (rk24 24))
+(print-seq 
+   (font-family-members *font-family* (contact-display *view*)))
+((-adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1 10)
+ (variable 14) (rk24 24))
+
+
+LINE
+
+A line object is a pair of  points connected by a straight line  segment.  A
+line is generally  more efficient  than a  polyline with  two points.  It is
+fully transformable.
+
+
+
+LINE BASE CLASS
+
+Graphic
+
+
+
+LINE CONSTRUCTOR
+
+
+make-line start-x  start-y  end-x  end-y  &key  gstate  parent  (sensitivity
+		:editable) transform plist
+
+	start-x, start-y, end-x, end-y - Type number
+	gstate - Type gstate
+	parent - Type null or scene
+	sensitivity - Type (member :hidden, :selectable, :editable)
+	transform - Type transform
+	plist - Type list
+
+Return a  new  line  object  whose  end  points  are (start-x, start-y ) and
+(end-x, end-y.).
+
+
+
+LINE METHODS
+
+
+line-start-point (line line) 
+
+Returns:
+	x,y - Type number
+
+Returns the coordinates of the start-point of the given line.
+
+
+line-start-point-x (line line) 
+
+Returns:
+	x - Type number
+
+Returns or (with setf)  changes the x  coordinate of the  start-point of the
+given line.
+
+
+line-start-point-y (line line) 
+
+Returns:
+	y - Type number
+
+Returns or (with setf)  changes the y  coordinate of the  start-point of the
+given line.
+
+
+line-end-point (line line) 
+
+Returns:
+	x,y  - Type number
+
+Returns the coordinates of the end-point of the given line.
+
+
+line-end-point-x (line line) 
+
+Returns:
+	x - Type number
+
+Returns or (with  setf) changes  the x  coordinate of  the end-point  of the
+given line.
+
+
+line-end-point-y (line line) 
+
+Returns:
+	y - Type number
+
+Returns or (with  setf) changes  the y  coordinate of  the end-point  of the
+given line.
+
+
+GRAPHIC STATE
+
+The graphic state of a graphic object is a set of graphical attributes  used
+to display the object.   Conceptually, a graphic  state object is  a list of
+keyword/value pairs representing a set of graphics context values.  The  set
+of available attributes in  a gstate object  may vary with  different window
+systems.  The attribute  set described  below is  for the  X Window  System.
+Gstate values are specified with display-independent values.
+
+Gstate Combination
+
+Gstate objects may be  combined to form  a new gstate.   A graphic state  is
+represented by a  class, because  different gstate  subclasses may implement
+different methods for combination.  The  default combination method for  the
+base gstate class is "inheritance."  That is, if C  is the combination of  A
+with B, then C obtains  all the attributes of  B then for any  attribute not
+found in B, C obtains its value from A.
+
+
+                                                         
+
+
+When drawing a graphic object  that is in a  scene, The gstate that  is used
+when drawing  the  graphic  is  the  combination  of gstates graphic, of the
+parent scene and it's parents.  When drawing graphic object G with parent  P
+and who  has  parent  M,  the  effective  graphic  state  for  G is found by
+combining gstate-G with gstate-P and the combination of gstate-G/gstate-P is
+combined with gstate-M to yields the effective gstate.
+
+
+                                       . 
+
+
+GRAPHICS STATE CONSTRUCTOR
+
+make-gstate &rest options 
+
+Return  a  new  gstate  object  with  the  given  attribute  values.   These
+attributes reflect the gcontext value of the X window system.  Below are the
+list of currently acceptable attribute value:
+
+	:arc-mode - Type null or (member :chord :pie-slice)
+	:background - Type null, keyword, string or pixel
+	:cap-style - Type null or (member :not-last :butt :round  :projecting)
+	:dashes  - Type null or sequence
+	:fill-rule - Type null or (member :even-odd :winding)
+	:fill-style - Type null or (member :solid :tiled 
+                                                  :opaque-stippled :stippled)
+	:fontname - Type null or stringable
+	:foreground - Type null, keyword, string or pixel
+	:function - Type null or boole-constant
+	:join-style - Type null or (member  :miter :round :bevel)
+	:line-style - Type null or (member :solid :dash :double-dash)
+	:line-width - Type null or number
+	:stipple - Type null, image or symbol
+	:tile - Type null, image or symbol
+
+(setf new-gstate (make-gstate :foreground :red :line-width 10))
+
+
+GSTATE METHODS
+
+
+gstate-value (gstate gstate) keyword 
+
+Returns:
+	value - Type keyword  and for (with setf) a type list of one keyword, 
+	attribute pair.
+
+Returns the value associated with the keyword in the gstate of graphic.  The
+section on Graphics State gives the acceptable keyword, attribute pairs.
+
+
+
+(setf gstate-value) attribute (gstate gstate) keyword
+
+        keyword -  Type  (member  foreground  background function line-width
+                cap-style  join-style   fill-style   fill-rule  tile stipple
+		dashes)	attibute - Type depends on the keyword.
+
+Returns:
+	value - Type depends on the keyword.
+
+Changes the value associated  with the keyword  in gstate.  See  the list of
+keywords and their  attributes under  make-gstate.  This  function should be
+used with caution because no type checking is performed.
+
+
+
+gstate-function (gstate gstate) 
+
+Returns:
+	function - Type boole-constant or null
+
+Returns or (with setf) changes the boolen-constant function value associated
+with the  gstate.   The  function  detemines  how  pixels  on the screen are
+displayed when  one  pixel  is  drawn  on  another.   In the table below the
+results are given  for each  function with  S being  the source  pixel and D
+being the destination pixel.
+
+Symbol	         Result
+
+boole-1	S
+boole-2	D
+boole-andc1	(logandc1 S D)
+boole-andc2	(logandc2 S D)
+boole-and	(logand S D)
+boole-c1	(lognot S)
+boole-c2	(lognot D)
+boole-clr	0
+boole-eqv	(logeqv S D)
+boole-ior	(logior S D)
+boole-nand	(lognand S D)
+boole-nor	(lognor S D)
+boole-orc1	(logorc1 S D)
+boole-orc2	(logorc2 S D)
+boole-set	1
+boole-xor	(logxor S D)
+
+
+
+gstate-foreground (gstate gstate) 
+
+Returns:
+	foreground - Type  symbol, pixel, or null
+
+Returns or  (with  setf)  changes  the  foreground value associated with the
+gstate.  This specifies the color that  will be displayed when a  graphic is
+drawn on the screen.  The type pixel points to a position in the color map.
+
+
+gstate-line-style (gstate gstate) 
+
+Returns:
+	style  - Type (member :solid :dash :double-dash) or null
+
+Returns or  (with  setf)  changes  the  line-style value associated with the
+gstate.
+
+                                          
+
+.
+gstate-dashes (gstate gstate) 
+
+Returns:
+	dashes  - Type Type null or sequence
+
+Returns or (with setf)  changes the dash  value associated with  the gstate.
+This sequence determines the pattern of the dashes for a dashed line.
+
+
+
+
+gstate-line-width (gstate gstate) 
+
+Returns:
+	line-width  - Type number or null
+
+Returns or  (with  setf)  changes  the  line-width value associated with the
+gstate.  The line- width is in world-coordinate units.
+
+
+gstate-cap-style (gstate gstate) 
+
+Returns:
+	style  - Type (member :not-last :butt :round :projecting) or null
+
+Returns or  (with  setf)  changes  the  cap-style  value associated with the
+gstate.  The cap style determines how the end of a line is drawn.
+
+                         
+
+
+gstate-join-style (gstate gstate) 
+
+Returns:
+	style  - Type (member :miter :round :bevel) or null
+
+Returns or  (with  setf)  changes  the  join-style value associated with the
+gstate.  The join style defines how two lines will be joined together.
+
+                                           
+
+gstate-fill-style (gstate gstate) 
+
+Returns:
+     style  - Type (member :solid :tiled :opaque-stippled :stippled) or null
+
+Returns or  (with  setf)  changes  the  fill-style value associated with the
+gstate.  The fill  style will  determine the  color or  pattarn that will be
+drawn with a filled graphic.
+
+                                        
+
+gstate-tile (gstate gstate) 
+
+Returns:
+	tile  - Type symbol, image or null
+
+Returns or (with setf) changes the tile value associated with the gstate.  A
+pixmap can be choosen to use as a pattern when a filled graphic is drawn.
+
+
+gstate-stipple (gstate gstate) 
+
+Returns:
+	stipple  - Type symbol, image  or null
+
+Returns or (with setf) changes the stipple value associated with the gstate.
+A stipple is a bitmap that has a depth of one .  It can be used to create  a
+foreground or background pattern.
+
+
+gstate-fill-rule (gstate gstate) 
+
+Returns:
+	rule  - Type (member :even-odd :winding) or null
+
+Returns or  (with  setf)  changes  the  fill-rule  value associated with the
+gstate.  The fill rule  is used to  determine how non-convex  filled polygon
+will be filled.
+
+                                                    
+
+
+gstate-background (gstate gstate) 
+
+Returns:
+	background  - Type symbol or null
+
+Returns or  (with  setf)  changes  the  background value associated with the
+gstate.  This specifies the color that will be displayed when no graphic  is
+being displayed on the screen.  It is used with tiles or stipples.  The type
+pixel points to a position in the color map.
+
+
+
+
+
+
+
+VIEW
+
+A view is a window  that displays a rectangular  portion of a scene's  world
+coordinate system.  It is  the interface between  the user and  the abstract
+graphics objects.
+
+                                      
+
+Before a graphic can be  viewable, it must be  attached to a view,  a single
+graphic may be attached  to a view,  but to display  multiple graphics in  a
+view, graphics are inserted into a scene  which is attached to a view.   The
+extent of the graphic is  the world extent.  Once  a scene is attached  to a
+view, the effects of operations on the scene and its component graphics  are
+recorded as "damage" in each view to which the scene is attached.  Later, an
+attached  view's  display   may  be   refreshed  with   the  repair-view  or
+repair-graphic functions.  This  design helps  to make  an application using
+multiple views simpler (because recording  and accessing attached views  are
+handled automatically), more  flexible (because  new views  can be  added by
+independent application modules), and more efficient (because damages can be
+batched and processed by view damage control for faster refresh).
+
+There are  multiple  operations  which  can  be  performed  on  a view.  The
+operations are categorize according to attributes, graphics and actions.
+
+Attribute operations are those that the  programmer uses to query or  change
+the  properties  of  the   view.   An  example   of  such  a   operation  is
+view-selection, which allows the programmer to change or query the  graphics
+that are currently selected in the view.
+
+Graphic operations are methods attached to  a view that are used  by graphic
+objects to draw themselves  in the view.   These graphic operations  include
+view-draw-line, view-draw-filled-arc, view-draw-rectangle and other  graphic
+operations.  These graphic operations are  patterned after those defined  in
+the X Window System.
+
+Action operations are  provided to  the programmer  for attaching  action to
+events.   These  actions  provide  a  mechanism  for  allowing  a  user   to
+interactively modigy view and graphic  attributes.  An example an  action is
+to  view-select-graphic,  which   when  attached   to  an   event  such   as
+:button-press will  place  the  graphic  under  the  pointer  device  on the
+view-selection..
+
+
+
+VIEW BASE CLASS
+
+Clue:contact
+
+
+
+VIEW CONSTRUCTOR
+
+make-view  &key view-gravity resize-extent-p scale origin-x origin-y graphic
+
+	gravity - Type (member :northwest :north :northeast :west :center 
+	:east :southwest :south  :southeast)
+	resize-extent-p - Type boolean
+	scale, origin-x, origin-y - Type number
+	graphic - Type graphic
+
+Returns:
+	view - Type view
+
+Returns a new view object.
+
+  (setf *view* (make-view  :parent (make-contact
+	'top-level-shell
+	:parent (clue:open-contact-display 'hello-world  
+	:display 0 :default-screen 1)
+	:state :mapped
+	:wm-title "View"
+	:x 30
+	:y 30
+	:width 100
+	:height 100)
+			   :width 100
+			   :height 100
+			  ))
+
+VIEW ATTRIBUTE METHODS
+
+gravity-point (view view) &optional gravity
+
+        gravity - Type (member :northwest :north :northeast :west :center
+			:east :southwest :south  :southeast)
+	
+Returns:
+	x, y - Type number
+
+Returns the world coordinates of the given gravity on the view world extent.
+
+
+view-add-selection (view view) graphic
+
+graphic - Type graphic or list
+
+Returns:
+	graphic - Type graphic or list
+
+Add graphic to view-selection in the view and highlight graphic in the view.
+
+
+view-clear-selection (view view) 
+
+Unselected any of the selected graphics in the view.
+
+
+view-orientation (view view) x y &key gravity
+
+	x, y - Type wcoord
+
+Change the orientation view  according to the  sign of (X,  Y).  The default
+orientation of the pictures is 1st  quadrant of the cartesian plane  and the
+sign of X and Y is positive.  If  the sign of Y is negative the  orientation
+is 4th quadrant, the default for CLX.
+
+
+
+view-remove-selection (view view) graphic
+
+	graphic - Type graphic or list
+
+Returns:
+	graphic - Type graphic or list
+
+Delete graphic from view-selection  in the view  and unhighlight graphic  in
+the view.
+
+
+view-damage (view view) &rest damaged-region 
+
+	damaged-region - Type list of graphic or rect-seq
+
+Records a damaged region of the  view for later repair.  The  damaged-region
+contains either a single graphic object (in which case the damaged region is
+given by the  object's extent)  or a  world coordinate  sequence of the form
+(min-x min-y width height).
+
+
+view-gravity (view view)
+
+Returns:
+        gravity - Type (member  :southwest :west :northwest,:south  :center,
+			:north :southeast :east :northeast)
+
+Returns or (with setf) changes  the current view-gravity.  The  view-gravity
+is the world  coordinate in  the current  view that  remains fixed after the
+view is  resized.   The  expected  values  for  setf are :northwest, :north,
+:northeast, :west, :center, :east, :southwest, :south, or :southeast.
+
+
+view-highlight-color (view view)
+
+Returns:
+	color - Type pixel
+
+Returns or (with setf) changes the  color used to draw highlighting  for the
+given view.
+
+
+view-pan (view view) x y &optional gravity
+
+	x, y - Type wcoord
+	gravity - Type nil or 
+
+Change the view  so that  the given  point (X,  Y) (in world coordinates) is
+located according to  the given  gravity of  the view  window.  The expected
+values for  gravity  are  :northwest,  :north,  :northeast,  :west, :center,
+:east, :southwest, :south, or  :southeast with :southwest  being the default
+value.
+
+                                      
+ 
+
+
+view-pixel-size (view view) 
+
+Returns:
+	size - Type wcoord
+
+Returns the world-coordinate size of a pixel for the given view.
+
+
+view-resize-extent-p (view view)
+
+Returns:
+	resize-extent - Type boolean
+
+Returns  or  (with  setf)  changes  the  value  of  the  resize-extent.   If
+resize-extent-p is true then resizing the view window will change the  world
+coordinate extent of the view.  Otherwise,  the extent will remain the  same
+after resize and a zoom effect will take place.
+
+
+view-selection (view view)
+
+Returns:
+	selection - Type list
+
+Returns or (with setf)  the sequence of selection in the view.
+
+
+view-scan-graphic view graphic 
+
+	view - Type view
+	graphic-- Type graphic
+
+Return:
+	graphic-image-- Type image
+
+Return a  raster  image  of  the  graphic  on  the  screen  and store in the
+graphic-image object.
+
+
+transform-point (view view)  x y 
+
+	x, y - Type wcoord
+
+Returns:
+	view-x, view-y - Type integer
+
+Convert the given  x,y world-coordinates  to view-coordinates  for the given
+view.
+
+
+untransform-point (view view)  x y 
+
+x, y - Type vcood
+
+Returns:
+	view-x, view-y - Type integer
+
+Convert the given  x,y view-coordinates  to world-coordinates  for the given
+view.
+
+
+view-zoom (view view) &key (absolute-p nil) (gravity current-gravity)
+
+        absolute-p - Type  boolean gravity  - Type  (member :southwest :west
+			:northwest,:south :center, :north :southeast
+			:east  :northeast) or list (x-wcoord y-wcoord)
+
+Changes the  scale  of  the  view.   The  horizontal  and vertical scale are
+changed uniformly.  If absolute-p is true,  then scale is an absolute  scale
+factor otherwise,  scale  is  a  relative  scale factor, multiplied with the
+view-scale to form the  new scale.  Gravity  is the point  in the view  that
+will remain fixed after the scale is performed.  It can be either a  keyword
+or a list with x and y world coordinates.
+
+
+view-scale (view view)
+
+Returns:
+	scale - Type integer
+
+Returns or (with setf) sets the scale factor for the view.  The scale factor
+is the number of sceens pixel per world coordinate.
+
+
+view-graphic (view view)
+
+Returns:
+	graphic - Type graphic
+
+Returns or (with setf)  sets the graphic for the view.
+
+
+world-extent (view view) &optional result-extent
+
+	result-extent - Type extent-rect
+
+Returns the extent  of the  given view  in world  coordinates.  A  nil value
+means that the  extent is  undefined.  If  result-extent is  provided, it is
+used to store the  result extent.  Otherwise,  a new extent-rect  is created
+and returned.
+
+
+
+VIEW GRAPHIC METHODS
+
+
+view-draw-arc (view view) x-min  y-min width height  angle1 angle2 &optional
+			gstate
+
+	x-min, y-min, width, height, angle1, angle2 - Type number
+	gstate - Type gstate
+
+Draw a circular or elliptical arc.  An  arc is specified by a rectangle  and
+two angles.  The arc is a portion  of an ellipse inscribed within the  given
+rectangle and subtended  by the  given angle1  and angle2.   Coordinates and
+lengths are specified  in world  coordinates and  the angles  are in radians
+measured from the three o'clock position.
+
+
+view-draw-filled-arc (view view) x-min y-min width height angle1 angle2
+			&optional gstate
+
+	x-min, y-min, width, height, angle1, angle2 - Type number
+	gstate - Type gstate
+
+Draw a  circular  or  elliptical  filled  arc.   This method is identical to
+view-draw-arc except that the fill-style attribute in the gstate is used  to
+fill the arc shape.  The arc boundary is not drawn.
+
+
+view-draw-line (view view) start-x start-y end-x end-y &optional gstate
+
+	start-x, start-y, end-x, end-y - Type number
+	gstate - Type gstate
+
+Draw a line.  A line is specified by two end points.
+
+
+view-draw-polypoint (view view) point-sequence &optional gstate
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+
+Draw a sequence of  point-sequence given in  world coordinates on  the given
+view.
+
+
+view-draw-polyline (view view) point-sequence &optional gstate
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+
+Draw a polyline using the given sequence of point-sequence.
+
+
+view-draw-polygon (view view) point-sequence &optional gstate
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+
+Draw a polygon using the given sequence of point-sequence.
+
+
+view-draw-filled-polygon (view view) point-sequence &optional gstate
+
+	point-sequence - Type point-seq
+	gstate - Type gstate
+
+Draw a filled polygon.  This method is identical to view-draw-polygon except
+that the fill- style  attribute in the  gstate is used  to fill the  polygon
+shape.  The polygon boundary is not drawn.
+
+
+view-draw-image (view view)  x-min y-min x-max y-max image &optional gstate
+
+	x-min, y-min, x-max, y-max  - Type number
+	gstate - Type gstate
+
+Draw the pixel image  with its origin  at (x-min y-min)  and the upper-right
+corner at (x-max, y-max).
+
+
+view-draw-rectangle (view view) x-min y-min width height &optional gstate
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+
+Draw a rectangle with the given x-min y-min width and height.
+
+
+view-draw-filled-rectangle (view  view)  x-min  y-min width height &optional
+					gstate
+
+	x-min, y-min, width, height - Type number
+	gstate - Type gstate
+
+This method is identical to  view-draw-rectangle except that the  fill-style
+attribute in the gstate is used to fill the rectangle shape.  The  rectangle
+boundary is not drawn.
+
+
+view-draw-char (view view) x-origin y-origin text &optional gstate
+
+	x-origin, y-origin  - Type number
+	text - Type character
+	gstate - Type gstate
+
+Draw a text string with the given origin.
+
+
+view-draw-image-char (view view) x-origin y-origin text &optional gstate
+
+	x-origin, y-origin  - Type number
+	text - Type character
+	gstate - Type gstate
+
+Draw a text string with the given origin with the background color specified
+in gstate.
+
+
+
+view-draw-text (view view) x-origin y-origin text &optional gstate
+
+	x-origin, y-origin  - Type number
+	text - Type string
+	gstate - Type gstate
+
+Draw a text string with the given origin.
+
+
+view-draw-image-text (view view) x-origin y-origin text &optional gstate
+
+	x-origin, y-origin  - Type number
+	text - Type string
+	gstate - Type gstate
+
+Draw a text string with the given origin with the background color specified
+in gstate.
+
+
+
+
+VIEW ACTION METHODS
+
+
+view-move-graphic (grabber grabber) (view view) event
+view-move-graphic (graphic graphic) (view view) event
+
+
+event - Type event
+
+Returns:
+	selection - Type list
+
+Initiate a user  dialog to  move the  view-selection within  the given view.
+Event should match the event specifier in defevent or add-event.
+
+(defevent *view* '(:button-press :button-2)
+	'(view-move-graphic :event :button-2))
+
+See view-transform-graphic for a  description of the  interactions technique
+used.
+
+
+view-rotate-graphic (grabber grabber)(view view) event
+
+event - Type event
+
+Returns:
+	selection - Type list
+
+Initiate a user dialog to rotate  the view-selection within the given  view.
+The event arguement is used buy the routine for motion-notify events.  Event
+should match the event specifier in defevent or add-event.
+
+(defevent *view* '(:button-press :button-2)
+	'(view-rotate-graphic :event :button-2))
+
+See view-transform-graphic for a  description of the  interactions technique
+used.
+
+
+refresh-view (view view)
+
+Redraws the entire view  scene and clears any damages.
+
+
+repair-view (view view)
+
+Redraws any damaged regions in the view and clears any damages.
+
+
+view-scale-graphic(grabber grabber)(view view)  &key uniform event
+
+	uniform - Type boolean
+	event - Type event
+Returns:
+	selection - Type list
+
+Initiate a user dialog  to scale the  view-selection within the  given view.
+If uniform is  T, the  scaling of  the graphic  will be  uniform.  The event
+arguement is used buy  the routine for  motion-notify events.  Event  should
+match the event specifier in defevent or add-event.
+
+(defevent *view* '(:button-press :button-2)
+	'(view-scale-graphic :event :button-2))
+
+See view-transform-graphic for a  description of the  interactions technique
+used.
+
+view-select-graphic (view view) &key add
+
+Returns:
+	graphic - Type graphic or nil
+
+
+Selects a graphic in the view as the only member of the view-selection.   It
+will be the  only graphic  selected unless  add is  T, then  the graphic  is
+selected along with the other graphics in view-selection.  If no graphic  is
+selected, the selected graphics are unselected.
+
+Selection is typically a  user action performed  by positioning the  pointer
+cursor over  an  object  and  clicking  a  pointer  button.  The application
+programmer can  also  select  objects  in  the  view  by  invoking the (setf
+view-selection)  method.   This  method  can   also  be  used  to   set  the
+view-selection to nil before calling view-select-graphic.
+
+
+view-select-region (view view) &key add
+
+add - Type boolean
+
+Returns:
+	selection - Type list
+
+
+Initiate a user dialog  to add one  or more graphics  to the view-selection.
+The selection is returned if any are selected during the dialog (i.e.,  only
+new selections are returned).  If  there is no selection,  view-selection is
+set to nil.  If add is true, the selection is added to the view-selection.
+
+Selection is typically a  user action performed  by positioning the  pointer
+cursor over an object and clicking a pointer button.  Alternatively, if  the
+pointer button is pressed outside any object, then by dragging the pointer a
+user can  stretch  a  rubber  box  over  the scene releasing the button then
+causes all objects completely contained in the box to be selected.
+
+The application programmer can  select objects in  the view by  invoking the
+(setf view-  selected)  method.   This  method  can  also be used to set the
+selected sequence to nil before calling view-select-graphic.
+
+
+view-show-world (view view)
+
+Show all the viewable graphics within the view.
+
+
+view-show-region (view view) extent
+
+	extent - Type extent-rect
+
+Show all the viewable  graphics within the  extent.  The extent  is in world
+coordinate.  To obtain  the combined  extents of  serveral graphics  use the
+function graphic-combined- world-extents.  The  view is refreshed  when this
+method is called.
+
+
+view-transform-graphic (grabber grabber)(view view) &key event
+
+	event - Type event
+Returns:
+	selection - Type list
+
+Initiate a user dialog to move or scale the selection within the given view.
+The event arguement is used buy the routine for motion-notify events.  Event
+should match the event specifier in defevent or add-event.
+
+(defevent *view* '(:button-press :button-2)
+	'(view-transform-graphic :event :button-2))
+
+The view-transform-graphic  method  causes  a  view to display the graphic's
+"grabbers".  Visually, grabbers are depicted as eight small control boxes on
+and within the object's bounding box:
+
+		X----X----X
+		|         |
+		X    .    X
+		|         |
+		X----X----X
+
+By clicking on one of  the eight boundary grabbers  and dragging it, a  user
+can stretch a  rubber box  and modify  the size  and shape  of the  object's
+extent.  Releasing  the  grabber  then  causes  the object to be transformed
+accordingly.  This technique  allows interactive  object scaling.   Also the
+grabbers can be used to rotate an object with view-rotate- graphic.
+
+By clicking within the  extent box but  outside of any  grabber, a user  can
+move the bounding box.  Releasing the bounding box then causes the object to
+be  transformed  accordingly.   This  technique  allows   interactive object
+translation.
+
+The other user interaction methods that use this technique for more  limited
+kinds of  transformations  are:  view-move-graphic,  view-scale-graphic, and
+view-rotate-graphic.
+
+
+view-unselect-graphic (view view)
+
+Returns:
+	graphic - Type graphic
+
+
+Selects one  graphic  to  remove  from  the  view-selection.  The graphic is
+returned if one is selected during the dialog.
+
+Unselection is typically a user action performed by positioning the  pointer
+cursor over  an  object  and  clicking  a  pointer  button.  The application
+programmer can also  unselect graphics  in the  view by  invoking the  (setf
+view-selection)  method.   This  method  can   also  be  used  to   set  the
+view-selection to nil.
+
+
+view-unselect-region (view view)
+
+Returns:
+	selection - Type list
+
+
+Initiate  an  user  dialog  to  remove   one  or  more  graphics  from   the
+view-selection.  The selecttion are returned if any are selected during  the
+dialog .
+
+Unselection is typically a user action performed by positioning the  pointer
+cursor over an object and clicking a pointer button.  Alternatively, if  the
+pointer button is pressed outside any object, then by dragging the pointer a
+user can  stretch  a  rubber  box  over  the scene releasing the button then
+causes all objects completely contained in the box to be selected.
+
+The application programmer can  select objects in  the view by  invoking the
+(setf view- selected) method.
+
+
+
+A
+add-event 26
+B
+boole-constant 3
+boolean 3
+C
+circle-center-x  40
+circle-center-y  40
+circle-radius 40
+compose-transform 28
+copy-transform 29
+D
+defevent 25
+delete-event 26
+delete-vertex 43, 50
+draw-graphic 7
+draw-graphic-clipped 7
+E
+edge-gstate 40, 58, 60, 64, 67
+editable-p 24
+ellipse-height 66
+ellipse-origin-x 66
+ellipse-origin-y 67
+ellipse-size 66
+ellipse-width 66
+event 3
+event-key 3
+event-specification 3
+extent-height 70
+extent-rect 3
+extent-width 70
+F
+find-font 81
+find-font-family 80
+font-family-members 81
+G
+grabber 3
+graphic 3
+Graphic Class 1
+GRAPHIC EVENTS 25
+Graphic Sensitivity 24
+Graphic Transforms 18
+graphic-combined-gstate 18
+graphic-combined-world-extents 7
+graphic-contains-p 7
+graphic-damage 9
+graphic-extent 7
+graphic-fixed-point 8
+graphic-gstate 9
+graphic-image-base-y 70
+graphic-image-extent-x 70
+graphic-image-extent-y 71
+graphic-image-tile-p 71
+graphic-intersects-p 8
+graphic-parent 9
+graphic-plist 9
+graphic-restore 31
+graphic-save 31
+graphic-sensitivity 24
+graphic-transform 18
+graphic-view 9
+graphic-views 9
+graphic-within-p 8
+graphic-world-transform 24
+gravity-point 96
+Gstate Combination 85
+gstate-cap-style 88
+gstate-dashes 10, 88
+gstate-fill-rule 16, 90
+gstate-fill-style 15, 89
+gstate-foreground 10, 88
+gstate-function 11, 87
+gstate-line-style 10, 88
+gstate-line-width 88
+gstate-stipple 16, 90
+gstate-tile 15, 89
+gstate-value 17, 86
+(setf gstate-value) 18, 86
+I
+image 3
+insert-vertex 42, 49
+L
+label-base-x 76
+label-base-y 76
+label-extent-height 77
+label-extent-width 77
+label-extent-x 77
+label-extent-y 77
+label-font 75
+(setf label-font ( label label)) 75
+label-font-family 76
+label-font-size 76
+label-gravity 76
+label-string 75
+(setf label-string ( label label)) 75
+length-vertices 43, 47
+line-end-point 83
+line-end-point-x 84
+line-end-point-y 84
+line-start-point 83
+line-start-point-x 83
+line-start-point-y 83
+M
+make-bspline 59
+make-circle 39
+make-closed-bspline 60
+make-ellipse 65
+make-filled-bspline 60
+make-filled-bspline-edge 60
+make-filled-circle 39
+make-filled-circle-edge 40
+make-filled-ellipse 65
+make-filled-ellipse-edge 66
+make-filled-polygon 57
+make-filled-polygon-edge 57
+make-filled-rectangle 61
+make-filled-rectangle-edge 62
+make-font-family 79
+make-graphic-image 69
+make-label label-string 73
+make-line 83
+make-polygon 57
+make-polyline 55
+make-polypoint 47
+M
+make-rectangle 61
+make-transform 28
+make-view 96
+max-x-vertex 50
+max-y-vertex 51
+min-x-vertex 50
+min-y-vertex 50
+move-transform 19
+N
+normalize-graphic 23
+O
+object coordinates 4
+ocoord 4
+P
+pixel 4
+point-seq 4
+point-seq-x-max 43
+point-seq-x-min 44
+point-seq-y-min 44
+R
+radians 29
+rectangle 63
+rectangle-height 63
+rectangle-origin-x 63
+rectangle-origin-y 64
+rectangle-size 62
+refresh-view 102
+repair-graphic 9
+repair-view 102
+repeat-seq 4
+rotate-transform 20, 28
+S
+scale-point 29
+scale-transform 22, 28
+scene-delete 35
+scene-elements 24, 34
+scene-graphic 35
+scene-insert 35
+scene-reparent 35
+scene-restack 36
+scene-ungroup 36
+selectable-p 25
+stringable 4
+subselectable-p 25
+T
+transform-point 29, 98
+transform-point-seq 29
+U
+undefevent 26
+untransform-point 99
+V
+vertex-i 48
+vertex-x 48
+vertices 47
+View Class 2
+view-add-selection 96
+view-clear-selection 96
+view-damage 97
+view-draw-arc 99
+view-draw-char 101
+view-draw-filled-arc 100
+view-draw-filled-polygon 100
+view-draw-filled-rectangle 101
+view-draw-image 100
+view-draw-line 100
+view-draw-polygon 100
+view-draw-polyline 100
+view-draw-polypoint 100
+view-draw-rectangle 101
+view-draw-text 101
+view-graphic 99
+view-gravity 97
+view-highlight-color 97
+view-move-graphic 102
+view-pan 97
+view-pixel-size 98
+view-remove-selection 97
+view-resize-extent-p 98
+view-rotate-graphic 102
+view-scale 99
+view-scale-graphic 102
+view-select-graphic 103
+view-select-region 103
+view-selection 98
+view-show-region 103
+view-show-world 103
+view-transform-graphic 104
+view-unselect-graphic 104
+view-unselect-region 104
+view-zoom 99
+viewable-p 25
+W
+wcoord 4
+world coordinate 4
+world-extent 7, 99

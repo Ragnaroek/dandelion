@@ -1,0 +1,22 @@
+This package was debianized by Kevin M. Rosenberg <kmr@debian.org> in
+Nov 2002.
+
+It was downloaded from http://www.sourceforge.net/projects/clocc
+Upstream Authors: Kevin Broughan, Diane Koorey Willcock, Raymond Toy 
+
+Changes compared to upstream: 
+  - Added .asd file
+
+
+Copyright (c) 1992-1995 by Kevin Broughan and Diane Koorey Willcock
+Copyright (c) 2000-2002 by Raymond Toy 
+
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation. The exception is macros.l which is released
+under the LGPL so that it can be incorporated into other packages.
+
+The GNU General Public License is located in the file
+/usr/share/common-licenses/GPL and the GNU Lessor General Public
+License can be found in your Debian file system in
+/usr/share/common-licenses/LGPL.

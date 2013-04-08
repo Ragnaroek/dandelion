@@ -1,0 +1,162 @@
+
+
+
+                  Common Lisp User Interface Environment (CLUE)
+                                        
+                                  Release Notes
+
+            Copyright (C) 1988, 1989, Texas Instruments Incorporated
+
+
+VERSION 
+        
+        7.1 (November, 1989)
+
+
+
+PREVIOUS RELEASE
+
+        7.0 (September, 1989)
+
+
+
+GENERAL
+
+        CLUE (Common  Lisp  User  Interface  Environment)  is a portable
+        system for  user  interface  programming  in Common Lisp.  CLUE,
+        which is based on the X Window System and the Common Lisp Object
+        System  (CLOS),  extends  the   CLX  interface  to   provide  an
+        architectural model  for  the  construction  of interactive Lisp
+        applications.  Modelled on the Xt toolkit library, CLUE could be
+        described as  a  translation  of  the  Xt  "intrinsics" into the
+        domain of Common Lisp and CLOS.
+
+        This portable implementation of CLUE is available to the  public
+        at no charge.   Anyone interested  may receive  source code  and
+        documentation  via  anonymous  ftp  from  CSC.TI.COM,  (internet
+        address 10.7.0.46)  in  pub/clue.tar.Z.   CLUE  sources are also
+        included as  part  of  the  public  distribution of the X Window
+        System, Version 11; see directory contrib/toolkits/clue.
+
+
+
+RELATED SYSTEMS
+
+        Common Lisp 
+       
+        CLUE  is  written   in  portable   Common  Lisp   and  has  been
+        successfully built using  the following  compilers: TI  Explorer
+        (Release  6.0),  Symbolics  (Genera  7.n),  Lucid  (3.0),  Franz
+        Allegro (3.1), and Harlequin LispWorks.
+
+
+        CLOS
+
+        This version of CLUE  is compatible with  TI CLOS (Release  6.0)
+        and PCL (Victoria Day '89).  Some modifications to Victoria  Day
+        PCL are necessary to compile CLUE (see pcl-fixes.l).
+
+
+        CLX
+
+        This version of CLUE requires the X11 R4 version of CLX (see X11
+        R4  distribution,   directory   lib/CLX).    CLUE   applications
+        upgrading from versions 7.0 or earlier should be recompiled.
+
+
+
+SPECIFICATION CHANGES         (* may require application source changes)
+        
+2.1.1*  make-contact: The five steps used to determine the initial value
+        of a  contact  resource  were  clarified.   The  new description
+        explains what happens  when different  :initform's are  given in
+        the slot and resource  specifications for a  resource (it is  an
+        error) and also describes how resource :initform's are inherited
+        from superclasses.
+
+2.1.4   display: The default values  for the optional  x, y, width,  and
+        height arguments are specified.
+
+2.1.5*  apply-callback: This macro no longer binds the special  variable
+        *contact*.  This  interface  has  become  obsolete because it is
+        less efficient and less  reliable than passing  an argument from
+        the callbacks list or binding it in a closure.
+
+3.8.1   Standard syntax defined for :timer event specification lists.
+
+3.8.6   The handling of exposure compression was clarified.  The display
+        arguments passed when  compress-exposures is  :on represent  the
+        smallest rectangle enclosing the exposed region.
+ 
+4.5.2   shell-mapped and shell-unmapped are new generic functions  which
+        are called when a shell changes state.
+
+4.5.5, 4.5.8*
+        The   wm-protocols    accessor    function    was   renamed   to
+        wm-protocols-used.  For consistency, the corresponding slot  and
+        initarg names for  the wm-shell  class were  also changed.  This
+        was necessary to avoid collision with the new  xlib:wm-protocols
+        accessor introduced in R4 CLX.
+
+
+
+FIXES
+        
+1.      A  primary  preferred-size  method  is  now  defined   for shell
+        classes.
+
+2.      The handle-event  method  for  shells  now avoids an unnecessary
+        resize of content when  :configure-notify signals only  a change
+        in top-level border-width.
+
+3.      process-all-events processes remaining events correctly to avoid
+        a hangup resulting from event compression.
+
+4.      change-priority   now   use   priority/sibling   returned   from
+        manage-priority.    Other   corrections   include    testing for
+        managed-p and avoiding a redundant priority change for top-level
+        contacts.
+
+5.      manage-geometry method for wm-shell now ensures that any pending
+        :configure-notify events  are  handled  before reconfiguring the
+        shell and waiting for the resulting :configure-notify.
+
+6.      Contact  methods  for   initialize-instance  and   realize  were
+        corrected to allow :input-only contacts to be created.
+
+7.      defcontact  signals  error  if   different  slot  and   resource
+        :initform's are given for a contact resource.
+
+8.      The   resource   specifications   for   the   root    class were
+        rationalized.
+
+9.      Exposure compression now correctly accumulates the total exposed
+        area  from  all  discarded  :exposure  events  into   the single
+        :exposure event reported.
+
+10.     wm-shell instances now correctly handle :focus-in events.
+
+11.     The  expansion  of  using-gcontext  puts  the  &body  inside  an
+        unwind-protect to ensure cache integrity after a non-local exit.
+
+12.     return-from forms corrected in examples/menu.
+
+13.     defcontact removes duplicate  resource initializations  when the
+        same resource is inherited from multiple superclasses.
+
+14.     destroy-cleanup, destroyed-p: avoid compiler error when  setting
+        window-id of destroyed window to -1.
+
+
+
+KNOWN BUGS
+
+1.      Modal input needs to be defined.
+
+2.      The implementation of interactive-stream is not portable.
+
+3.      Virtual contacts are not documented or fully integrated into the
+        intrinsics.
+
+4.      The cacheing scheme used by using-context should be improved to
+        allow faster matching and a greater degree of gcontext sharing.

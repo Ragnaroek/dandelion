@@ -1,0 +1,9 @@
+      DOUBLE PRECISION FUNCTION DVSUM(N, X)
+      INTEGER N
+      DOUBLE PRECISION X(N)
+      INTEGER I
+C
+      DVSUM = 0.D+0
+      DO 10 I = 1, N
+ 10      DVSUM = DVSUM + X(I)
+      END

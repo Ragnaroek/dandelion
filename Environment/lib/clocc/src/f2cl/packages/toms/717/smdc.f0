@@ -1,0 +1,122 @@
+      REAL FUNCTION R7MDC(K)
+C
+C  ***  RETURN MACHINE DEPENDENT CONSTANTS USED BY NL2SOL  ***
+C
+      INTEGER K
+C
+C  ***  THE CONSTANT RETURNED DEPENDS ON K...
+C
+C  ***        K = 1... SMALLEST POS. ETA SUCH THAT -ETA EXISTS.
+C  ***        K = 2... SQUARE ROOT OF ETA.
+C  ***        K = 3... UNIT ROUNDOFF = SMALLEST POS. NO. MACHEP SUCH
+C  ***                 THAT 1 + MACHEP .GT. 1 .AND. 1 - MACHEP .LT. 1.
+C  ***        K = 4... SQUARE ROOT OF MACHEP.
+C  ***        K = 5... SQUARE ROOT OF BIG (SEE K = 6).
+C  ***        K = 6... LARGEST MACHINE NO. BIG SUCH THAT -BIG EXISTS.
+C
+      REAL BIG, ETA, MACHEP, ZERO
+      INTEGER BIGI, ETAI, MACHEI
+      EQUIVALENCE (BIG,BIGI), (ETA,ETAI), (MACHEP,MACHEI)
+      PARAMETER (ZERO=0.E+0)
+C
+C     +++  IEEE ARITHMETIC MACHINES  +++
+C
+C      DATA BIGI   /  2139095039 /
+C      DATA ETAI   /     8388608 /
+C      DATA MACHEI /   864026624 /
+C
+C  +++  IBM, AMDAHL, OR XEROX MAINFRAME  +++
+C
+C      DATA ETAI   /    1048576 /
+C      DATA BIGI   / 2147483647 /
+C      DATA MACHEI / 1007681536 /
+C
+C  +++  VAX  +++
+C
+C      DATA ETAI   /       128 /
+C      DATA BIGI   /    -32769 /
+C      DATA MACHEI /     13440 /
+C
+C  +++  CRAY  +++
+C
+C      DATA BIGI   / 6917247552664371198 /
+C      DATA ETAI   / 2306828171632181248 /
+C      DATA MACHEI / 4599160381963763712 /
+C
+C  +++  PORT LIBRARY -- REQUIRES MORE THAN JUST A DATA STATEMENT, +++
+C  +++                  BUT HAS CONSTANTS FOR MANY MORE MACHINES. +++
+C
+C  To get the current R1MACH, which has constants for many more
+C  machines, ask netlib@research.att.com to
+C                    send r1mach from cor
+C  For machines with rounded arithmetic (e.g., IEEE or VAX arithmetic),
+C  use MACHEP = 0.5 * R1MACH(3) below.
+C
+C     REAL R1MACH
+C     EXTERNAL R1MACH
+C     DATA BIG/0.E+0/, ETA/0.E+0/, MACHEP/0.E+0/, ZERO/0.E+0/
+C     IF (BIG .GT. ZERO) GO TO 1
+C        BIG = R1MACH(2)
+C        ETA = R1MACH(1)
+C        MACHEP = R1MACH(4)
+C1    CONTINUE
+C
+C  +++ END OF PORT +++
+C
+C-------------------------------  BODY  --------------------------------
+C
+C
+      IF (MACHEP .LE. ZERO) THEN
+         WRITE(*,*) 'Edit R7MDC to activate the appropriate statements'
+         STOP 987
+         ENDIF
+      GO TO (10, 20, 30, 40, 50, 60), K
+C
+ 10   R7MDC = ETA
+      GO TO 999
+C
+ 20   R7MDC = SQRT(256.E+0*ETA)/16.E+0
+      GO TO 999
+C
+ 30   R7MDC = MACHEP
+      GO TO 999
+C
+ 40   R7MDC = SQRT(MACHEP)
+      GO TO 999
+C
+ 50   R7MDC = SQRT(BIG/256.E+0)*16.E+0
+      GO TO 999
+C
+ 60   R7MDC = BIG
+C
+ 999  RETURN
+C  ***  LAST LINE OF R7MDC FOLLOWS  ***
+      END
+      INTEGER FUNCTION I7MDCN(K)
+C
+      INTEGER K
+C
+C  ***  RETURN INTEGER MACHINE-DEPENDENT CONSTANTS  ***
+C
+C     ***  K = 1 MEANS RETURN STANDARD OUTPUT UNIT NUMBER.   ***
+C     ***  K = 2 MEANS RETURN ALTERNATE OUTPUT UNIT NUMBER.  ***
+C     ***  K = 3 MEANS RETURN  INPUT UNIT NUMBER.            ***
+C          (NOTE -- K = 2, 3 ARE USED ONLY BY TEST PROGRAMS.)
+C
+C  +++  PORT VERSION FOLLOWS...
+C      INTEGER I1MACH
+C      EXTERNAL I1MACH
+C      INTEGER MDPERM(3)
+C      DATA MDPERM(1)/2/, MDPERM(2)/4/, MDPERM(3)/1/
+C      I7MDCN = I1MACH(MDPERM(K))
+C  +++  END OF PORT VERSION  +++
+C
+C  +++  NON-PORT VERSION FOLLOWS...
+      INTEGER MDCON(3)
+      DATA MDCON(1)/6/, MDCON(2)/8/, MDCON(3)/5/
+      I7MDCN = MDCON(K)
+C  +++  END OF NON-PORT VERSION  +++
+C
+ 999  RETURN
+C  ***  LAST LINE OF I7MDCN FOLLOWS  ***
+      END

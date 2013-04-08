@@ -1,0 +1,31 @@
+C chsone.for and chstwo.for from numerical recipes
+C simple test file
+C
+C
+      SUBROUTINE CHSONE(BINS,EBINS,NBINS,KNSTRN,DF,CHSQ,PROB)
+      DIMENSION BINS(NBINS),EBINS(NBINS)
+      DF=NBINS-1-KNSTRN
+      CHSQ=0.
+      DO 11 J=1,NBINS
+        IF(EBINS(J).LE.0.)PAUSE 'bad expected number'
+        CHSQ=CHSQ+(BINS(J)-EBINS(J))**2/EBINS(J)
+11    CONTINUE
+      PROB=GAMMQ(0.5*DF,0.5*CHSQ)
+      RETURN
+      END
+C
+C
+      SUBROUTINE CHSTWO(BINS1,BINS2,NBINS,KNSTRN,DF,CHSQ,PROB)
+      DIMENSION BINS1(NBINS),BINS2(NBINS)
+      DF=NBINS-1-KNSTRN
+      CHSQ=0.
+      DO 11 J=1,NBINS
+        IF(BINS1(J).EQ.0..AND.BINS2(J).EQ.0.)THEN
+          DF=DF-1.
+        ELSE
+          CHSQ=CHSQ+(BINS1(J)-BINS2(J))**2/(BINS1(J)+BINS2(J))
+        ENDIF
+11    CONTINUE
+      PROB=GAMMQ(0.5*DF,0.5*CHSQ)
+      RETURN
+      END

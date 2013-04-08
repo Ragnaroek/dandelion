@@ -1,0 +1,239 @@
+
+
+
+                  Common Lisp User Interface Environment (CLUE)
+                                        
+                                  Release Notes
+
+      Copyright (C) 1988, 1989, 1990 Texas Instruments Incorporated
+
+
+VERSION 
+        
+        7.20 (July, 1990)
+
+
+
+PREVIOUS RELEASE
+
+        7.1 (November, 1989)
+
+
+
+GENERAL
+
+        CLUE (Common  Lisp  User  Interface  Environment)  is a portable
+        system for  user  interface  programming  in Common Lisp.  CLUE,
+        which is based on the X Window System and the Common Lisp Object
+        System  (CLOS),  extends  the   CLX  interface  to   provide  an
+        architectural model  for  the  construction  of interactive Lisp
+        applications.  Modelled on the Xt toolkit library, CLUE could be
+        described as  a  translation  of  the  Xt  "intrinsics" into the
+        domain of Common Lisp and CLOS.
+
+        This portable implementation of CLUE is available to the  public
+        at no charge.   Anyone interested  may receive  source code  and
+        documentation  via  anonymous  ftp  from  CSC.TI.COM,  (internet
+        address 10.7.0.46)  in  pub/clue.tar.Z.   CLUE  sources are also
+        included as  part  of  the  public  distribution of the X Window
+        System, Version 11; see directory contrib/toolkits/clue.
+
+
+
+RELATED SYSTEMS
+
+        Common Lisp 
+       
+        CLUE  is  written   in  portable   Common  Lisp   and  has  been
+        successfully built using  the following  compilers: TI  Explorer
+        (Release 6.0 or later), Franz Allegro (3.1), Harlequin LispWorks
+        1.0, and AKCL (1.478).
+
+
+        CLOS
+
+        This version of CLUE is compatible with TI CLOS (Release  6.0 or
+        later) and PCL (Victoria Day '89 or later).   Some modifications
+        to  Victoria  Day  PCL   are  necessary  to   compile  CLUE (see
+        pcl-fixes.l).
+
+
+        CLX
+
+        This version of CLUE is compatible with R3 or later versions  of
+        CLX   (see   X11   distribution,   directory   lib/CLX).
+        
+
+
+INSTALLATION
+        See clue/README  for  general  installation  instruction.   CLUE
+        applications upgrading from CLUE versions 7.0 or earlier  should
+        be recompiled.
+
+
+
+SPECIFICATION CHANGES             (* means source changes may be needed)
+
+2.1     A :callbacks initarg is defined to initialize a contact callback
+        list.
+
+2.1.4   The behavior and return value are clarified for move and resize.
+
+2.1.5   A   new   macro   ---   apply-callback-else   ---   is    added.
+        apply-callback-else is equivalent to a combination of callback-p
+        and apply-callback but is more efficient.
+
+4.2.1   manage-geometry/priority can  now  return  a  function  which is
+        called by change-geometry/priority  to perform  any side-effects
+        of granting the requested geometry/priority change.  This allows
+        such side-effects to be  done efficiently or  to be ignored,  if
+        manage-geometry/priority is called only to test approval.
+        
+4.2.2   A new macro --- while-changing-layout --- is added.  This  macro
+        may be  used  when  changing  several factors influencing layout
+        policy, in order  to postpone  updates to  the layout  until all
+        changes are done.
+
+        change-layout:  The  treatment   of  the   optional  argument is
+        clarified.
+        
+4.6     New utility  functions  are  added.   contact-translate performs
+        much the  same  function  as  xlib:translate-coordinates,  using
+        client-side  contact   data   instead   of   a  server  request.
+        contact-top-level returns the top-level ancestor of a contact.
+
+4.5.5   wm-shell methods  to  access  individual  components of standard
+        properties are described.
+
+        wm-shell resource specifications added to initialize  individual
+        components of standard properties.
+
+4.5.7*  top-level-shell slots for  certain icon  attributes are removed.
+        Instead, top-level-shell  methods  to  access  these  individual
+        components of standard properties are described.
+
+        top-level-shell  resource  specifications  added   to initialize
+        individual components of standard properties.
+
+4.5.8   top-level-session resource  specifications  added  to initialize
+        individual components of standard properties.
+
+
+
+FIXES
+
+1.      CLUE now  uses  the  COMMON-LISP  package,  which is expected to
+        export all symbols  for Common  Lisp, Common  Lisp Object System
+        (CLOS), and Common Lisp  Condition System (CLCS).   Depending on
+        your Lisp implementation, you may need to create a package named
+        COMMON-LISP, which exports symbols imported from other  packages
+        for Lisp, CLOS, and CLCS.
+
+2.      The   following   functions   are   now   generic:    add-event,
+        delete-event, event-actions, initial-state-transition.
+
+3.      change-priority   calls   a    new   generic    function   (setf
+        contact-priority) to actually reset window priority.
+
+4.      Many   fixes  to   the   Explorer-dependent    implementation of
+        interactive-stream.
+
+5.      default-resources  now  handles  correctly  the  case  when  the
+        contact arg is a string.
+
+6.      destroy: Unmanage contact before destroying it, so that parent's
+        change-layout will be called.
+
+7.      resource: Use (intern name 'keyword) to look up resource value.
+        
+8.      The class precedence  list cache  used by  event translation was
+        changed to  avoid  crashing  on  an  unfinalized  class  and  to
+        eliminate classes with no defevent's.
+
+9.      perform-callback: The special binding of *contact* was removed. 
+
+10.     Improved  facilities   for   cacheing   pixmaps,  gcontexts, and
+        cursors.  See CACHES.L.
+
+11.     Several fixes made  to root  geometry management  of (top-level)
+        shells.
+
+12.     defcontact:  Class   initialization   method   defined   only if
+        necessary.
+
+13.     (setf contact-state):  Ensure  map-window  occurs  if  initially
+        :mapped, even if some siblings  are :withdrawn.  Fix method  for
+        wm-shell so that resulting :(un)map-notify's are ignored.
+
+14.     get-contact-resource-table: Print better  error message  when no
+        :parent given to make-contact.
+
+15.     move/resize: Add :around method on contact class that skips  all
+        primary/auxiliary methods when geometry not really changed.
+
+16.     top-level-session: Add initialize-instance method to set default
+        client-host.  Add realize method to set initial property values.
+
+17      wm-shell:  Convert   atom   keywords   to   id's  when  changing
+        :wm_protocols property.
+
+18.     convert: Use  ignore-errors  to  avoid  signalling  error during
+        value conversion.
+
+19.     add-child: Add new method  to signal error  if parent is  a root
+        and new child is not a shell.
+
+20.     Use a better  method for  computing an  event mask  from contact
+        event translations.  delete-event  will no  longer remove  event
+        mask bits set in a resource initform.
+
+21.     accept-focus-p: Fix  primary  method  to  refuse  focus  if  not
+        sensitive or if not viewable.
+
+22.     (setf contact-sensitive): Fix primary method to refresh  display
+        and to give up focus when becoming insensitive.
+
+23.     Fix change-layout for  shells to  ensure content  border remains
+        hidden.
+
+24.     Shells inherit default background  and colormap from  owner, not
+        parent.
+
+25.     Shell position  is  updated  correctly  after  resize  by window
+        manager.
+
+26.     with-wm-properties: Defects fixed in property change batching.
+
+27.     transient-shell:  Set   WM_TRANSIENT_FOR   to   the  root  shell
+        "ancestor," inheriting from owner instead of parent.
+
+28.     Fix shells to accept input focus from window manager correctly.
+
+29.     convert: Correct various defects in converting colors and use of
+        ignore-errors. 
+
+30.     initialize-instance :after for basic-contact: Copy initial value
+        of  callback  list  because  it  is  destructively   modified by
+        subsequent add/delete-callback's.
+
+31.     Make (setf (contact-state wm-shell) :iconic) work correctly.
+
+32.     dispatch-event: Preserve the invariant that the region  reported
+        to display  has  already  been  cleared  ---  change handling of
+        exposure compression to call clear-area when necessary.
+
+
+
+KNOWN BUGS
+
+1.      Modal input needs to be defined. with-event-mode not documented.
+
+2.      The implementation of interactive-stream is not portable.
+
+3.      Virtual contacts are not documented or fully integrated into the
+        intrinsics.
+
+4.      Pixmap and cursor cache facilities are not documented.
+
+
+

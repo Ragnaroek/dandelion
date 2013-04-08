@@ -1,0 +1,649 @@
+\documentclass{article}
+\font\tablefont cmr10 at 10.95truept
+%-------------------------------------------------------------------------
+
+\title{Fortran to Lisp Translation using f2cl}
+\author{K.A. Broughan 
+  \and D.M.K. Willcock
+       \\ University of Waikato, Hamilton, New Zealand}
+%-------------------------------------------------------------------------
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The need for both algebraic and numerical capabilities within single
+mathematical computation systems has highlighted the need to translate
+numerical software written in Fortran77
+to Common Lisp, a language favoured by the algebraic computation 
+community.
+
+This paper reports the current state of {\bf f2cl}, a translator written to
+achieve that end.  We describe the translation process giving details
+of Lisp equivalents of Fortran expressions, as well as
+discussing those peculiarities of Fortran that have no straightforward
+equivalent in Lisp.
+
+\end{abstract}
+
+KEY WORDS: f2cl, Fortran to Lisp translation, Common Lisp, Fortran 77
+
+%-------------------------------------------------------------------------
+
+\section{Introduction}
+The combination of symbolic and numeric computation has become popular in several application areas. Use of Common Lisp \cite{cl} as the environment for one of these combined
+packages has many advantages over other languages (see \cite{rfkb}).  However vast libraries of numeric programs exist creating a need for an automatic translator.  
+
+The principle reason for writing {\bf f2cl} was to demonstrate that, with
+reasonable ease, effective use can be made of the
+algorithmic content of the large body of existing numeric code, mostly
+written in Fortran 77 \cite{katz}, within Lisp-based environments.
+This helps counter the argument that the value of existing
+code is the reason why languages other than Fortran should
+not be used.
+
+Other techniques which are used to communicate between Lisp and Fortran
+include reading and writing to files, using pipes and remote processes,
+and using so-called foreign function interfaces.  All of these techniques,
+as well as {\bf f2cl}, have been used in the development of the symbolic-numeric 
+environment SENAC \cite{senac}.  Where using {\bf f2cl} is practical, the
+resulting combined system is the most robust and flexible of the
+alternatives.  For example, Lisp and translated Fortran code can call and
+be called in any way without any restrictions.
+
+\section{A Complete Example}
+
+As an illustration of what {\bf f2cl} does we present a small Fortran
+subroutine and the corresponding Lisp code as produced by {\bf f2cl}.
+\begin{verbatim}
+      SUBROUTINE CHSONE(BINS,EBINS,NBINS,KNSTRN,DF,CHSQ,PROB)
+      DIMENSION BINS(NBINS),EBINS(NBINS)
+      DF=NBINS-1-KNSTRN
+      CHSQ=0.
+      DO 11 J=1,NBINS
+        IF(EBINS(J).LE.0.)PAUSE 'bad expected number'
+        CHSQ=CHSQ+(BINS(J)-EBINS(J))**2/EBINS(J)
+11    CONTINUE
+      PROB=GAMMQ(0.5*DF,0.5*CHSQ)
+      RETURN
+      END
+->
+
+(defun chsone (bins ebins nbins knstrn df chsq prob)
+  (declare (type single-float prob))
+  (declare (type single-float chsq))
+  (declare (type single-float df))
+  (declare (type fixnum knstrn))
+  (declare (type fixnum nbins))
+  (declare (type (simple-array single-float (*)) ebins))
+  (declare (type (simple-array single-float (*)) bins))
+  (prog ((j 0))
+        (declare (type fixnum j))
+        (setf df (+ (+ nbins (- 1)) (- knstrn)))
+        (setf chsq 0.0)
+        (fdo (j 1 (+ j 1))
+             ((> j nbins) nil)
+             (tagbody (if (<= (fref ebins j) 0.0)
+                          (error "BAD EXPECTED NUMBER"))
+                      (setf chsq
+                            (+ chsq
+                               (f2cl/
+                                (expt
+                                 (+ (fref bins j) 
+                                    (- (fref ebins j)))
+                                 2)
+                                (fref ebins j))))))
+        (setf prob (gammq (* 0.5 df) (* 0.5 chsq)))
+        (return (values bins ebins nbins knstrn df chsq prob))))
+\end{verbatim}
+ 
+\section{The Translation Process}
+
+After installation, the translator is available via a number of functions,
+the easiest to use being {\bf f2cl} itself.
+\begin{verbatim}
+   (f2cl <infile> <outfile>)
+\end{verbatim}
+where {\em infile} is a file containing valid Fortran 77 code for any number of function and subroutine subprograms. 
+The function creates and writes {\em outfile}, a file containing corresponding Common Lisp code.
+
+Prior to the translation process a preprocessing lexicographic pass is done. Input file characters are converted to upper case and composite symbols, which the Lisp reader
+will not recognise, are replaced with appropriate simple symbols.  For
+example .GT. is replaced with $>$.  Numbers of the form {\tt 6.} are
+replaced with {\tt 6.0}.  
+
+The preprocessor does not completely prepare the code for the Lisp reader and it has been necessary
+to impose some restrictions:  line breaks must occur within whitespace 
+(so as not to split a symbol), tabs are not permitted and spaces are required to separate symbols (except numbers and 
+operators and the symbols {\tt GO} and {\tt TO} which are recognised as one 
+word or two).
+
+The result of this lexicographical phase is placed in a file {\it ``prep.tmp''} in the current directory.
+
+The translation of each subprogram in a file proceeds in four stages, the first
+three of which are passes through the subprogram.
+The first pass reads a subprogram line by line.
+During this pass, format statements (which are often referenced before 
+they occur) are removed from the subprogram and,
+after being translated into a corresponding Lisp {\tt format} directive string,
+are stored in a list with their labels.  Other statements are not changed.
+
+This first pass returns a list of lines 
+(with each line being represented by a list) which is 
+passed to the second stage where each line is translated into a corresponding Lisp
+s-expression as detailed below.  
+
+Specification statements such as {\tt COMMON}, {\tt SAVE} and {\tt DIMENSION} are not directly translated
+into Lisp code but the appropriate information is stored for use by the
+final stage of the translation.
+
+After the line by line translation pass another pass is done, the third stage,
+to build {\tt if} and {\tt fdo} structures from the translated lines.
+
+The final stage of the translation deals with variable declarations.
+Each variable used in the subprogram, including the formal arguments, is appropriately
+declared and initialised in the translated code.  The declarations and
+initialisations are constructed from information given in the original
+code (from {\tt DIMENSION} and {\tt IMPLICIT} statements and explicit declarations)
+and the rules for data types for undeclared variables.  They are then inserted into
+the appropriate place in the Lisp code. {\tt PARAMETER} and {\tt COMMON} statements are also
+dealt with at this stage (see below).
+
+Following the translation, the Lisp version of the Fortran 
+subprogram is pretty printed to the file given as the second argument to
+{\tt f2cl}.
+
+There are global variables available to alter the nature of the translation 
+produced or give information to the user:
+\begin{description}
+  \item {
+   {\tt *verbose*} 
+   (default {\tt nil}) if {\tt t} will give a line 
+   by line commentary on the progress of the translation and display some  
+   documentation,}
+  \item {
+   {\tt *comments*} 
+   (default {\tt nil}) if {\tt t} will include 
+   comments in the lisp output as the argument of the ({\tt nil} returning) 
+   function {\tt comment} (note that this feature should only be used when 
+   the Fortran comments occur exclusively within subroutines), and }
+  \item {
+  {\tt *prune\_labels*}
+  (default {\tt t}) if {\tt t} will remove redundant labels from the 
+  resultant Lisp code.}
+\end{description}
+%--------------------------------------------------------------------------
+
+\section{The Translation Result}
+
+In this section we describe and give examples of the translation of Fortran
+statements and structures, in much the same order as they would appear
+in a subprogram: subprogram headers, declarations and other data
+specifications and then executable statements.
+
+\subsection{ Subprogram definition:}
+Functions and subroutines in Fortran are translated
+in a program logic preserving manner to functions defined using 
+{\tt defun} in Lisp.
+Functions return an equivalent value and
+subroutines are translated into a form where all arguments are returned
+using multiple values.  {\tt RETURN} is translated into the expression
+{\tt (go end\_label)} and END is translated into an {\tt end\_label} label
+followed by an appropriate {\tt return}
+expression as illustrated in the following examples.
+
+\begin{verbatim}
+    FUNCTION F(...)            ->    (defun f (...)
+       ...                               ...
+    RETURN                             (go end_label)
+       ...                               ...
+    END                                end_label
+                                       (return f)) 
+
+
+    SUBROUTINE S(A, B, ... )   ->    (defun s (a b ...)
+       ...                                ...
+    END                                end_label
+                                       (return (values a b ...))) 
+\end{verbatim}
+Where a subroutine contains {\tt SAVE}d variables it is translated into a {\tt defvar} so that lexical scoping will produce correct functionality
+in the translated code:
+
+\begin{verbatim}
+    FUNCTION F (X, Y, ... )    ->    (defvar f (let ((i 0) (j 0))
+       ...                             #'(lambda (x y ... )
+    SAVE I, J
+       ...                                 ...
+    END                                )
+\end{verbatim}
+
+{\tt PROGRAM} subprograms are treated as for subroutines except that
+the program name {\tt *main*} is created when either none is specified
+or the {\tt PROGRAM} statement is omitted.
+\begin{verbatim}
+      PROGRAM SOMENAME         ->     (defun somename nil ...)
+      PROGRAM                  ->     (defun *main* nil ...)
+\end{verbatim}
+
+\subsection{Declarations:}
+As many declarations as possible are included in the translated code to
+improve the efficiency of the Lisp code when it is compiled. Refer to
+the complete example given after the introduction.
+
+\subsection{DATA Specifications:}
+{\tt DATA} specifications of the form
+\begin{verbatim}
+  DATA nlist/clist [,nlist/clist/] ...
+\end{verbatim}
+are restricted to one variable name per {\tt nlist}, no implied do's and each 
+{\tt clist} is a single value, a list of values or a repetition ({\tt n*x}) but not a 
+combination of values and repetitions.
+
+The following translations take place (when the variables are appropriately
+declared).
+\begin{verbatim}
+   DATA NOLD /-1/, X(1)/3.4/, A/4*120/, B/1, 2 ,3 ,4/
+ ->
+   (setq nold -1)
+   (fset (fref x 1) 3.4)
+   (fill a 120 :end 3)
+   (replace b '(1 2 3 4))
+\end{verbatim}
+
+\subsection{Parameters:}
+{\tt PARAMETER} statements in a Fortran subroutine are mapped to keywords 
+in the argument list for the Lisp function.
+\begin{verbatim}
+  SUBROUTINE SUB(X, Y, ...,Z)
+  ...
+  PARAMETER(A=3.4,NMAX=100,EPS=1.0D-5)
+
+   ->
+  (defun sub (x y ... z &key (a 3.4) (nmax 100) (eps 1.0d-5))
+  .....
+\end{verbatim}
+
+\subsection{Common Blocks and EQUIVALENCE Statements:}
+One of the problems to overcome in translating Fortran to Lisp
+is the different way data is stored.  Fortran provides
+features which allow the user control over where particular data
+items are stored relative to each other. For example in common blocks
+and using EQUIVALENCE statements. These features are not easily modelled in Lisp.
+
+In Fortran a common block is a sequence of storage units
+for the entities in the list of variables
+and arrays, organised in the order written in the
+COMMON statement.  There is an association of data values between
+common blocks with the same name in different program units.
+
+It has been necessary to make some restrictions on the use of common 
+blocks in Fortran code to be translated.  EQUIVALENCE statements are
+not recognised at all.
+
+Named common blocks are treated as blank, thus variable names must be
+unique between common blocks.  Arrays in common storage must always be
+declared with the same dimensions.  Variable names are expected to be 
+the same in program units referencing the same common block. (See \cite{rfkb}
+for a discussion on the infrequency of EQUIVALENCE statements and
+complex common blocks).
+
+For each common variable {\tt X}, a {\tt (proclaim (special x))}
+expression and an appropriate Lisp declaration are inserted in the Lisp
+translation of each subprogram in which it is referenced.
+
+\subsection{Statement Functions:}
+A subroutine containing statement functions is translated into a 
+{\tt labels} form thus:
+\begin{verbatim}
+      SUBROUTINE subr(a)
+      stmtfn1(x, y, z) = max(x, max(y, z))
+      stmtfn2(x) = x+x
+      a = stmtfn1(b,a,a) + stmtfn2(b)
+      RETURN
+      END
+
+->
+
+(defun subr (a)
+  (declare (type double-float a))
+  (prog ()
+        (labels ((stmtfn1 (x y z) (max x (max y z)))
+                 (stmtfn2 (x) (+ x x)))
+          (setf a (+ (stmtfn1 b a a) (stmtfn2 b)))
+          (return (values a)))))
+\end{verbatim}
+
+\subsection{Symbols and Expressions:}
+All symbols are translated to themselves with the exception of Fortran variables
+called {\tt T}, {\tt NIL} or {\tt PI}.   These are translated to {\tt t\_},
+{\tt nil\_} or {\tt pi\_} respectively in
+order to avoid problems with Lisp constants with the same names.
+
+Arithmetic, logical and relational expressions are translated as follows:
+
+\begin{verbatim}
+  A+B        ->        (+ a b)
+  A-B        ->        (+ a (- b))
+  A.NE.B     ->        (not (= a b))
+  A.GE.B     ->        (>= a b)
+  A.OR.B     ->        (or a b)
+  A.EQV.B    ->        (logeqv a b)
+  A.NEQV.B   ->        (logxor a b)
+\end{verbatim}
+
+Division is treated slightly differently: {\tt A/B  ->  (f2cl/ a b)}.
+The macro {\tt f2cl/ } checks the data types of the arguments and if
+both are integers calls {\tt (floor a b)} otherwise calls {\tt (/ a b)}
+to be consistent with the Fortran standard.
+
+\subsection{Arrays:}
+Efficient translation of Fortran arrays proved to be a major challenge.
+There are three issues to address:
+\begin{enumerate}
+ \item{
+     Lisp arrays are 0 based and Fortran arrays are 1 based. One 
+     possible solution is to use the {\tt fset} and {\tt fref} macros which 
+     are provided with {\bf f2cl} so that arrays may be referenced as though they were 1 
+     based. Thus, at present,
+\begin{verbatim}
+ X(I,J+M)                 ->   (fref x i (+ j m))
+ X(1,2) = 3D0 + Y(I,J)    ->   (fset (fref x 1 2) 
+                                     (+ 3.0d0 (fref y i j)))
+\end{verbatim}
+     Efficiency is compromised by the overhead of extra instructions
+     for each array access but address arithmetic is faithfully translated.
+
+     An alternate solution is to {\em pad} each lisp array with an extra place 
+     for each dimension and then ignore the 0'th place. This creates a 
+     need for extra storage (probably a minor concern). To achieve
+     this simply edit the Lisp code replacing {\tt fset} by {\tt setf} and 
+     {\tt fref} by {\tt aref} and adjusting up array dimensions by one 
+     unit. This 
+     approach will, however, complicate the issue of how to translate 
+     displaced arrays (see 3. below).
+   }
+ \item{
+     Fortran arrays are stored column-wise but Lisp arrays are stored
+     row-wise.  This is an important efficiency issue and has not yet been addressed.
+   }
+ \item{
+     Fortran allows users to exploit contiguous memory storage of arrays.
+     For example, an array may be passed to a subprogram by referring to
+     some element as being the first element of an array with dimensions
+     specified by the subprogram. This creates a problem of displacements.
+   }
+\end{enumerate}
+
+The ambiguity between passing array elements and sub-arrays as
+arguments to other subprograms with the same syntax in Fortran is not
+yet resolved by {\bf f2cl}.  To correctly translate such subprogram
+calls, the translator will require information about the subprogram
+being called.  At this stage the translator does not have access to
+that information.
+
+Currently adjustments to treat displaced arrays are made by hand following
+a normal application of {\bf f2cl}. The type of adjustments required may be
+illustrated in the following example wherein a call to a subroutine {\tt sub}
+is made passing it the address of the $i$'th element of an array {\tt X} and such
+that the subroutine is expecting an array of size {\tt n}. The adjusted array
+name {\tt y} which is created shares storage with the original Lisp array {\tt x}.
+\begin{verbatim}
+   PROGRAM MAIN
+   ...
+   CALL SUB(X(I), N)
+   ...
+   SUBROUTINE SUB(Y, n)
+   DIMENSION Y(N)
+   ...
+->
+   (setq y (make-array n :element-type 'single-float
+                         :displaced-to x
+                         :displaced-index-offset (1- i)))
+   (sub y n)
+\end{verbatim}
+Automating this type of adjustment would require information about both
+{\tt MAIN} and {\tt SUB} and so is outside the current scope of {\bf f2cl}.
+
+Arrays with other than 1 as the initial index (e.g. {\tt DIMENSION A(4:20)}) are not translated.
+
+\subsection{Assignment statements:}
+Assignment statements are translated to {\tt setq} calls: {\tt  A = B   ->   (setq a b)}
+where {\tt A} and {\tt a} are simple variables, {\tt B} is a Fortran 
+expression and {\tt b} is the corresponding Lisp translation. 
+Assignment to arrays is discussed in the preceding section.
+
+\subsection{Do loops:}
+In a Lisp {\tt do} expression, the loop variables are local to the loop under consideration.
+In Fortran they are not. In particular the value of a loop variable is
+left at its final value when the loop exits. For this reason loops are
+translated into a special macro form {\tt fdo} which has the similar syntax
+as a Lisp {\tt do} and translates to a {\tt prog} form.
+However, to allow for a possibly decrementing iteration count 
+the macro {\tt fdo} uses the expression
+    $max(int((m2-m1+m3)/m3),0)$
+(see \cite{katz} p.109) as the number of iterations, where $m1$ is the initial value of the DO variable,
+$m2$ is the limit for the DO variable, and $m3$ is the step size.
+Fortran standards for incrementing the loop variable and testing the iteration count are preserved. 
+Two simple examples, one with incrementing counter
+and the second with a decrementing counter follow.
+
+\begin{verbatim}
+      DO 13 J=i,n     ->   (fdo (j i (+ j 1))
+         ...                    ((> j n) nil)
+13    CONTINUE                  (tagbody ...))
+\end{verbatim}
+and
+\begin{verbatim}
+      DO 14 J=N,I,-1  ->   (fdo (j n (+ j (- 1)))
+         ...                    ((> j i) nil)
+14    CONTINUE                  (tagbody ...))
+
+\end{verbatim}
+
+{\tt RETURN} statements frequently occur within a body of a {\tt DO} statement 
+in Fortran
+code. This means that the original subroutine itself should return and not the {\tt do}
+statement. This situation is overcome by the translation of {\tt RETURN} to
+{\tt (go end\_label)} as described above.
+Note that there is a restriction that single {\tt CONTINUE} statements must not be
+used by more than one {\tt do}.
+
+\subsection{If-then-else statements:}
+{\tt IF-THEN-ELSE} translations are achieved in two stages.  The line by line 
+translation stage replaces {\tt ENDIF} and {\tt ELSE} with appropriate placeholder labels which
+are then used by the structure fixing pass of the translator to correctly build a
+{\tt cond} expression. The following translations are performed
+\begin{verbatim}
+  IF <pred> <statement>       ->       (if {pred} {statement})
+
+
+  IF <pred1> THEN             ->       (cond ({pred1}
+   ...                                         ... )
+   ELSE IF <pred2>                            ({pred2}
+    ...                                        ... )
+    ELSE                                      (t
+    ...                                        ... ))
+   ENDIF
+  ENDIF
+\end{verbatim}
+
+Arithmetic IF statements are translated in to a macro form {\tt arithmetic-if}.
+
+
+\subsection{Function calls:}
+Where a function name occurs as an argument to a subroutine and is declared
+as external in the Fortran code then the code 
+is translated to a funcall in the Lisp code
+\begin{verbatim}
+  SUBROUTINE S(A,...,F,...)   ->   (defun s (a ... f ...)
+  ...                                     ...
+  EXTERNAL F,...                      (setq u (funcall f x y))
+  ...                                     ...
+  U=F(X, Y)                          )
+  ...
+  END
+\end{verbatim}
+Functions used in the slot for {\tt f} would of course need to be able to correctly process the
+arguments which would be presented to them in translated code.
+
+\subsection{Subroutine calls:}
+Subroutine calls are translated to expressions returning multiple values. Where an
+expression (rather than a symbol) or an array is passed as an actual argument, {\tt *dummy\_var*}
+is used in {\tt multiple-value-setq} as shown in the following example
+where A is an array and N is numeric.
+\begin{verbatim}
+  CALL SUBR(N, A, N+N)
+ ->
+  (multiple-value-setq (n *dummy_var* *dummy_var*) 
+                       (subr n a (+ n n)))
+\end{verbatim}
+Note that in general some of the subroutine arguments will be for input only and some for output only. The nature of an argument can only be 
+discerned if the code for the subroutine being called is available. A 
+lexical analysis pass in the translation process could make that 
+determination, enabling {\bf f2cl} to produce a more efficient function 
+call.  Such a pass has not yet been implemented.
+
+\subsection{PAUSE and STOP Statements:}
+The following translation is made:
+\begin{verbatim}
+  PAUSE 'message'    ->   (error "message")
+\end{verbatim}
+but {\tt STOP} statements are ignored.
+
+\subsection{Input and Output}
+Whereas Fortran 77 has formatted input, Common Lisp does not. 
+{\bf F2cl} consequently does not translated {\tt READ} statements.
+
+For numerical output Common Lisp has features more than equal
+to those of Fortran 77. However, at this stage in the development of
+{\bf f2cl}, {\tt WRITE}
+statements are translated with restricted scope. 
+Reasonable translations occur in most cases but the user may
+need to fine-tune.
+
+As explained earlier,  {\tt FORMAT} statements are removed from the
+Fortran code before the actual translation takes place.  The descriptors
+from each {\tt FORMAT} statement are translated into a
+corresponding list of Lisp {\tt format} control strings and stored with the
+statement label.
+
+During the translation pass WRITE statements are translated thus:
+\begin{verbatim}
+  WRITE (<dest>, <fmt>, ... ) A1, A2, ...   
+->   
+  (fformat <dest> <ctrl-strs> a1 a2 ... )
+\end{verbatim}
+where {\tt dest} is the destination of the output,
+{\tt fmt} is a Fortran FORMAT descriptor list  which translates to the
+list of Lisp {\tt format} control string {\tt ctrl-strs}, {\tt fformat}
+is a macro which calls {\tt format}, the arguments 
+{\tt A1, A2, ... }  translate to {\tt a1, a2, ... } and data in the Fortran
+control information list other than the first two arguments are ignored.
+
+Translation of a Fortran FORMAT descriptor list to a Lisp {\tt format} control string 
+is done according to the following rules where a leading integer {\tt a},
+causes the control string to be concatenated {\tt a} times.
+\begin{verbatim}
+Iw            ->     "~wD"
+Iw.m          ->     "~wD"  (no exact match)
+kPaFw.d       ->     "~w,d,k,,'*F"   (k defaults to 1)
+kPaEw.dEe     ->     "~w,d,e,1,'*E"  (k defaults to 1, e to 3)
+kPaGw.dEe     ->     "~w,d,e,1,'*G"  (k defaults to 1, e to 3)
+wX            ->     "~w@T"
+TRs           ->     "~s@T"
+/             ->     "~%"
+\end{verbatim}
+SS and SP toggle the {\tt @} modifier for {\tt F}, {\tt E}, {\tt D} and {\tt G}.  
+Everything else is translated to {\tt "~A"}.
+  
+Note that unlike the Fortran equivalent, the Lisp {\tt format } function 
+expects the exact number of arguments as specified by the control string.
+
+There is no corresponding Lisp for the descriptors {\tt :, Lw, A[w], TL}.
+In fact the descriptor {\tt L} creates a problem in that the Lisp reader
+sees it as denoting a {\it long} datum.  This problem has not yet been
+addressed.
+
+Hollerith strings are translated to {\tt *Hollerith*} and must then be replaced by hand.
+
+Whereas the Lisp {\tt format } function lacks a feature for dealing with arrays,
+Fortran groups the descriptors and applies that group to data generated by an implied-DO.  A direct
+translation of a group of Fortran descriptors to a Lisp group is possible:
+by using {\tt "~\{ ... ~\}"}
+but the Lisp {\tt format } function expects to apply the group to a list.
+The assumption has been made that in a Fortran {\tt FORMAT} statement a group of
+descriptors will always be used for an implied-DO.  Consequently, any implied-DO
+as an argument to a WRITE statement is translated to a lisp {\tt do} which
+returns the appropriate list.  For example:
+\begin{verbatim}
+      WRITE (*, 500) N(A(I),I=1,N)
+500   FORMAT (I4/(F12.6))
+\end{verbatim}
+translates to 
+\begin{verbatim}
+(format t "~4D~%~{12,6,1,,'*F~}" n
+    (do ((i 1 (+ i 1))
+         (lis nil (cons (fref a i) lis)))
+        ((> i n) (reverse lis))))
+\end{verbatim}
+
+\subsection{Untranslated Statements}
+Any statement which {\bf f2cl} does not translate is returned as a string with an
+informational label prefixed, for example:
+\begin{verbatim}
+      OPEN( UNIT=iscr)
+\end{verbatim}
+becomes
+\begin{verbatim}
+"****NOT TRANSLATED: (OPEN (UNIT = ISCR))"
+\end{verbatim}
+
+%--------------------------------------------------------------------------
+\section{Status of the Translator}
+
+{\bf F2cl} will accurately translate a large subset of standard Fortran 77.
+It does not translate block data subprograms, {\tt EQUIVALENCE} or {\tt ENTRY} statements, input or string operations, or Hollerith data types; there are some
+restrictions on {\tt COMMON} and {\tt DATA} specifications as noted in the
+appropriate sections above; some good programming practices are assumed in
+that jumps may not be made into DO or IF-THEN structures from outside their blocks and
+keywords may not be used as variable names.
+
+The translator is in use at several sites. It has been used successfully 
+(by commenting out the unacceptable statements, using the {\tt *comments*}
+facility to have them inserted in the Lisp code and then translating by 
+hand) to translate a numerical 
+library, a linear programming system, a finite element system and a mesh 
+generation system. 
+
+\section{Ftp Site}
+The translator is freely available via anonymous ftp under the gnu public
+license at {\tt ftphost.cs.waikato.ac.nz} in {\tt /pub/lisp/f2cl}.
+%--------------------------------------------------------------------------
+
+\begin{thebibliography}{99}
+\bibitem{rfkb}
+R.~J.~Fateman, K.~A.~Broughan, D.~M.~K.~Willcock, D.~Rettig,
+{\em Fast Floating Point Processing in Common Lisp},
+to appear
+
+\bibitem{katz}
+H.~J.~Katzan,
+{\em Fortran 77},
+Van Nostrand Reinhold, 1978
+
+\bibitem{senac}
+K. A. Broughan,
+{\em SENAC: Lisp as a platform for constructing a problem 
+solving environment}, in Programming Environments for High-level 
+Scientific Problem solving, P. W. Gaffney and E. N. Houstis (Eds), 
+North-Holland/IFIP, 1992, pp. 351-359.
+
+\bibitem{cl}
+Guy L. Steele, Jr.,
+{\sl Common Lisp the Language, 2nd ed.}, Digital Press, 1990.
+
+
+
+\end{thebibliography}
+
+
+\end{document}

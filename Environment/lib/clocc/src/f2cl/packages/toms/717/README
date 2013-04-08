@@ -1,0 +1,282 @@
+Subroutines for Maximum Likelihood and Quasi-Likelihood
+Estimation of Parameters in Nonlinear Regression Models
+
+by David S. Bunch (UC Davis), David M. Gay (AT&T Bell
+Laboratories), and Roy E. Welsch (MIT); submission to
+ACM Transactions on Mathematical Software.
+
+_____________
+Preliminaries
+=============
+To use the Fortran subroutines and main programs in this large
+file, you need to split it into its 53 constituent files.
+The first of these logical files is called README, which includes
+the text you are reading now, as well as additional information
+for linking and running the test programs.  The instructions for
+decomposing the files is given next, followed by the remainder of
+README, and then the other files.
+
+____________________
+Splitting into Files
+====================
+If you are using a UNIX system, just feed this file to /bin/sh
+(in an empty directory), as in
+	sh thisfilename
+
+Alternatively, you can feed this file to the Fortran program
+shown below.  You could also split this large file up by hand:
+each constituent file is preceded by a line of the form
+
+	cat >filename <<'//GO.SYSIN DD filename'
+
+and followed by a corresponding line of the form
+
+	//GO.SYSIN DD filename
+
+We've indented the above lines here for display purposes,
+but the real lines start in column 1.
+
+Here is the promised Fortran program for decomposing this file.
+On some systems you will need to make a change in format
+statement 90, as described in the comment below.
+
+      PROGRAM UNPACK
+      CHARACTER*100 LINE, TERMIN
+      CHARACTER*16 FNAME
+      INTEGER FNLEN, I, LINENO, OUTFIL
+      PARAMETER (OUTFIL=1)
+
+      LINENO = 0
+ 10   READ(*,'(A)',END=999) LINE
+      LINENO = LINENO + 1
+      IF (LINE(1:5) .NE. 'cat >') CALL BADCAT(LINE, LINENO)
+      DO 20 I = 6, 100
+         IF (LINE(I:I) .EQ. ' ') GO TO 30
+ 20      CONTINUE
+      CALL BADCAT(LINE, LINENO)
+ 30   FNAME = LINE(6:I)
+      FNLEN = I - 5
+      IF (LINE(I+1:I+17) .NE. '<<''//GO.SYSIN DD ')
+     1   CALL BADCAT(LINE, LINENO)
+      IF (LINE(I+18:I+16+FNLEN) .NE. FNAME)
+     1   CALL BADCAT(LINE, LINENO)
+      TERMIN = LINE(I+4:I+FNLEN+16)
+      OPEN(OUTFIL,FILE=FNAME,STATUS='NEW',ERR=40)
+      GO TO 60
+ 40   OPEN(OUTFIL,FILE=FNAME,STATUS='OLD',ERR=50)
+      WRITE(*,*) 'overwriting ',FNAME(1:FNLEN)
+      GO TO 70
+ 50   WRITE(*,*) 'cannot open ',FNAME(1:FNLEN)
+      GO TO 999
+ 60   WRITE(*,*) FNAME(1:FNLEN)
+ 70   LINENO = LINENO + 1
+      READ(*,'(A)',END=100) LINE
+      IF (LINE .EQ. TERMIN) THEN
+         CLOSE(OUTFIL)
+         GO TO 10
+         END IF
+      DO 80 I = 100, 1, -1
+         IF (LINE(I:I) .NE. ' ') GO TO 90
+ 80     CONTINUE
+******** On systems where carriage controls end up in written files
+******** (to be honored by a printer or subsequent program), such as
+******** VAX VMS and most UNIX systems, you need to omit "1X,"
+******** in the following WRITE statement, changing it to
+*90   WRITE(OUTFIL,'(A)') LINE(I:I)
+ 90   WRITE(OUTFIL,'(1X,A)') LINE(1:I)
+      GO TO 70
+ 100  WRITE(*,*) 'Premature end of file'
+ 999  END
+      SUBROUTINE BADCAT(LINE, LINENO)
+      CHARACTER*100 LINE
+      INTEGER LINENO
+      WRITE(*,*) 'Line ', LINENO, ': Bad "cat" line:'
+      WRITE(*, '(A)') LINE
+      STOP
+      END
+
+________
+Overview
+========
+Information is given below regarding subroutines and test programs,
+including how to link and run the test programs.  There are five basic
+test programs:
+
+   MADSEN   (simple test problems, no bounds on parameters)
+   MADSENB  (simple test problems, with bounds on parameters)
+   PMAIN    (problems from Gay and Welsch 1988, mix of bounds and no bounds)
+   MLMNP    (multinomial probit estimation problems from Bunch 1991, no bounds)
+   MLMNPB   ("  ", with bounds)
+
+These exist in both single- and double-precision versions.  The following
+two documents are available from the authors:
+
+    "Driver PMAIN for DGL[FG][B ]", by David M. Gay.
+
+    "MLMNP and MLMNPB: Fortran Programs for Maximum Likelihood
+    Estimation of Linear-in-Parameter Multinomial Probit Models",
+    by David S. Bunch.
+
+Postscript for these documents is or will be available from netlib.
+For details, send netlib@research.att.com the one-line electronic
+mail message
+	send index from opt/nlr
+
+MADSEN and MADSENB do not require input.  PMAIN has a single sample
+input file for  producing test results, but can also be run interactively
+or with other input files; see the "Driver PMAIN" document.  MLMNP and
+MLMNPB require input files for Fortran units 1 and 2; four examples are
+included.
+
+____________________
+Machine dependencies
+====================
+There are two machine-dependent files, dmdc.f and smdc.f (double- and
+single-precision versions, respectively), which provide machine
+constants.  You must activate (i.e., remove the 'C' from column 1) the
+lines that pertain to your machine, or that pertain to the PORT routines
+D1MACH (for dmdc.f) and R1MACH (for smdc.f), if you choose to use those
+routines (which have constants for a much wider selection of machines
+than do dmdc.f and smdc.f).
+
+__________
+Precisions
+==========
+As previously noted, we've provided both single- and double-precision
+versions of our optimization subroutines and test problems.  If you are
+a referee, you may want to try both; otherwise, unless you are using a
+Cray or CDC machine (or something similar whose single precision has
+substantially more accuracy than does binary IEEE aritihmetic), you are
+probably better off using the double-precision routines.
+
+________
+makefile
+========
+If you are using a UNIX system, you can probably just type
+
+	make
+
+to cause everything to be compiled and all test programs to be run.
+If you run the single-precision tests on a 32-bit computer, you may
+get a few instances of FALSE or SINGULAR CONVERGENCE.  For comparison
+purposes, we include *.sgi files, which are *.out files we obtained on
+an SGI computer (IEEE arithmetic; compilation was with f2c and cc).
+We note, however, that many of the test problems are very nonlinear,
+and differences in compilers and machines will often produce slightly
+different output.
+
+____________________________________
+Opening files from the test programs
+====================================
+To run the MLMNP and MLMNPB programs, you may need to adjust the OPEN
+and REWIND statements near the beginning of mlmnp.f and mlmnpb.f (for
+double-precision, or smlmnp.f and smlmnpb.f for single).
+
+________________
+Summary of files
+================
+
+1.	README		This file.
+
+2.	makefile	For UNIX systems; encodes the information
+			below about what files are needed for
+			what programs.
+
+  DOUBLE PRECISION SOURCE FILES
+
+3.	dmdc.f0		Edit this into dmdc.f .
+
+4.	dglfg.f		Top-level routines DGLG, DGLF, DRGLG (no bounds),
+			followed by routines they call that are not
+			in dgletc.f .
+
+5.	dglfgb.f	Top-level routines DGLGB, DGLFB, DRGLGB (simple
+			bounds), followed by routines they call that are
+			not in dgletc.f .
+
+6.	dgletc.f	Routines needed whether or not there are simple
+			bounds.
+
+7.	madsen.f	Simple example program, no bounds.
+			Needs dmdc.f, dglfg.f,  dgletc.f .
+
+8.	madsenb.f	Simple test program, variant of madsen.f with bounds.
+			Needs dmdc.f, dglfgb.f, dgletc.f .
+
+9.	dpmain.f	General test program PMAIN.
+			Needs dmdc.f, dglfg.f, dglfgb.f, dgletc.f,
+			and mecdf.f .
+
+10.	mecdf.f		Computes approximation to multivariate normal
+                        cumulative distribution function (uses Mendell-
+                        Elston approximation.)
+
+11.	mlmnp.f		Program MLMNP for linear-in-parameter multinomial
+			probit models, no bounds.
+			Needs dmdc.f, dglfg.f, dgletc.f, mecdf.f, mnpsubs.f .
+
+12.	mlmnpb.f	Program MLMNPB for linear-in-parameter multinomial
+			probit models with simple bounds.
+			Needs dmdc.f, dglfgb.f, dgletc.f, mecdf.f, mnpsubs.f .
+
+13.	mnpsubs.f	Needed by mlmnp.f and mlmnpb.f .
+
+
+  TEST DATA FILES
+
+14.	pmain.in	Input for PMAIN (from Gay & Welsch, 1988).
+
+  The following *.fu? files are input for MLMNP and MLMNPB.
+  The files named *.fu1 are to be read by Fortran unit 1,
+  and those named *.fu2 are to be read by Fortran unit 2.
+
+15.	daganzo.fu2     Choice data set from Daganzo (1979).
+16.	mnpex1.fu1	Example 1: a model to use with daganzo.fu2
+17.	mnpex2.fu1	Example 2: another model to use with daganzo.fu2
+
+18.	rent.fu2        Choice data set from MBA survey on rental housing
+19.	rent1.fu1	Example 3:  a model to use with rent.fu2
+20.	rent2.fu1	Example 4:  another model to use with rent.fu2
+
+ SINGLE PRECISION SOURCE FILES corresponding to files 3-13.
+
+21.	smdc.f0		Edit this into smdc.f .
+22.	sglfg.f
+23.	sglfgb.f
+24.	sgletc.f
+25.	smadsen.f
+26.	smadsenb.f
+27.	spmain.f
+28.	smecdf.f
+29.	smlmnp.f
+30.	smlmnpb.f
+31.	smnpsubs.f
+
+  SAMPLE OUTPUTS, DOUBLE PRECISION
+
+32.	madsen.sgi
+33.	madsenb.sgi
+34.	mnpex1.sgi
+35.	mnpex1b.sgi
+36.	mnpex2.sgi
+37.	mnpex2b.sgi
+38.	pmain.sgi
+39.	rent1.sgi
+40.	rent1b.sgi
+41.	rent2.sgi
+42.	rent2b.sgi
+
+  SAMPLE OUTPUTS, SINGLE PRECISION
+
+43.	smadsen.sgi
+44.	smadsenb.sgi
+45.	smnpex1.sgi
+46.	smnpex1b.sgi
+47.	smnpex2.sgi
+48.	smnpex2b.sgi
+49.	spmain.sgi
+50.	srent1.sgi
+51.	srent1b.sgi
+52.	srent2.sgi
+53.	srent2b.sgi
+

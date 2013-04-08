@@ -1,0 +1,149 @@
+;;; -*- Mode: lisp -*-
+;;;
+;;; This is a simple defsystem for converting some HOMPACK Fortran
+;;; routines to Lisp and compiling the result.
+;;;
+;;; $Id: hompack.system,v 1.7 2006/11/21 18:28:40 rtoy Exp $
+;;; $Log: hompack.system,v $
+;;; Revision 1.7  2006/11/21 18:28:40  rtoy
+;;; o Use *load-truename*
+;;; o Depend on blas-hompack instead of blas so we don't load up all of
+;;;   blas by default.
+;;;
+;;; Revision 1.6  2006/05/03 02:21:48  rtoy
+;;; Fix missing dependency.  hfun1p depends on ffunp.
+;;;
+;;; Revision 1.5  2005/07/18 16:37:17  rtoy
+;;; Make some of the files :compile-only because the user is supposed to
+;;; supply the definitions, and these are just templates for the user to
+;;; fill in.
+;;;
+;;; Revision 1.4  2005/07/16 15:20:37  rtoy
+;;; Split the tests into 3 separate systems because they use the same name
+;;; for some functions so the tests can't all be loaded at the same time
+;;; and still work.
+;;;
+;;; Revision 1.3  2005/07/16 15:07:32  rtoy
+;;; o File "f" isn't really part of system.  Remove it.
+;;;
+;;; Revision 1.2  2003/11/15 04:59:32  rtoy
+;;; Add the files and dependencies for the POLSYS stuff that we
+;;; accidentally left out.  (But files were already there.)
+;;;
+;;; Revision 1.1  2003/11/14 19:08:42  rtoy
+;;; Initial revision.
+;;;
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+(mk:defsystem hompack
+    :source-pathname ;;(translate-logical-pathname "clocc:src;f2cl;packages;hompack;")
+      (merge-pathnames (make-pathname :directory '(:relative "hompack"))
+		       (make-pathname :directory (pathname-directory *load-pathname*)))
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("blas-hompack")
+    :components
+    (
+     ;; The following are :compile-only here because HOMPACK only
+     ;; gives skeletons for them.  We make them :compile-only so that
+     ;; f2cl will get the function definitions so it can generate
+     ;; calls to them appropriately.
+     ;;
+     ;; The user is supposed to provide appropriate definitions for
+     ;; them.  Also, rho and rhojac are supposed to be user-defined,
+     ;; but the versions in HOMPACK are used for POLSYS.
+     (:file "f" :compile-only t)
+     (:file "fjac" :compile-only t)
+     (:file "fjacs" :compile-only t)
+     (:file "rhojs"  :compile-only t)
+     (:file "rhoa" :compile-only t)
+     (:file "rho")
+     (:file "rhojac" :depends-on ("hfunp"))
+
+     (:file "dcpose")
+     (:file "divp")
+     (:file "ffunp" :depends-on ("mulp" "powp"))
+     (:file "fixpdf" :depends-on ("rhoa" "steps" "sintrp" "root"))
+     (:file "fixpds" :depends-on ("rhoa" "stepds" "sintrp" "root"))
+     (:file "fixpnf" :depends-on ("stepnf" "rootnf"))
+     (:file "fixpns" :depends-on ("stepns" "rootns"))
+     (:file "fixpqf" :depends-on ("stepqf" "rootqf"))
+     (:file "fixpqs" :depends-on ("stepqs" "rootqs"))
+     (:file "fode" :depends-on ("rhojac" "fjac"))
+     (:file "fodeds" :depends-on ("rhojs" "pcgds" "fjacs"))
+     (:file "gfunp" :depends-on ("powp" "mulp"))
+     (:file "gmfads")
+     (:file "hfun1p" :depends-on ("gfunp" "ffunp"))
+     (:file "hfunp" :depends-on ("hfun1p"))
+     (:file "initp" :depends-on ("sclgnp"))
+     (:file "mfacds" :depends-on ("gmfads"))
+     (:file "mulp")
+     (:file "multds")
+     (:file "otputp")
+     (:file "pcgds" :depends-on ("qimuds" "mfacds" "multds"))
+     (:file "pcgns" :depends-on ("mfacds" "multds" "qimuds"))
+     (:file "pcgqs" :depends-on ("solvds" "gmfads" "multds"))
+     (:file "polsys" :depends-on ("polyp"))
+     (:file "polyp" :depends-on ("initp" "strptp" "otputp" "fixpnf"))
+     (:file "powp")
+     (:file "qimuds" :depends-on ("solvds"))
+     (:file "qrfaqf")
+     (:file "qrslqf")
+     (:file "root")
+     (:file "rootnf" :depends-on ("tangnf"))
+     (:file "rootns" :depends-on ("tangns"))
+     (:file "rootqf" :depends-on ("upqrqf" "rho" "qrslqf" "fjac"))
+     (:file "rootqs" :depends-on ("rhojs" "rho" "pcgqs" "fjacs"))
+     (:file "sclgnp")
+     (:file "sintrp")
+     (:file "solvds")
+     (:file "stepds")
+     (:file "stepnf" :depends-on ("tangnf"))
+     (:file "stepns" :depends-on ("tangns"))
+     (:file "stepqf" :depends-on ("tangqf" "upqrqf" "rho" "rhojac" "qrslqf" "fjac"))
+     (:file "stepqs" :depends-on ("tangqs" "rhojs" "pcgqs" "fjacs"))
+     (:file "steps")
+     (:file "strptp")
+     (:file "otputp")
+     (:file "r1upqf")
+     (:file "tangnf" :depends-on ("rhojac" "rho" "fjac"))
+     (:file "tangns" :depends-on ("rhojac" "rho" "pcgns" "rhojs" "pcgds" "fjac"))
+     (:file "tangqf" :depends-on ("rhojac" "qrfaqf" "qrslqf" "r1upqf" "fjac"))
+     (:file "tangqs" :depends-on ("rhojs" "pcgqs" "fjac"))
+     (:file "upqrqf" :depends-on ("r1upqf"))
+     ))
+
+(mk:defsystem hompack-test-mainf
+    :source-pathname (translate-logical-pathname "clocc:src;f2cl;packages;hompack;")
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("hompack")
+    :components
+    (
+     (:file "mainf" :compiler-options (:declare-common t))
+     ))
+
+(mk:defsystem hompack-test-mainp
+    :source-pathname ;; (translate-logical-pathname "clocc:src;f2cl;packages;hompack;")
+      (merge-pathnames (make-pathname :directory '(:relative "hompack"))
+		       (make-pathname :directory (pathname-directory *load-pathname*)))
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("hompack")
+    :components
+    (
+     (:file "mainp")
+     ))
+
+(mk:defsystem hompack-test-mains
+    :source-pathname (translate-logical-pathname "clocc:src;f2cl;packages;hompack;")
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("hompack")
+    :components
+    (
+     (:file "mains")
+     ))

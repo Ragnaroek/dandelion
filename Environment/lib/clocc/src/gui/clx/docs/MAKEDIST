@@ -1,0 +1,17 @@
+#! /bin/sh
+
+dir="clxman-source-$(date --iso)"
+
+mkdir $dir
+mkdir $dir/source
+mkdir $dir/docIndex
+mkdir $dir/clxman
+mkdir $dir/clxman/docIndex
+
+cp -p README run.lisp dtd.lisp clex.lisp lalr.lisp sgml-lex.lisp sgml-parse.lisp sgml-unparse.lisp clxman.lisp MAKEDIST $dir
+cp -p source/clxman.{sgml,dtd,css} $dir/source
+cp -p docIndex/DocIndexApplet.java  docIndex/Index.java  docIndex/XlibIndex.java  $dir/docIndex
+
+tar zcvf $dir.tar.gz $dir
+
+rm -rf $dir

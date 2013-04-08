@@ -1,0 +1,60 @@
+Package:      lang/lisp/code/tools/metering/
+
+Name:         Metering
+
+Summary:      Portable Code Profiling Tool
+
+Version:      v2.1 (25-JAN-94)
+
+Description: 
+
+   METERING is a portable code profiling tool, for gathering timing and
+   consing statistics while a program is running. This is a combination
+   of the Monitor package written by Chris McConnell and the Profile
+   package written by Skef Wholey and Rob MacLachlan, with several
+   extensions.  Monitors the use of functions and macros: calls, CPU
+   time, clock time, and storage use.
+
+Requires:     Common Lisp
+
+Ports:        Portable, with three small implementation-dependent
+              changes for new Common Lisp implementations. Tested in
+              CMU CL, MACL, MCL, Allegro CL, Lucid CL, AKCL, IBCL.
+
+Origin:       CMU Lisp Repository (home location)
+              
+Copying:      Public domain.
+
+Updated:      
+
+CD-ROM:       Prime Time Freeware for AI, Issue 1-1
+
+Bug Reports:  lisp-utilities-request@cs.cmu.edu
+
+Mailing List: lisp-utilities-request@cs.cmu.edu
+
+Author(s):    Mark Kantrowitz <mkant@cs.cmu.edu>
+
+Contact:      
+
+Keywords:     
+
+   Lisp!Tools, Metering, Profiler, Authors!Kantrowitz, Time Measurement, 
+   Code Profiler, Space Usage Measurement, CMU, Public Domain
+
+Contains:    ???
+
+See Also:    
+
+References:   
+
+   Documentation of the tools written by Mark Kantrowitz (Metering,
+   Defsystem, Source Compare, User Manual, and Xref) appears in
+
+     Mark Kantrowitz, "Portable Utilities for Common Lisp, User Guide and
+     Implementation Notes", Tech Report CMU-CS-91-143, School of Computer
+     Science, Carnegie Mellon University, May 1991.
+
+   which is available as lang/lisp/code/tools/mkantdoc.tar.gz.
+
+   There is also some documentation at the top of the file.

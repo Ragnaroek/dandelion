@@ -1,0 +1,56 @@
+;-*- Mode: Common-lisp; Package: ytools; -*-
+(in-package :ytools)
+;;;$Id: ytools.lmd,v 2.2 2006/08/04 14:08:08 airfoyle Exp $
+
+;;; Copyright (C) 1976-2003 
+;;;     Drew McDermott and Yale University.  All rights reserved
+;;; This software is released under the terms of the Modified BSD
+;;; License.  See file COPYING for details.
+
+(defun install-ytools (start-over)
+                      (declare (ignore start-over))
+   (cond ((yt-install :ytfm
+                      :if-installed
+                         (cond (start-over ':start-over)
+                               (t ':reinstall)))
+          (cond ((yt-load :ytfm
+                          :if-loaded (cond (start-over
+                                            ':force)
+                                           (t nil)))
+                 (format *query-io* "Compiling all YTools~%")
+                 (let ((fload-compile-flag* ':compile))
+                    (ytools-module-load 'ytools))
+                 (format *query-io* "YTools version: ~s~%" +ytools-version+)
+                 t)
+                (t nil)))))
+
+(defun load-ytools ()      
+   (cond ((yt-load :ytfm :if-loaded nil :if-not-installed ':install)
+	  (cond ((eq (catch 'fload-abort
+			(ytools-module-load 'ytools))
+		     'fload-aborted)
+		 nil)
+		(t
+		 (flet ((load-if-there (filename)
+			   (cond ((probe-file filename)
+				  (load filename)))))
+		    (load-if-there (concatenate 'string
+					   ytools-home-dir*
+					   (short-site-name)
+					   directory-delimiter*
+					   "ytinit.lisp"))
+		    (let ((config-dir-pathname
+			     (pathname config-directory*)))
+		       (cond ((not (equal config-dir-pathname
+					  (user-homedir-pathname)))
+			      (load-if-there
+				 (merge-pathnames
+				    "ytinit.lisp"
+				    config-dir-pathname)))))
+		    (load-if-there (merge-pathnames
+				      "ytinit.lisp"
+				      (user-homedir-pathname))))
+                 (format *query-io* "YTools version: ~s~%" +ytools-version+)
+		 (list ytools-package*
+		       ytools-readtable*))))
+	 (t nil)))

@@ -1,0 +1,54 @@
+;;; -*- Mode: lisp -*-
+;;;
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+(mk:defsystem toms419
+    :source-pathname (merge-pathnames (make-pathname :directory '(:relative "toms"))
+				      (make-pathname :directory (pathname-directory *load-pathname*)))
+    :source-extension "f"
+    :language :f2cl
+    :components
+    ((:module "419"
+	      :components
+	      (
+	       (:file "cpoly"
+		      :compiler-options (:declare-common t)
+		      :depends-on ("mcon" "cmod" "scale" "cdivid" "cauchy" "noshft" "fxshft"))
+	       (:file "noshft"
+		      :depends-on ("cmod" "cdivid"))
+	       (:file "fxshft"
+		      :depends-on ("polyev" "calct" "cmod" "vrshft"))
+	       (:file "vrshft"
+		      :depends-on ("polyev" "cmod" "errev" "calct" "nexth"))
+	       (:file "calct"
+		      :depends-on ("polyev" "cmod" "cdivid"))
+	       (:file "nexth")
+	       (:file "polyev")
+	       (:file "errev"
+		      :depends-on ("cmod"))
+	       (:file "cauchy")
+	       (:file "scale")
+	       (:file "cdivid"
+		      :depends-on ("mcon"))
+	       (:file "cmod")
+	       (:file "mcon")
+	       ))))
+
+(mk:defsystem toms419-test
+    :source-pathname (merge-pathnames (make-pathname :directory '(:relative "toms"))
+				      (make-pathname :directory (pathname-directory *load-pathname*)))
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("toms419")
+    :components
+    ((:module "419"
+	      :components
+	      (
+	       (:file "prtc")
+	       (:file "prtz")
+	       (:file "cpolydr")
+	       ))))
+;;; $Id: toms419.system,v 1.1 2006/05/03 20:55:33 rtoy Exp $

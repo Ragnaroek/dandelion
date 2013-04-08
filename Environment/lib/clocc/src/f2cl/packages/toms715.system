@@ -1,0 +1,128 @@
+;;; -*- Mode: lisp -*-
+;;;
+;;;
+;;; $Id: toms715.system,v 1.5 2006/04/28 01:12:58 rtoy Exp $
+;;; $Log: toms715.system,v $
+;;; Revision 1.5  2006/04/28 01:12:58  rtoy
+;;; Use *load-pathname to construct the source path (f2cl.system) or a
+;;; logical pathname to use in the defsystems so that each defsystem can
+;;; find its own files.
+;;;
+;;; Revision 1.4  2002/01/13 16:29:52  rtoy
+;;; Some of the dependencies were wrong.
+;;;
+;;; Revision 1.3  2000/08/18 17:55:07  rtoy
+;;; Use the right package for f2cl-compile.
+;;;
+;;; Revision 1.2  2000/08/07 17:02:29  rtoy
+;;; Comment out unused functions, make it more palatable to Clisp logical
+;;; pathnames, add some dependencies.
+;;;
+;;; Revision 1.1  2000/07/21 22:13:48  rtoy
+;;; Initial version.
+;;;
+
+#||
+;; Convert a Fortran file to Lisp and compile the Lisp file.
+(defun f2cl-compile (filename &key output-file error-file (array-slicing t) (array-type 'array))
+  (compile-file (f2cl:f2cl filename :array-slicing array-slicing
+		      :array-type array-type)
+		:output-file output-file))
+
+||#
+
+(let ((base (make-pathname :directory (pathname-directory *load-pathname*))))
+  (setf (logical-pathname-translations "toms715")
+	(list (list "**;*.*.*"
+		    (merge-pathnames (make-pathname :directory '(:relative "toms" "715" :wild-inferiors)
+						    :name :wild :type :wild)
+				     base)))))
+
+(mk:define-language :f2cl
+    :compiler #'f2cl:f2cl-compile
+    :source-extension "f")
+
+(mk:defsystem toms715
+    :source-pathname (translate-logical-pathname "toms715:")
+    :source-extension "f"
+    :language :f2cl
+    :components
+    ((:module "715"
+	      :source-pathname ""
+	      :binary-pathname ""
+	      :components
+	      (
+	       (:file "anorm")
+	       (:file "besei0" :depends-on ("calci0"))
+	       (:file "besei1" :depends-on ("calci1"))
+	       (:file "besek0" :depends-on ("calck0"))
+	       (:file "besek1" :depends-on ("calck1"))
+	       (:file "besi0" :depends-on ("calci0"))
+	       (:file "besi1" :depends-on ("calci1"))
+	       (:file "besj0" :depends-on ("caljy0"))
+	       (:file "besj1" :depends-on ("caljy1"))
+	       (:file "besk0" :depends-on ("calck0"))
+	       (:file "besk1" :depends-on ("calck1"))
+	       (:file "besy0" :depends-on ("caljy0"))
+	       (:file "besy1" :depends-on ("caljy1"))
+	       (:file "calcei")
+	       (:file "calci0")
+	       (:file "calci1")
+	       (:file "calck0")
+	       (:file "calck1")
+	       (:file "calerf")
+	       (:file "caljy0")
+	       (:file "caljy1")
+	       (:file "daw")
+	       (:file "derf")
+	       (:file "derfc")
+	       (:file "derfcx")
+	       (:file "dgamma")
+	       (:file "dlgama")
+	       (:file "dsubn")
+	       (:file "ei")
+	       (:file "eone")
+	       (:file "expei")
+	       (:file "machar")
+	       (:file "psi")
+	       (:file "ren")
+	       (:file "ribesl")
+	       (:file "rjbesl")
+	       (:file "rkbesl")
+	       (:file "rybesl")
+	       ))))
+
+(mk:defsystem toms715-tests
+    :source-pathname (translate-logical-pathname "toms715:")
+    :source-extension "f"
+    :language :f2cl
+    :depends-on ("toms715")
+    :components
+    ((:module "tests"
+	      :source-pathname ""
+	      :binary-pathname ""
+	      :source-extension "f"
+	      :language :f2cl
+	      :components
+	      (
+	       (:file "algtst")
+	       (:file "anrtst")
+	       (:file "dawtst")
+	       (:file "eitest")
+	       (:file "erftst")
+	       (:file "gamtst")
+	       (:file "i0test")
+	       (:file "i1test")
+	       (:file "j0test")
+	       (:file "j1test")
+	       (:file "k0test")
+	       (:file "k1test")
+	       (:file "psitst")
+	       (:file "ritest")
+	       (:file "rjtest")
+	       (:file "rktest")
+	       (:file "rytest")
+	       (:file "y0test")
+	       (:file "y1test")
+	       ))))
+

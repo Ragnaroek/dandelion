@@ -1,0 +1,37 @@
+      SUBROUTINE POISX0(A, C, LA, LC, MODEL, N, P, QTR, X, YN)
+      INTEGER LA, LC, MODEL, N, P
+      DOUBLE PRECISION A(LA,N), C(LC), QTR(P), X(P), YN(2,N)
+      EXTERNAL DL7ITV, DL7SVX, DL7SVN,DQ7ADR, DR7MDC, DV7SCL, DV7SCP
+      DOUBLE PRECISION DL7SVX, DL7SVN, DR7MDC
+      INTEGER I
+      DOUBLE PRECISION SX, W, WRT, WY, YN1
+      DOUBLE PRECISION HALF, ONE, ZERO
+      DATA HALF/0.5D+0/, ONE/1.D+0/, ZERO/0.D+0/
+C
+C *** BODY ***
+C
+      CALL DV7SCP(LC, C, ZERO)
+      CALL DV7SCP(P, QTR, ZERO)
+      DO 30 I = 1, N
+         W = YN(2,I)
+         IF (W .LE. ZERO) GO TO 40
+         WRT =  SQRT(W)
+         YN1 = YN(1,I) / YN(2,I)
+         IF (MODEL .EQ. 2) GO TO 10
+            WY = WRT * YN1
+            GO TO 20
+ 10      WY = WRT * DLOG(  MAX(YN1, HALF/W))
+ 20      CALL DV7SCL(P, X, WRT, A(1,I))
+         CALL DQ7ADR(P, QTR, C, X, WY)
+ 30      CONTINUE
+      SX = DL7SVX(P, C, X, X)
+      IF (SX .LE. ZERO) GO TO 40
+      IF (DL7SVN(P, C, X, X)/SX .LE. DR7MDC(3)) GO TO 40
+      CALL DL7ITV(P, X, C, QTR)
+      GO TO 999
+ 40   W = ONE
+      IF (MODEL .EQ. 2) W = ZERO
+      CALL DV7SCP(P, X, W)
+C
+ 999  RETURN
+      END

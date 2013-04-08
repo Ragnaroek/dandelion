@@ -1,0 +1,190 @@
+      SUBROUTINE DGLFB(N, P, PS, X, B, RHO, RHOI, RHOR, IV, LIV, LV, V,
+     1                  CALCRJ, UI, UR, UF)
+C
+C *** GENERALIZED LINEAR REGRESSION, FINITE-DIFFERENCE JACOBIAN ***
+C *** WITH SIMPLE BOUNDS ON X ***
+C
+C  ***  PARAMETERS  ***
+C
+      INTEGER N, P, PS, LIV, LV
+      INTEGER IV(LIV), RHOI(*), UI(*)
+      DOUBLE PRECISION B(2,P), X(P), V(LV), RHOR(*), UR(*)
+      EXTERNAL CALCRJ, RHO, UF
+C
+C  ***  PARAMETER USAGE  ***
+C
+C N....... TOTAL NUMBER OF RESIDUALS.
+C P....... NUMBER OF PARAMETERS (COMPONENTS OF X) BEING ESTIMATED.
+C PS...... NUMBER OF NON-NUISANCE PARAMETERS (THOSE INVOLVED IN S).
+C X....... PARAMETER VECTOR BEING ESTIMATED (INPUT = INITIAL GUESS,
+C             OUTPUT = BEST VALUE FOUND).
+C B....... BOUNDS TO ENFORCE... B(1,I) .LE. X(I) .LE. B(2,I).
+C RHO..... SUBROUTINE FOR COMPUTING LOSS FUNCTIONS AND THEIR DERIVS.
+C             SEE  DRGLG FOR DETAILS ABOUT RHO.
+C RHOI.... PASSED WITHOUT CHANGE TO RHO.
+C RHOR.... PASSED WITHOUT CHANGE TO RHO.
+C IV...... INTEGER VALUES ARRAY.
+C LIV..... LENGTH OF IV (SEE DISCUSSION BELOW).
+C LV...... LENGTH OF V (SEE DISCUSSION BELOW).
+C V....... FLOATING-POINT VALUES ARRAY.
+C CALCRJ.. SUBROUTINE FOR COMPUTING RESIDUAL VECTOR.
+C UI...... PASSED UNCHANGED TO CALCRJ.
+C UR...... PASSED UNCHANGED TO CALCRJ.
+C UF...... PASSED UNCHANGED TO CALCRJ.
+C
+C *** CALCRJ CALLING SEQUENCE...
+C
+C      CALL CALCRJ(N, P, X, NF, NEED, R, RP, UI, UR, UF)
+C
+C PARAMETERS N, P, X, UI, UR, AND UF ARE AS ABOVE.
+C R AND RP ARE FLOATING-POINT ARRAYS DIMENSIONED R(N) AND RP(P,N).
+C NEED MAY BE REGARDED AS AN INTEGER THAT ALWAYS HAS THE VALUE 1
+C WHEN DGLFB CALLS CALCRJ.  THIS MEANS CALCRJ SHOULD COMPUTE THE
+C RESIDUAL VECTOR R.  (CALCRJ SHOULD NOT CHANGE NEED OR RP.  IF R
+C CANNOT BE COMPUTED, THEN CALCRJ SHOULD SET NF TO 0.  OTHERWISE IT
+C SHOULD NOT CHANGE NF.  FOR COMPATIBILITY WITH   DGLG, NEED IS A
+C VECTOR OF LENGTH 2.)
+C
+C  ***  GENERAL  ***
+C
+C     CODED BY DAVID M. GAY.
+C
+C+++++++++++++++++++++++++++  DECLARATIONS  +++++++++++++++++++++++++++
+C
+C  ***  EXTERNAL SUBROUTINES  ***
+C
+      EXTERNAL DIVSET,  DRGLGB,DV7CPY
+C
+C DIVSET.... PROVIDES DEFAULT IV AND V INPUT COMPONENTS.
+C DRGLGB... CARRIES OUT OPTIMIZATION ITERATIONS.
+C DV7CPY.... COPIES ONE VECTOR TO ANOTHER.
+C
+C  ***  LOCAL VARIABLES  ***
+C
+      INTEGER D1, DK, DR1, I, I1, IV1, J1K, J1K0, K, NEED(2), NF,
+     1        NG, RD1, R1, R21, RS1, RSN
+      DOUBLE PRECISION H, H0, HLIM, NEGPT5, T, ONE, XK, XK1, ZERO
+C
+C  ***  IV AND V COMPONENTS  ***
+C
+      INTEGER COVREQ, D, DINIT, DLTFDJ, J, MODE, NEXTV, NFCALL, NFGCAL,
+     1        NGCALL, NGCOV, R, REGD0, TOOBIG, VNEED
+      PARAMETER (COVREQ=15, D=27, DINIT=38, DLTFDJ=43, J=70, MODE=35,
+     1           NEXTV=47, NFCALL=6, NFGCAL=7, NGCALL=30, NGCOV=53,
+     2           R=61, REGD0=82, TOOBIG=2, VNEED=4)
+      SAVE NEED
+      DATA HLIM/0.1D+0/, NEGPT5/-0.5D+0/, ONE/1.D+0/, ZERO/0.D+0/
+      DATA NEED(1)/1/, NEED(2)/0/
+C
+C---------------------------------  BODY  ------------------------------
+C
+      IF (IV(1) .EQ. 0) CALL DIVSET(1, IV, LIV, LV, V)
+      IV(COVREQ) = -IABS(IV(COVREQ))
+      IV1 = IV(1)
+      IF (IV1 .EQ. 14) GO TO 10
+      IF (IV1 .GT. 2 .AND. IV1 .LT. 12) GO TO 10
+      IF (IV1 .EQ. 12) IV(1) = 13
+      I = (P-PS+2)*(P-PS+1)/2
+      IF (IV(1) .EQ. 13) IV(VNEED) = IV(VNEED) + P + N*(P+3+I)
+      CALL DRGLGB(B, X, V, IV, LIV, LV, N, PS, N, P, PS, V, V, RHO,
+     1             RHOI, RHOR, V, X)
+      IF (IV(1) .NE. 14) GO TO 999
+C
+C  ***  STORAGE ALLOCATION  ***
+C
+      IV(D) = IV(NEXTV)
+      IV(R) = IV(D) + P
+      IV(REGD0) = IV(R) + (P - PS + 3)*N
+      IV(J) = IV(REGD0) + ((P-PS+2)*(P-PS+1)/2)*N
+      IV(NEXTV) = IV(J) + N*PS
+      IF (IV1 .EQ. 13) GO TO 999
+C
+ 10   D1 = IV(D)
+      DR1 = IV(J)
+      R1 = IV(R)
+      RD1 = IV(REGD0)
+      R21 = RD1 - N
+      RS1 = R21 - N
+      RSN = RS1 + N - 1
+C
+ 20   CALL DRGLGB(B, V(D1), V(DR1), IV, LIV, LV, N, PS, N, P, PS,
+     1            V(R1), V(RD1), RHO, RHOI, RHOR, V, X)
+      IF (IV(1)-2) 30, 50, 999
+C
+C  ***  NEW FUNCTION VALUE (R VALUE) NEEDED  ***
+C
+ 30   NF = IV(NFCALL)
+      CALL CALCRJ(N, PS, X, NF, NEED, V(R1), V(DR1), UI, UR, UF)
+      IF (NF .GT. 0) GO TO 40
+         IV(TOOBIG) = 1
+         GO TO 20
+ 40   CALL DV7CPY(N, V(RS1), V(R1))
+      IF (IV(1) .GT. 0) GO TO 20
+C
+C  ***  COMPUTE FINITE-DIFFERENCE APPROXIMATION TO DR = GRAD. OF R  ***
+C
+C     *** INITIALIZE D IF NECESSARY ***
+C
+ 50   IF (IV(MODE) .LT. 0 .AND. V(DINIT) .EQ. ZERO)
+     1        CALL DV7SCP(P, V(D1), ONE)
+C
+      DK = D1
+      NG = IV(NGCALL) - 1
+      IF (IV(1) .EQ. (-1)) IV(NGCOV) = IV(NGCOV) - 1
+      J1K0 = DR1
+      NF = IV(NFCALL)
+      IF (NF .EQ. IV(NFGCAL)) GO TO 70
+         NG = NG + 1
+         CALL CALCRJ(N, PS, X, NF, NEED, V(RS1), V(DR1), UI, UR, UF)
+         IF (NF .GT. 0) GO TO 70
+ 60          IV(TOOBIG) = 1
+             IV(NGCALL) = NG
+             GO TO 20
+ 70   DO 130 K = 1, PS
+         J1K = J1K0
+         J1K0 = J1K0 + 1
+         IF (B(1,K) .GE. B(2,K)) GO TO 120
+         XK = X(K)
+         H = V(DLTFDJ) *   MAX( ABS(XK), ONE/V(DK))
+         H0 = H
+         DK = DK + 1
+         T = NEGPT5
+         XK1 = XK + H
+         IF (XK - H .GE. B(1,K)) GO TO 80
+            T = -T
+            IF (XK1 .GT. B(2,K)) GO TO 60
+ 80      IF (XK1 .LE. B(2,K)) GO TO 90
+            T = -T
+            H = -H
+            XK1 = XK + H
+            IF (XK1 .LT. B(1,K)) GO TO 60
+ 90      X(K) = XK1
+         NF = IV(NFGCAL)
+         CALL CALCRJ(N, PS, X, NF, NEED, V(R21), V(DR1), UI, UR, UF)
+         NG = NG + 1
+         IF (NF .GT. 0) GO TO 100
+              H = T * H
+              XK1 = XK + H
+              IF ( ABS(H/H0) .GE. HLIM) GO TO 90
+                   GO TO 60
+ 100     X(K) = XK
+         IV(NGCALL) = NG
+         I1 = R21
+         DO 110 I = RS1, RSN
+              V(J1K) = (V(I1) - V(I)) / H
+              I1 = I1 + 1
+              J1K = J1K + PS
+ 110          CONTINUE
+         GO TO 130
+C        *** SUPPLY A ZERO DERIVATIVE FOR CONSTANT COMPONENTS...
+ 120     DO 125 I = 1, N
+              V(J1K) = ZERO
+              J1K = J1K + PS
+ 125          CONTINUE
+ 130     CONTINUE
+      GO TO 20
+C
+ 999  RETURN
+C
+C  ***  LAST LINE OF DGLFB FOLLOWS  ***
+      END

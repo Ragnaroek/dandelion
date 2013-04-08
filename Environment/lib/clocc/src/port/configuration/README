@@ -1,0 +1,18 @@
+CL.EXT.CONFIGURATION 0.1
+
+This package contains a set of definitions whose intent is to
+facilitate the management of a system configuration, w.r.t. those
+parameters which somewhat fall outside a DEFSYSTEM tool
+jurisdiction.  In particular the DEFCONFIGURATION utility can be used
+to set up in a relatively platform independent way a set of logical
+pathname translations that can be used by the DEFSYTEM tool.
+
+Please see the files INSTALLATION and COPYRIGHT for more information,
+and refer to the documentation for a detailed description of the
+CONF:DEFCONFIGURATION utility and the companion CONF:SETUP generic
+function.
+
+The package is currently released under the LGPL and all the files
+should be considered to include such Copyright notice.
+
+2000-02-26 Marco Antoniotti

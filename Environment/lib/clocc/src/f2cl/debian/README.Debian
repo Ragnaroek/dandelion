@@ -1,0 +1,6 @@
+Installing f2cl into your CL implementation that uses
+Debian's Common Lisp Controller is easy. Just enter
+
+(require 'f2cl)
+
+and a precompiled version of f2cl should be loaded.

@@ -1,0 +1,4 @@
+*.lisp
+*.sparcf
+*.x86f
+*.ppcf

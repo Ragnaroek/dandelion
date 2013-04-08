@@ -1,0 +1,27 @@
+;;; -*- Mode: CLtL -*-
+
+;;; queues.system --
+;;; Simple queues in the Abelson and Sussman SICP style.
+;;; Package definition file (in CLtL2 style).
+;;;
+;;; Author: Marco Antoniotti
+;;;
+;;; Copyright (c) 1992 - 2000 Marco Antoniotti. All rights reserved.
+;;; This software is released under the terms of the GNU Lesser General
+;;; Public License (LGPL, see file COPYRIGHT for details).
+
+
+;;;============================================================================
+;;; QUEUES System
+;;;
+;;; Fix the :source-pathname and the :binary-pathname slots to suite
+;;; your needs.
+;;; May I suggest you define a "QUEUES" logical pathname host as well?
+
+(mk:defsystem "QUEUES"
+    :source-pathname ""
+    :binary-pathname ""
+    :components ((:file "queues-package")
+		 (:file "queues" :depends-on ("queues-package"))))
+
+;;; end of file -- queues-package.lisp --

@@ -1,0 +1,3 @@
+usr/share/common-lisp/source/clue/clue.asd usr/share/common-lisp/systems/clue.asd
+usr/share/common-lisp/source/clio/clio.asd  usr/share/common-lisp/systems/clio.asd
+usr/share/common-lisp/source/pictures/pictures.asd usr/share/common-lisp/systems/pictures.asd

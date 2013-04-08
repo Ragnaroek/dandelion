@@ -1,0 +1,9 @@
+(fribble one)
+
+(progn
+    (garble 3)
+    (garble -5))
+
+(fribble two)
+
+(defun useless (x) (list x x))

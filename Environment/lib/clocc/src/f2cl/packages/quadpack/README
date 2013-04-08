@@ -1,0 +1,19 @@
+-*- Mode: text -*-
+
+This directory contains the complete source code for QUADPACK, as
+obtained from NETLIB (http://www.netlib.org).  In addition, it
+contains one routine (DGTSL) from LINPACK and a few routines (XERROR
+and friends) from CMLIB, all obtained from NETLIB.
+
+Since numerical integration of functions usually requires passing in a
+function to the integration routine, using a foreign function
+interface for this can be difficult if the function to be integrated
+is in Lisp.  Hence, we convert the code from Fortran to Lisp.
+
+The directory Fortran contains the Fortran source.  This is a useful
+test for f2cl since it's a fairly large and complete package.
+
+To test for proper conversion, try compiling tst-dqagse.lisp and
+running the tests therein.  These are some simple test integrals taken
+from the Quadpack book and were designed to show how well quadpack
+works and where it fails.

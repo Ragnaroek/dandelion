@@ -1,0 +1,18 @@
+;;; -*- Lisp -*-
+;;;
+;;; SEQ - extensible sequences
+;;;
+;;; $Id: seq.system,v 1.1 2004/09/06 02:52:18 sds Exp $
+;;; $Source: /cvsroot/clocc/clocc/src/ext/sequences/seq.system,v $
+
+(mk:defsystem seq
+    :source-pathname (translate-logical-pathname "clocc:src;ext;sequences;")
+    :source-extension "lisp"
+    :components
+    ((:file "avlseq" :depends-on ("sequences"))
+     (:file "sequences" :depends-on (#+clisp "seqclisp" #-clisp "sequence"))
+     #+clisp (:file "seqclisp")
+     #-clisp (:file "sequence"))
+    :initially-do
+    (progn (mk:system-source-size :seq :all)
+           (mk:system-source-size :seq :new-source-and-dependents)))

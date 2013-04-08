@@ -1,0 +1,18 @@
+README File.
+
+Union Find Simple.
+
+This package contains a Common Lisp implementation of the well known
+UNION-FIND data structure and algorithms.  It is based on the
+description found in
+
+1 - T. H. Cormen, C. E. Leiserson, and R. L. Rivest,
+    "Introduction to Algorithms", Ch. 22, MIT Press, 1990.
+2 - K. Melhorn, and S. N\"aher, "LEDA: A Platform for Combinatorial
+    and Geometric Computing", Cambridge University Press, 1999.
+
+The implementation manipulates "forests" representing disjoint sets.
+The forests are organized in "partitions".
+
+2000-11-16 Marco Antoniotti
+

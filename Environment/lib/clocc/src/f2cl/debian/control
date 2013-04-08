@@ -1,0 +1,14 @@
+Source: cl-f2cl
+Section: devel
+Priority: optional
+Maintainer: Peter Van Eynde <pvaneynd@debian.org>
+Build-Depends-Indep: debhelper (>= 4.0.0)
+Standards-Version: 3.6.1.1
+
+Package: cl-f2cl
+Architecture: all
+Depends: ${shlibs:Depends}, common-lisp-controller (>= 3.37)
+Description: Common Lisp package to convert Fortran 77 source code to Common Lisp
+ This package performs automated conversion of Fortran 77 source code into 
+ Common Lisp source code.
+

@@ -1,0 +1,75 @@
+
+
+
+               Common Lisp User Interactive Objects (CLIO)
+
+         Copyright (C) 1989, 1990 Texas Instruments Incorporated
+
+
+
+Related Systems
+
+    CLIO relies upon three other systems --- CLX, CLUE, and CLOS.
+
+    CLX,  the  Common  Lisp  X  Interface,  may  be  found  in  the  X11
+    distribution from  MIT  (see  lib/CLX/*).   CLIO  requires R3 CLX or
+    later. CLX R4.2 or later is preferred.
+
+    CLUE, the Common Lisp  User Interface Environment,  may be found  in
+    the X11 distribution from  MIT (see contrib/toolkits/clue/*).   CLIO
+    requires CLUE 7.20 (July 1990) or later.
+
+    CLOS, the Common Lisp Object  System, is a draft  standard extension
+    to ANSI  Common  Lisp  for  object-oriented  programming.  Xerox PCL
+    (Portable Common  Loops)  is  an  implementation  of  CLOS  which is
+    available  publicly   at   no   cost   by   sending   a  request  to
+    CommonLoops.pa@xerox.com.  
+ 
+
+
+Installation
+
+    Use the  function  load-clio  in  the  file  clio/defsystem.l.   For
+    Explorer users, this file also  contains a defsystem definition,  so
+    that CLIO can be built via (make-system 'clio).
+
+
+
+Examples
+
+    A simple example program is provided to demonstrate the use of CLIO.
+    See   the    directory    clio/examples/*.     Use    the   function
+    load-clio-examples  in  the  file  clio/examples/defsystem.l.    For
+    Explorer users, this file also  contains a defsystem definition,  so
+    that CLIO examples can be built via (make-system 'clio-examples).
+
+    The example, a simple graphics editor, is run using the function
+    clio-examples:sketch.
+
+
+Documentation
+
+    The directory clio/doc/* contains several documents describing CLIO.
+
+    CLIO.PS, CLIO.TEX
+
+        The CLIO specification which  defines all CLIO  features.  LaTeX
+        and PostScript versions are included.
+
+    RELEASE.<release#>
+
+        Release notes for  the current  and previous  versions of  CLIO.
+        The highest <release#> identifies the version of the software in
+        these  directories.    The   release   notes  contain  important
+        information which must be read before using CLIO.
+
+    TEXT-CMDS.TEXT
+
+        This document discusses  user operations  for text  manipulation
+        provided by the  implementation in  CLIO Version  1.0, which are
+        generally consistent with  Level 1  of the  OPEN LOOK  Graphical
+        User Interface and Style Guide.
+
+
+
+

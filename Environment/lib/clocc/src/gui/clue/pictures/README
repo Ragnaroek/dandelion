@@ -1,0 +1,76 @@
+
+
+                      Pictures Graphic Interface
+                                                                          
+            Copyright (C) 1988, 1989, Texas Instruments Incorporated
+
+
+
+Related Systems
+    
+    Pictures relies upon three other systems --- CLX, CLUE and CLOS.
+
+    CLUE, the Common Lisp  User interface Environment,  may be found  in
+    the X11 distribution from MIT.
+
+    CLX,  the  Common  Lisp  X  Interface,  may  be  found  in  the  X11
+    distribution from MIT (see lib/CLX/*).
+
+    CLOS, the Common Lisp Object  System, is a draft  standard extension
+    to ANSI  Common  Lisp  for  object-oriented  programming.  Xerox PCL
+    (Portable Common  Loops)  is  an  implementation  of  CLOS  which is
+    available  publicly   at   no   cost   by   sending   a  request  to
+    CommonLoops.pa@xerox.com.  Sources for a simple implementation of  a
+    CLOS subset called  Clos-Kludge are  included in  the CLUE directory
+    (see clue/clos-kludge/*).  Clos-Kludge is sufficient for simple CLUE
+    programming, but it is neither supported nor recommended.
+ 
+
+
+Installation
+
+    Use the function load-pictures in the file picturs/defsystem.l.
+
+
+
+Examples
+
+    Two sets of examples  are provided to  demonstrate the use  of PICTURES.
+    See the directory pictures/examples/*.
+
+    pictures/examples/road-demo is a program  that creates a  picture of
+    car.  Animation will occur by depressing control-a.
+
+    The file view-zoom, in  the /pictures/source/ directory,  gives some
+    example code on how to zoom in and out of a view.  These view action
+    commands are  not  documented  but  they  are  used in the road-demo
+    example.
+
+    The file view-pan,  in the  /pictures/source/ directory,  gives some
+    example code on how to pan  a view.  These view action  commands are
+    not documented but they are used in the road-demo example.
+
+
+Documentation
+
+    The directory pictures/doc/*  contains several  documents describing
+    pictures.
+
+    pictures.rtf
+
+        This is in the Microsoft Rich Text Format.  It was created using
+        Word 4.0 on a Macintosh.
+
+    pictures.text
+ 
+        This is the text form the pictures.rtf file.  It can be  printed
+        on a line printer.
+
+
+
+
+
+
+
+
+

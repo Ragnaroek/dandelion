@@ -1,0 +1,45 @@
+MK:DEFSYSTEM 4.0
+
+A re-implementation of an old idea.
+
+INTRODUCTION
+
+The package that you are looking at is a very preliminary version of
+the code for DEFSYSTEM 4.0.  A backward compatible and extended
+re-implementation of the original MK:DEFSYSTEM by Mark Kantrowitz's.
+
+The system is now CLOS based.  The main design goals are
+
+1 - MK:DEFSYSTEM backward compatibility
+2 - Cleaner implementation of internal and external interfaces
+3 - Extensibility
+4 - Generality (i.e. cleaner provisions to specify external languages
+    and compilers; Fortran and C being the main targets)
+
+Some new features include (or rather will include)
+
+1 - versioned dependencies
+2 - specialized dependencies
+
+
+COMMENT
+
+As you may have noticed, I do not quite subscribe to the notion that
+"simplicity" buys you much.  I believe that the interface should be
+simple. The implementation should be "as simple as possible".  Of
+course the current code can be cleaned up and simplified: I encourage
+that.
+
+
+STATUS
+
+This code is highly experimental.  There are several areas where the
+system will need a better design, e.g. the foreign language
+manipulation facility.
+
+Documentation is in a very poor state.
+
+Please help to make the system meet all the stated goals.
+
+--
+Marco Antoniotti 2002-02-20

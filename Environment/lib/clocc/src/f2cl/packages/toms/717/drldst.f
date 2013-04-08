@@ -1,0 +1,27 @@
+      DOUBLE PRECISION FUNCTION DRLDST(P, D, X, X0)
+C
+C  ***  COMPUTE AND RETURN RELATIVE DIFFERENCE BETWEEN X AND X0  ***
+C  ***  NL2SOL VERSION 2.2  ***
+C
+      INTEGER P
+      DOUBLE PRECISION D(P), X(P), X0(P)
+C
+      INTEGER I
+      DOUBLE PRECISION EMAX, T, XMAX, ZERO
+      PARAMETER (ZERO=0.D+0)
+C
+C  ***  BODY  ***
+C
+      EMAX = ZERO
+      XMAX = ZERO
+      DO 10 I = 1, P
+         T =  ABS(D(I) * (X(I) - X0(I)))
+         IF (EMAX .LT. T) EMAX = T
+         T = D(I) * ( ABS(X(I)) +  ABS(X0(I)))
+         IF (XMAX .LT. T) XMAX = T
+ 10      CONTINUE
+      DRLDST = ZERO
+      IF (XMAX .GT. ZERO) DRLDST = EMAX / XMAX
+ 999  RETURN
+C  ***  LAST LINE OF DRLDST FOLLOWS  ***
+      END

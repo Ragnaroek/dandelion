@@ -1,0 +1,5 @@
+This directory contains some files used for testing f2cl as it developed.
+Some of the files test specifics (as indicated by the file name), other
+files contain assorted pieces of code from various sources.
+
+The test file collection is not comprehensive.

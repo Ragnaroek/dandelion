@@ -1,0 +1,23 @@
+MK:DEFSYSTEM 4 Partial TODO List.
+
+* Fix/Finish the specs and the documentation.
+
+* Test basic program functionality.
+  ** DEFSYSTEM maintains some state across operations.  This state
+     should be made explicit and stored in a better way at the
+     component level.
+  ** The ``policies'' idea is not fleshed out.
+  ** There may still be some problems w.r.t. pathnames (nothing new
+     here).
+
+* Advanced program functionality
+  ** Foreign language integration is suboptimal.  More design is needed.
+
+* Extension and Extensibility
+  ** This needs more design. Essentially, the construction of new
+     ``components'' is not thought out yet.
+  ** Specialized dependencies and versions need to be tested and
+     integrated in the design.
+
+--
+Marco Antoniotti 2002-02-20

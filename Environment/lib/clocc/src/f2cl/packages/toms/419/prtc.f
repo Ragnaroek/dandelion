@@ -1,0 +1,6 @@
+      SUBROUTINE PRTC(N,P,Q)
+      DOUBLE PRECISION P(50),Q(50)
+      WRITE(6,10) (P(I),Q(I) ,I=1,N)
+   10 FORMAT(//' COEFFICIENTS' /50(2D26.16/))
+      RETURN
+      END

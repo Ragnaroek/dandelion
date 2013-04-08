@@ -1,0 +1,177 @@
+ PROGRAM MLMNP
+
+ MAXIMUM LIKELIHOOD ESTIMATION OF
+ LINEAR-IN-PARAMETERS MULTINOMIAL PROBIT MODELS
+ (BOUNDS NOT ENFORCED; STATISTICS ARE COMPUTED)
+
+
+  NUMBER OF OBSERVATIONS................. 567
+  NUMBER OF ALTERNATIVES PER CHOICE SET..   3
+  EQUAL WEIGHTS FOR ALL OBSERVATIONS
+  NO INTEGER EXPLANATORY VARIABLES
+  NUMBER OF REAL DATA VALUES PER OBS.....  27
+  OUTPUT UNIT............................   6
+
+  COVARIANCE TYPE = INVERSE GAUSS-NEWTON HESSIAN
+  REGRESSION DIAGNOSTICS REQUESTED
+
+  *** LEAVE-BLOCK-OUT DIAGNOSTICS REQUESTED  ***
+
+  DIAGNOSTICS ON X-VECTOR REQUESTED
+  NUMBER OF BLOCKS:     3
+  VARIABLE BLOCK-SIZE OPTION CHOSEN
+
+  BLOCK-SIZES:
+       216  162  189
+
+  *** NOTE:  NALT SET EQUAL TO ICSET ***
+  NUMBER OF NOMINAL VARIABLES............   3
+  NUMBER OF ATTRIBUTES PER ALTERNATIVE...   9
+  NO NOMINAL DUMMIES
+  IID ERROR TERMS
+  NO RANDOM TASTE VARIATION
+
+  NUMBER OF MODEL PARAMETERS.............   9
+
+ INITIAL PARAMETER VECTOR AND BOUNDS:
+  1 RENT        -.371499E-02  -.100000E+03   .100000E+03
+  2 LocD1        .473069E-01  -.100000E+03   .100000E+03
+  3 LocD2       -.443496E+00  -.100000E+03   .100000E+03
+  4 ConD1        .734521E+00  -.100000E+03   .100000E+03
+  5 ConD2        .648764E+00  -.100000E+03   .100000E+03
+  6 BedD1       -.125812E+01  -.100000E+03   .100000E+03
+  7 BedD2       -.641347E+00  -.100000E+03   .100000E+03
+  8 Htype        .429202E+00  -.100000E+03   .100000E+03
+  9 CDum         .958062E+00  -.100000E+03   .100000E+03
+
+ NONDEFAULT VALUES....
+
+ DTYPE..... IV(16) =  0
+ DINIT..... V(38) =   .1000000E+01
+
+     I     INITIAL X(I)        D(I)
+
+     1     -.371499E-02      .100E+01
+     2      .473069E-01      .100E+01
+     3     -.443496E+00      .100E+01
+     4      .734521E+00      .100E+01
+     5      .648764E+00      .100E+01
+     6     -.125812E+01      .100E+01
+     7     -.641347E+00      .100E+01
+     8      .429202E+00      .100E+01
+     9      .958062E+00      .100E+01
+
+    IT   NF      F       RELDF   PRELDF   RELDX  MODEL  STPPAR  D*STEP
+
+     0    1  .418E+03
+     1    2  .415E+03  .65E-02  .84E-02  .1E+00    G    .0E+00  .4E+00
+     2    3  .415E+03  .35E-03  .41E-03  .2E-01    G    .0E+00  .8E-01
+     3    4  .415E+03  .15E-04  .15E-04  .3E-02    S    .0E+00  .1E-01
+     4    5  .415E+03  .14E-06  .15E-06  .3E-03    S    .0E+00  .1E-02
+     5    6  .415E+03  .22E-08  .22E-08  .3E-04    S    .0E+00  .2E-03
+     6    7  .415E+03  .40E-10  .41E-10  .5E-05    S    .0E+00  .2E-04
+
+ ***** RELATIVE FUNCTION CONVERGENCE *****
+
+ FUNCTION      .414996E+03   RELDX         .468E-05
+ FUNC. EVALS       7         GRAD. EVALS       7
+ PRELDF        .405E-10      NPRELDF       .405E-10
+
+     I      FINAL X(I)        D(I)          G(I)
+
+     1    -.417176E-02      .100E+01      .690E-02
+     2     .309495E-02      .100E+01      .151E-03
+     3    -.415382E+00      .100E+01     -.616E-04
+     4     .805209E+00      .100E+01      .626E-05
+     5     .739921E+00      .100E+01      .104E-03
+     6    -.156055E+01      .100E+01      .931E-04
+     7    -.704689E+00      .100E+01     -.196E-03
+     8     .541099E+00      .100E+01     -.279E-03
+     9     .102279E+01      .100E+01      .237E-03
+
+    1 EXTRA FUNC. EVALS FOR COVARIANCE AND DIAGNOSTICS.
+    1 EXTRA GRAD. EVALS FOR COVARIANCE AND DIAGNOSTICS.
+
+ SQRT(RECIPROCAL CONDITION OF (J**T)*RHO"*J) = AT MOST   .15E-02
+
+ COVARIANCE = (J**T * RHO" * J)**-1
+
+ ROW  1      .122E-06
+ ROW  2      .637E-05    .139E-01
+ ROW  3      .774E-05    .743E-02    .206E-01
+ ROW  4     -.484E-05    .946E-03   -.166E-02    .197E-01
+ ROW  5     -.615E-05    .153E-03   -.299E-02    .107E-01    .183E-01
+ ROW  6      .189E-04   -.847E-03   -.108E-02   -.475E-02   -.601E-02
+             .229E-01
+ ROW  7      .906E-05    .105E-02    .159E-02   -.912E-03   -.111E-02
+             .638E-02    .126E-01
+ ROW  8     -.187E-04    .155E-02   -.126E-02    .220E-02    .379E-02
+            -.303E-02   -.224E-02    .156E-01
+ ROW  9     -.121E-04   -.396E-03    .101E-03    .321E-02    .449E-03
+            -.396E-02   -.127E-02    .622E-02    .930E-02
+
+ BLOCK REGRESSION DIAGNOSTIC = 0.5 * G(I)**T * H(I)**-1 * H * H(I)**-1 *
+ BLOCK  FIRST  LAST    RD(I)         X(I)
+     1      1   216    18.3       -.363145E-02    .189900       -.426132
+                                   .824762        .551742       -.969218
+                                  -.264445        .333277        1.10424
+     2    217   378    13.4       -.504620E-02   -.483437E-01   -.272364
+                                   1.00634        .948275       -2.22987
+                                  -1.07307        .739034        1.25642
+     3    379   567    7.97       -.448066E-02   -.114760E-01   -.576371
+                                   .687746        .792413       -1.83698
+                                  -.870788        .577961        .816514
+
+ ASYMPTOTIC T-STATISTICS:
+  I                X(I)           T-STAT(I)       STD ERROR
+  1  RENT       -.417176E-02    -.119269E+02     .349776E-03
+  2  LocD1       .309495E-02     .262612E-01     .117853E+00
+  3  LocD2      -.415382E+00    -.289367E+01     .143548E+00
+  4  ConD1       .805209E+00     .573979E+01     .140286E+00
+  5  ConD2       .739921E+00     .546424E+01     .135412E+00
+  6  BedD1      -.156055E+01    -.103182E+02     .151244E+00
+  7  BedD2      -.704689E+00    -.628199E+01     .112176E+00
+  8  Htype       .541099E+00     .433083E+01     .124941E+00
+  9  CDum        .102279E+01     .106073E+02     .964229E-01
+
+ NUMBER OF OBSERVATIONS (NOBS) =  567
+
+ LOG-LIKELIHOOD L(EST)  =  -.414996E+03
+ LOG-LIKELIHOOD L(0)    =  -.622913E+03
+ -2[L(0) - L(EST)]:     =   .415834E+03
+
+ 1 - L(EST)/L(0):       =   .333782E+00
+ 1 - (L(EST)-NPAR)/L(0) =   .319334E+00
+
+ (FIXED CHOICE SET SIZE)
+
+ AGGREGATE CHOICES AND MARKET SHARES:
+   1     121.000   .2134
+   2     133.000   .2346
+   3     313.000   .5520
+
+ STATISTICS FOR CONSTANTS-ONLY MODEL:
+    LOG-LIKELIHOOD L(C)    =  -.565715E+03
+    -2[L(C) - L(EST)]:     =   .301438E+03
+
+
+
+ OUTPUT FOR CONVENIENT RESTART:
+ RENT
+   -.417176E-02  -.100000E+03   .100000E+03
+ LocD1
+    .309495E-02  -.100000E+03   .100000E+03
+ LocD2
+   -.415382E+00  -.100000E+03   .100000E+03
+ ConD1
+    .805209E+00  -.100000E+03   .100000E+03
+ ConD2
+    .739921E+00  -.100000E+03   .100000E+03
+ BedD1
+   -.156055E+01  -.100000E+03   .100000E+03
+ BedD2
+   -.704689E+00  -.100000E+03   .100000E+03
+ Htype
+    .541099E+00  -.100000E+03   .100000E+03
+ CDum
+    .102279E+01  -.100000E+03   .100000E+03

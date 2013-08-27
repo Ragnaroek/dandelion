@@ -20,10 +20,12 @@
 package de.defmacro.dandelion.internal.ui.editor;
 
 import java.util.*;
+
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.viewers.*;
 
 import de.defmacro.dandelion.internal.core.dom.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
@@ -38,7 +40,7 @@ implements ITreeContentProvider
 	
 	private ISexpModel fInputModel;
 	
-	@NonNull
+	@Nonnull
 	private LispOutlineFilter fFilter;
 	
 	/**

@@ -21,7 +21,8 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
+import javax.annotation.CheckForNull;
+
 
 /**
  * Die Lambda-Liste eines Makros.
@@ -72,7 +73,7 @@ extends OrdinaryLambdaList
 	 * Liefert das &ampbody Symbol.
 	 * @return body-Symbol
 	 */
-	@Nullable
+	@CheckForNull
 	public Symbol getBodyParameter()
 	{
 		return fBody;

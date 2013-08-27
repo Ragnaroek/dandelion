@@ -1,11 +1,11 @@
 (in-package :cl-user)
 
-(defpackage :de.fh-trier.test.evalserver.meta
+(defpackage #:dandelion-test-meta
   (:use #:common-lisp 
-        #:de.fh-trier.evalserver.meta
-        #:de.fh-trier.test.utils
+        #:dandelion-meta
+        #:dandelion-utils
         #:lisp-unit
-        #:de.fh-trier.test.extensions)
+        #:defmacro-test-extensions)
   (:export #:dummy-macro-1
            #:dummy-macro-2
            #:dummy-macro-3
@@ -13,30 +13,36 @@
            #:dummy-function-2
            #:dummy-function-3))
 
-(in-package #:de.fh-trier.test.evalserver.meta)
+(in-package #:dandelion-test-meta)
 
 ;###########################################
 ;#
-;# Testfunktionen
+;# Test Function which we try to get some meta information about
 ;#
 ;###########################################
 
 (defmacro dummy-macro-1 ((var expr) &body body)
- nil)
+  (declare (ignore var expr body))
+  nil)
 
 (defmacro dummy-macro-2 ((var expr &key key) &body body &key key-1 (key-2 0) (key-3 (+ 1 2 3) supplied-p))
- nil)
+  (declare (ignore var expr key body key-1 key-2 key-3))
+  nil)
 
 (defmacro dummy-macro-3 ((var expr (var2 expr2 (var3 expr3))) (var4 expr4) &optional (opt-1 0) &rest rest)
- nil)
+  (declare (ignore var expr var2 expr2 var3 expr3 var4 expr4 opt-1 rest))
+  nil)
 
 (defun dummy-function-1 (a b c &rest rest)
+  (declare (ignore a b c rest))
   nil)
 
 (defun dummy-function-2 (a &rest rest &key key (key-2 0) (key-3 (+ 1 2 3) supplied-p))
+  (declare (ignore a rest key key-2 key-3 supplied-p))
   nil)
 
 (defun dummy-function-3 (a &optional (opt-1 0) &rest rest)
+  (declare (ignore a opt-1 rest))
   nil)
 
 ;###########################################
@@ -44,7 +50,7 @@
 ;# Tests (run-tests)
 ;#
 ;###########################################
-(remove-all-tests)
+(remove-tests :all)
 
 (define-test test-package-symbols 
   (assert-true (member "COMMON-LISP-USER" (package-symbols) :key #'package-name :test #'equalp))
@@ -53,7 +59,7 @@
 
 (define-test test-function-symbols
   (let (f)
-    (setf f (function-symbols (find-package :de.fh-trier.test.evalserver.meta)))
+    (setf f (function-symbols (find-package :dandelion-test-meta)))
     (assert-eql 3 (length f))
     (assert-true (member 'dummy-function-1 f))
     (assert-true (member 'dummy-function-2 f))
@@ -66,7 +72,7 @@
 
 (define-test test-macro-symbols
   (let (f)
-    (setf f (macro-symbols (find-package :de.fh-trier.test.evalserver.meta)))
+    (setf f (macro-symbols (find-package :dandelion-test-meta)))
     (assert-eql 3 (length f))
     (assert-true (member 'dummy-macro-1 f))
     (assert-true (member 'dummy-macro-2 f))
@@ -78,7 +84,7 @@
     (assert-true (member 'dotimes f))))
 
 
-(define-test test-function-arglist->string 
+(define-test test-function-arglist->string
   (assert-equal '("(" "VAR" "EXPR" ")" "&BODY" "BODY") 
                 (function-arglist->string 'dummy-macro-1))
 
@@ -169,7 +175,7 @@
   (let ((f nil))
     (map-function-name #'(lambda (name) 
                          (setf f (cons name f)))
-                     (function-symbols (find-package :de.fh-trier.test.evalserver.meta)))
+                     (function-symbols (find-package :dandelion-test-meta)))
     (assert-true (member "DUMMY-FUNCTION-1" f :test #'equal))
     (assert-true (member "DUMMY-FUNCTION-2" f :test #'equal))
     (assert-true (member "DUMMY-FUNCTION-3" f :test #'equal))
@@ -177,7 +183,7 @@
     (setf f nil)
     (map-function-name #'(lambda (name) 
                          (setf f (cons name f)))
-                     (macro-symbols (find-package :de.fh-trier.test.evalserver.meta)))
+                     (macro-symbols (find-package :dandelion-test-meta)))
     (assert-true (member "DUMMY-MACRO-1" f :test #'equal))
     (assert-true (member "DUMMY-MACRO-2" f :test #'equal))
     (assert-true (member "DUMMY-MACRO-3" f :test #'equal))))

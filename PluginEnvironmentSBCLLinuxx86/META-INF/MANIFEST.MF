@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SBCL Environment
 Bundle-SymbolicName: de.defmacro.dandelion.env.sbcl.linux.x86;singleton:=true
-Bundle-Version: 1.0.40
+Bundle-Version: 1.1.10
 Bundle-Activator: de.defmacro.dandelion.env.sbcl.linux.x86.Activator
 Require-Bundle: org.eclipse.core.runtime,
  de.defmacro.dandelion

@@ -27,7 +27,7 @@
 
 (in-package #:cl-user)
 
-(defpackage #:de.fh-trier.evalserver.utils
+(defpackage #:dandelion-utils
   (:use #:common-lisp)
   (:export #:find-shortest-string
            #:make-formatted-string
@@ -37,7 +37,7 @@
            #:get-output
            #:redirect-output?))
 
-(in-package #:de.fh-trier.evalserver.utils)
+(in-package #:dandelion-utils)
 
 ; input:  list - Liste von Strings, die Liste muss mindestens einen String enthalten
 ; effect: Sucht den kuerzesten String in einer Liste und gibt diesen zurueck.
@@ -96,6 +96,20 @@
              :initform NIL
              :documentation "redirection enabled/disabled?")))
 
+(defgeneric redirect-output? (redirector bool))
+
+(defun do-redirect (redirector)
+    (with-slots ((stream redirect-stream) (out out-backup)) redirector
+        (setf out *standard-output*)
+        (setf stream (make-string-output-stream))
+        (setf *standard-output* stream)))
+
+(defun restore (redirector)
+  (with-slots ((output output) (stream redirect-stream) (out out-backup)) redirector
+    (setf *standard-output* out)
+    (setf output (get-output-stream-string stream))
+    (setf stream nil)))
+
 (defmethod redirect-output? ((redirector OutputRedirector) bool)
   (with-slots ((redirect? redirect?)) redirector
     (unless (eql bool redirect?)
@@ -104,31 +118,4 @@
         (do-redirect redirector)
         (restore redirector)))))
 
-(defun do-redirect (redirector)
-  (with-slots ((stream redirect-stream) (out out-backup)) redirector
-    (setf out *standard-output*)
-    (setf stream (make-string-output-stream))
-    (setf *standard-output* stream)))
-
-(defun restore (redirector)
-  (with-slots ((output output) (stream redirect-stream) (out out-backup)) redirector
-    (setf *standard-output* out)
-    (setf output (get-output-stream-string stream))
-    (setf stream nil)))
-
-#|
-(setf *test* (make-instance 'OutputRedirector))
-(redirect-output? *test* NIL)
-
-(format *standard-output* "test")
-(get-output *test*)
-|#
-
-
 ;;; END Class OutputRedirector
-
-
-
-
-
-

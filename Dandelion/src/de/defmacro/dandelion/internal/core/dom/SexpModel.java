@@ -21,11 +21,12 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.*;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.text.*;
 
 import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.ui.text.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /*ACHTUNG !!!!!!!!!!!!!!!!!
  * 
@@ -167,7 +168,7 @@ implements ISexpModel
 	/**
 	 * @see ISexpModel#getTopLevelForms()
 	 */
-	@NonNull
+	@Nonnull
 	public List<SExpression> getTopLevelForms()
 	{
 		if( fRoot == null || fRoot.getChildren() == null) {

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Clisp Environment
 Bundle-SymbolicName: de.defmacro.dandelion.env.clisp.linux.x86;singleton:=true
-Bundle-Version: 2.4.8
+Bundle-Version: 2.49.2
 Bundle-Activator: de.defmacro.dandelion.env.clisp.linux.x86.Activator
 Require-Bundle: org.eclipse.core.runtime,
  de.defmacro.dandelion

@@ -25,12 +25,15 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+sbcl
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require :sb-introspect))
+
 (in-package :cl-user)
 
-(defpackage #:de.fh-trier.evalserver.meta
+(defpackage #:dandelion-meta
   (:use #:common-lisp 
-        #:port
-        #:de.fh-trier.evalserver.utils)
+        #:dandelion-utils)
   (:export #:package-symbols
            #:function-symbols
            #:macro-symbols
@@ -44,7 +47,7 @@
            #:map-function-name
            #:function-arglist->string))
 
-(in-package #:de.fh-trier.evalserver.meta)
+(in-package #:dandelion-meta)
 
 ; input:  -
 ; effect: Erstellt eine Liste aller bekannten Paket-Symbole und liefert diese als Liste zurueck.
@@ -52,6 +55,14 @@
 ;@testcase
 (defun package-symbols ()
   (list-all-packages))
+
+; input:  var - beliebiges Symbol
+; effect: Praedikatsfunktion fuer Test auf Funktion. Gibt NIL zurueck wenn das uebergebene Symbol nicht
+;         den Namen einer Funktion darstellt.
+; value:  T, wenn var ein Funktionssymbol
+;@testcase
+(defun function-symbol-p (var)
+  (and (fboundp var) (not (macro-function var))))
 
 ; input:  package - Package-Objekt
 ; effect: Erstellt eine Liste aller bekannte Funktionssymbole des uebergeben Paketes.
@@ -73,22 +84,47 @@
       (when (macro-function var) (setf msymbols (cons var msymbols))))
     msymbols))
 
-; input:  fsymbol - Ein Funktions- oder Makrosymbol
-; effect: Gibt die zu diesem Symbol passende Argumentliste (nicht geschachtelt) als Stringliste zurueck.
-;         Destructuring-Parameter in Makroparameter werden passend umgewandelt.
-; value:  Die umgewandelte Argumentliste.
+#+sbcl
+(defun function-arglist-sbcl (func)
+  (sb-introspect:function-lambda-list func))
+
+#+clisp
+(defun function-arglist-clisp (func)
+  (cond ((and (function-symbol-p func) (not (special-operator-p func)))
+         (sys::arglist func))
+        ((macro-function func)
+         (let ((macro-def (get func 'system::definition)))
+               (if macro-def
+                   (third (assoc 'defmacro macro-def))
+                   (sys::arglist (macro-function func)))))
+        (T nil)))
+
+#+lispworks
+(defun function-arglist-lispworks (func)
+  (cond ((macro-function func) ;Bei Makro ohne Argument liefert Lispworks nicht NIL
+         (let ((arglist (lw:function-lambda-list func))) 
+           (if (or (not (listp arglist)) ;ab und zu ist arglist :dont-know!!!
+                   (find 'DSPEC::%%MACROARG%% arglist)) ;wenn dieses Symbol vorkommt annehmen das es die rueckgabe fuer die NIL-Lambda list ist
+               nil
+               arglist)))
+        (T (lw:function-lambda-list func))))
+
+; input:  func - Ein Funktions- oder Makrosymbol
+; effect: Gibt die zu diesen Symbol passenden Argumentliste zurueck.
+; value-primary: Die Argumentliste
+; value-mv1: Das symbol MACRO wenn Funktionssymbol ein Makro war, sonst FUNCTION
 ;@testcase
-(defun function-arglist->string (fsymbol &aux keyword-seen (fargs (multiple-value-list (function-arglist fsymbol))))
-  (mapcan #'(lambda (farg)
-              (when (member farg LAMBDA-LIST-KEYWORDS)
-                (setf keyword-seen T))
-              (cond ((consp farg) ;parameter symbol ist eine Liste
-                     (if (and (not keyword-seen) (eql (second fargs) 'macro)) ;destructuring parameter
-                           (destructuring-argument->string farg)
-                           (init-form->string farg)))
-                    ((symbolp farg)
-                     (list (symbol-name farg)))
-                    (T (list "ERROR")))) (first fargs)))
+(defun function-arglist (func &aux arglist)
+  (handler-case 
+      (setf arglist
+            #+clisp (function-arglist-clisp func)
+            #+lispworks (function-arglist-lispworks func)
+            #+sbcl (function-arglist-sbcl func)
+            #-(or clisp lispworks sbcl) (error "function-arglist not implemented"))
+    (error (se) (format T "~a" se) (setf arglist nil)))
+
+    (unless (listp arglist) (setf arglist (list 'not-available)))
+    (values arglist (if (function-symbol-p func) 'function 'macro)))
 
 ; input:  list - Liste von Symbolen, evtl. geschachtelt
 ; effect: Wandelt die Liste von Symbole rekursiv in einen String um.
@@ -108,9 +144,26 @@
 ; value:  Argument als String-Liste, ("ERROR") wenn ungueltig
 ;@testcase=test-function-arglist->string
 (defun init-form->string (list)
-  (if (symbolp (first list))
-       (list (symbol-name (first list)))
-       (list "ERROR")))
+    (if (symbolp (first list))
+        (list (symbol-name (first list)))
+        (list "ERROR")))
+
+; input:  fsymbol - Ein Funktions- oder Makrosymbol
+; effect: Gibt die zu diesem Symbol passende Argumentliste (nicht geschachtelt) als Stringliste zurueck.
+;         Destructuring-Parameter in Makroparameter werden passend umgewandelt.
+; value:  Die umgewandelte Argumentliste.
+;@testcase
+(defun function-arglist->string (fsymbol &aux keyword-seen (fargs (multiple-value-list (function-arglist fsymbol))))
+  (mapcan #'(lambda (farg)
+              (when (member farg LAMBDA-LIST-KEYWORDS)
+                (setf keyword-seen T))
+              (cond ((consp farg) ;parameter symbol ist eine Liste
+                     (if (and (not keyword-seen) (eql (second fargs) 'macro)) ;destructuring parameter
+                           (destructuring-argument->string farg)
+                           (init-form->string farg)))
+                    ((symbolp farg)
+                     (list (symbol-name farg)))
+                    (T (list "ERROR")))) (first fargs)))
 
 ; input:  func - Funktionssymbol
 ; effect: Gibt den Namen der Funktion als String zurueck
@@ -127,64 +180,11 @@
 (defun macro-symbol-p (var)
   (macro-function var))
 
-; input:  var - beliebiges Symbol
-; effect: Praedikatsfunktion fuer Test auf Funktion. Gibt NIL zurueck wenn das uebergebene Symbol nicht
-;         den Namen einer Funktion darstellt.
-; value:  T, wenn var ein Funktionssymbol
-;@testcase
-(defun function-symbol-p (var)
-  (and (fboundp var) (not (macro-function var))))
-
 ; input:  func - Ein Funktionssymbol
 ; effect: Gibt den Dokumentationsstring des Funktionssymbols zurueck.
 ; value:  String, Dokumentation der Funktion
 (defun function-documentation (func)
   (documentation func 'function))
-
-; input:  func - Ein Funktions- oder Makrosymbol
-; effect: Gibt die zu diesen Symbol passenden Argumentliste zurueck.
-; value-primary: Die Argumentliste
-; value-mv1: Das symbol MACRO wenn Funktionssymbol ein Makro war, sonst FUNCTION
-;@testcase
-(defun function-arglist (func &aux arglist)
-  (handler-case 
-      (setf arglist
-            #+clisp (function-arglist-clisp func)
-            #+lispworks (function-arglist-lispworks func)
-            #-(or clisp lispworks) (port:arglist func))
-    (error (se) (format T "~a" se) (setf arglist nil)))
-
-    (unless (listp arglist) (setf arglist (list 'not-available)))
-    (values arglist (if (function-symbol-p func) 'function 'macro)))
-
-#+clisp
-(defun function-arglist-clisp (func)
-  (cond ((and (function-symbol-p func) (not (special-operator-p func)))
-         (port:arglist func))
-        ((macro-function func)
-         (let ((macro-def (get func 'system::definition)))
-               (if macro-def
-                   (third (assoc 'defmacro macro-def))
-                   (sys::arglist (macro-function func)))))
-        (T nil)))
-
-#|
-         (let ((macro-arg (third (assoc 'defmacro (get func 'system::definition)))))
-           (if macro-arg 
-               macro-arg
-               (sys::arglist (macro-function func)))))
-        (T nil))) |#
-
-#+lispworks
-(defun function-arglist-lispworks (func)
-  (cond ((macro-function func) ;Bei Makro ohne Argument liefert Lispworks nicht NIL
-         (let ((arglist (port:arglist func))) 
-           (if (or (not (listp arglist)) ;ab und zu ist arglist :dont-know!!!
-                   (find 'DSPEC::%%MACROARG%% arglist)) ;wenn dieses Symbol vorkommt annehmen das es die rueckgabe fuer die NIL-Lambda list ist
-               nil
-               arglist)))
-        (T (port:arglist func))))
-
 
 ; input:  func - Eine Funktion die einen Parameter erwartet
 ;         list - Eine Liste von Funktionssymbolen
@@ -193,5 +193,4 @@
 ;@testcase
 (defun map-function-name (func list)
   (mapc #'(lambda (fn)
-              (funcall func (function-name fn))
-              ) list))
+              (funcall func (function-name fn))) list))

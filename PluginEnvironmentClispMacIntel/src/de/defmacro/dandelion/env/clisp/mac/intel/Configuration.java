@@ -40,6 +40,6 @@ extends AbstractConfigurationFactory
 	 */
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_clisp_2.4.9");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_clisp_2.49.2");
 	}
 }

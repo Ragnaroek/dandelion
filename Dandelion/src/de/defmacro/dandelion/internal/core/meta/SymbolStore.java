@@ -20,7 +20,9 @@
 package de.defmacro.dandelion.internal.core.meta;
 
 import java.util.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
+import javax.annotation.Nonnull;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
@@ -239,7 +241,7 @@ implements ISymbolStore
 	/**
 	 * @see ISymbolStore#getFunctionSymbols(String)
 	 */
-	@NonNull
+	@Nonnull
 	@SuppressWarnings("Dm")
 	public synchronized SortedSet<IMetaSymbol> getFunctionSymbols(final String pack) {
 		MetaPackage metaPack = fPackages.get(pack.toUpperCase());
@@ -254,7 +256,7 @@ implements ISymbolStore
 	/**
 	 * @see ISymbolStore#getMacroSymbols(String)
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized SortedSet<IMetaSymbol> getMacroSymbols(final String pack) {
 		MetaPackage metaPack = getMetaPackage(pack);
 		if( metaPack == null ) {
@@ -267,7 +269,7 @@ implements ISymbolStore
 	/**
 	 * @see ISymbolStore#prefixQuery(String)
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized SortedSet<IMetaSymbol> prefixQuery(final String prefix) {
 		
 		SortedSet<IMetaSymbol> resultSet = new TreeSet<IMetaSymbol>();
@@ -281,7 +283,7 @@ implements ISymbolStore
 	/**
 	 * @see ISymbolStore#prefixQuery(String, String)
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized SortedSet<IMetaSymbol> prefixQuery(final String pack, final String prefix) {
 	
 		MetaPackage metaPack = getMetaPackage(pack);

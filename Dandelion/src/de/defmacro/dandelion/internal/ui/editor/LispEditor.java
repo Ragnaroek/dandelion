@@ -20,6 +20,10 @@
 package de.defmacro.dandelion.internal.ui.editor;
 
 import java.util.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.Assert;
@@ -41,8 +45,6 @@ import de.defmacro.dandelion.internal.project.ILispProject;
 import de.defmacro.dandelion.internal.ui.*;
 import de.defmacro.dandelion.internal.ui.text.*;
 import de.defmacro.dandelion.internal.ui.text.presentation.LispSourcePresentationManager;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Implementierung der {@link ILispEditor}-Schnittstelle.
@@ -198,7 +200,6 @@ implements ISelectionChangedListener, ILispEditor
 	 * Liefert die Outline fuer den Editor.
 	 * @see IAdaptable#getAdapter(Class)
 	 */
-	@SuppressWarnings("unchecked") //Schnitstelle zu Eclipse nicht generisch
 	@Override
 	public synchronized Object getAdapter(final Class required) 
 	{
@@ -371,7 +372,6 @@ implements ISelectionChangedListener, ILispEditor
 		}
 	}
 	
-	@SuppressWarnings("unchecked") //Schnitstelle zu Eclipse nicht generisch
 	private void removeAnnotations(final IAnnotationModel annotationModel) 
 	{
 		for(Iterator iter = annotationModel.getAnnotationIterator(); iter.hasNext();) {
@@ -380,7 +380,6 @@ implements ISelectionChangedListener, ILispEditor
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void updateMarkers(final IAnnotationModel annotationModel)
 	{
 		if(annotationModel == null) {
@@ -472,7 +471,7 @@ implements ISelectionChangedListener, ILispEditor
 	/**
 	 * @see ILispEditor#getSourceSelection()
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized ILispSourceSelection getSourceSelection()
 	throws StructureException
 	{
@@ -504,7 +503,7 @@ implements ISelectionChangedListener, ILispEditor
 	/**
 	 * @see ILispEditor#getFileSelection()
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized ILispSourceSelection getFileSelection() 
 	throws StructureException
 	{
@@ -539,7 +538,7 @@ implements ISelectionChangedListener, ILispEditor
 	/**
 	 * @see ILispEditor#getTopLevelFormSelection()
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized ILispSourceSelection getTopLevelFormSelection() 
 	throws StructureException 
 	{
@@ -570,7 +569,7 @@ implements ISelectionChangedListener, ILispEditor
 	 * @param positions
 	 * @return
 	 */
-	@NonNull
+	@Nonnull
 	private List<PackageBoundForm> extractForms(final List<Position> positions, final IDocument document)
 	throws BadLocationException
 	{

@@ -21,11 +21,12 @@ package de.defmacro.dandelion.internal.ui.text.presentation;
 
 import java.util.*;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.text.Position;
 
 import de.defmacro.dandelion.internal.core.dom.*;
 import de.defmacro.dandelion.internal.core.meta.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
@@ -269,7 +270,7 @@ extends SexpressionDOMVisitorAdapter
 	 * Liefert alle eingesammelten Symbole als Set.
 	 * @return Menge der eingesammelten Symbole
 	 */
-	@NonNull
+	@Nonnull
 	public SortedSet<IMetaSymbol> getResult()
 	{
 		return fResult;

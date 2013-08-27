@@ -21,10 +21,12 @@ package de.defmacro.dandelion.internal.core.dom.parse;
 
 import java.util.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.text.Position;
 
 import de.defmacro.dandelion.internal.core.dom.SExpression;
-import edu.umd.cs.findbugs.annotations.*;
 
 /**
  * Standardimplementierung der {@link IParserInput}-Schnittstelle.
@@ -36,7 +38,7 @@ implements IParserInput
 {
 	@Nullable
 	private List<SExpression> fInput;
-	@NonNull
+	@Nonnull
 	private SExpression fInputSexpression;
 	private int fOffset;
 	
@@ -65,7 +67,7 @@ implements IParserInput
 	/**
 	 * @see IParserInput#getInputSExpression()
 	 */
-	@NonNull
+	@Nonnull
 	public SExpression getInputSExpression() 
 	{
 		return fInputSexpression;

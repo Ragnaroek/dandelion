@@ -1,8 +1,0 @@
-;;; -*- Mode: Lisp -*-
-
-;;; clunit.system --
-
-(mk:defsystem clunit
-    :source-pathname (translate-logical-pathname "clocc:src;tools;clunit;")
-    :source-extension "lisp"
-    :components ((:file "clunit")))

@@ -22,10 +22,12 @@ package de.defmacro.dandelion.internal.core.connection;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import javax.annotation.CheckForNull;
+
 import org.eclipse.core.runtime.*;
 
 import de.defmacro.dandelion.internal.LispPluginActivator;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
@@ -101,7 +103,7 @@ extends AbstractJob
 			return error("Adding server parameters failed", e);
 		}
 		
-		//reader nicht schliessen, da der Stream noch im ProcessManager benötigt wird.
+		//reader nicht schliessen, da der Stream noch im ProcessManager benï¿½tigt wird.
 		
 		//alles ok bei start
 		return Status.OK_STATUS;
@@ -113,7 +115,7 @@ extends AbstractJob
 	 * beendet wurde.
 	 * @return
 	 */
-	@Nullable
+	@CheckForNull
 	public Process getProcess()
 	{
 		return fCreatedProcess;
@@ -140,13 +142,9 @@ extends AbstractJob
 		}
 		
 		if(config.isLoggingEnabled()) {
-			commands.add("T");
 			commands.add(config.getLogSeverity().name());
-			if(config.isExecutable()) {
-				commands.add(makeLogFile(config.getEvalServerExecutable().getParent(), server));
-			} else {
-				commands.add(makeLogFile(new File(new URI(Platform.getInstallLocation().getURL().toString())).toString(), server));
-			}
+		} else {
+			commands.add("OFF");
 		}
 	}
 	

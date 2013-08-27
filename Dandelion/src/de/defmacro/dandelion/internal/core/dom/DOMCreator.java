@@ -21,11 +21,12 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.*;
 
+import javax.annotation.CheckForNull;
+
 import org.eclipse.jface.text.*;
 
 import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.ui.text.*;
-import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Erstellt ein Modell aus einem 
@@ -444,7 +445,7 @@ implements ISexpressionVisitor
 	 * Aktueller Quote-Zustand. Kann <code>null</code> sein.
 	 * @return
 	 */
-	@Nullable
+	@CheckForNull
 	private Stack<QuoteEntry> currentQuoteState()
 	{
 		return fQuoteStack;

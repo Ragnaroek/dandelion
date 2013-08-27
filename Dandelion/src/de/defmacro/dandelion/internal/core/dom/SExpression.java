@@ -21,9 +21,10 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.*;
 
-import org.eclipse.jface.text.Position;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import edu.umd.cs.findbugs.annotations.*;
+import org.eclipse.jface.text.Position;
 
 /**
  * Basisklass fuer alle Lisp-Ausdruecke.
@@ -61,7 +62,7 @@ implements IHierarchicalMalformationProvider
 	/**
 	 * Typ des Ausdrucks.
 	 */
-	@NonNull
+	@Nonnull
 	protected TSExpression fTyp = TSExpression.SEXPRESSION;
 	
 	/**
@@ -177,7 +178,7 @@ implements IHierarchicalMalformationProvider
 	 * Achtung: lazy-init wird umgangen.
 	 * @return
 	 */
-	@NonNull
+	@Nonnull
 	@Override
 	protected List<SExpression> getChildrenCreateIfNeccessary()
 	{
@@ -340,7 +341,7 @@ implements IHierarchicalMalformationProvider
 	/**
 	 * @see IMalformationProvider#getMalformations()
 	 */
-	@NonNull
+	@Nonnull
 	public List<ISyntacticalMalformation> getMalformations() 
 	{
 		return getMalformationProvider().getMalformations();

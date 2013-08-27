@@ -26,12 +26,12 @@
 
 (in-package :cl-user)
 
-(defpackage :de.fh-trier.evalserver.protocol
+(defpackage #:dandelion-protocol
   (:use #:common-lisp 
         #:cl-ppcre
         #:base64
-        #:de.fh-trier.evalserver.utils
-        #:de.fh-trier.evalserver.meta)
+        #:dandelion-utils
+        #:dandelion-meta)
   (:export #:malformed-protocol-error
            #:protocol-string
            #:protocol-reader
@@ -70,7 +70,7 @@
            #:+token-functions+
            #:+token-function-list+))
 
-(in-package #:de.fh-trier.evalserver.protocol)
+(in-package #:dandelion-protocol)
 
 ;###########################################
 ;#
@@ -138,39 +138,71 @@
 ;#
 ;###########################################
 ;; String-UI Konstanten
-(defconstant +no-restart-description+ "none")
-
+(defparameter +no-restart-description+ "none")
 
 ;; Tokens
-(defconstant +token-ok+         "OK")
-(defconstant +token-error+      "ERROR")
-(defconstant +token-eval-error+ "EVAL-ERROR")
-(defconstant +token-read-error+ "READ-ERROR")
-(defconstant +token-connect+    "CONNECT")
-(defconstant +token-disconnect+ "DISCONNECT")
-(defconstant +token-eval+       "EVAL")
-(defconstant +token-invoke-restart+ "INVOKE-RESTART")
-(defconstant +token-abort+      "ABORT")
-(defconstant +token-packages+   "PACKAGES")
-(defconstant +token-macros+     "MACROS")
-(defconstant +token-functions+  "FUNCTIONS")
-(defconstant +token-package-list+ "PACKAGE-LIST")
-(defconstant +token-function-list+ "FUNCTION-LIST")
+(defparameter +token-ok+         "OK")
+(defparameter +token-error+      "ERROR")
+(defparameter +token-eval-error+ "EVAL-ERROR")
+(defparameter +token-read-error+ "READ-ERROR")
+(defparameter +token-connect+    "CONNECT")
+(defparameter +token-disconnect+ "DISCONNECT")
+(defparameter +token-eval+       "EVAL")
+(defparameter +token-invoke-restart+ "INVOKE-RESTART")
+(defparameter +token-abort+      "ABORT")
+(defparameter +token-packages+   "PACKAGES")
+(defparameter +token-macros+     "MACROS")
+(defparameter +token-functions+  "FUNCTIONS")
+(defparameter +token-package-list+ "PACKAGE-LIST")
+(defparameter +token-function-list+ "FUNCTION-LIST")
 
-(defconstant +regex-blank+ "\\s+") ;blank auch in build-regex aendern
-(defconstant +regex-identifier+ "^(([\\w\\-]+)\\s+)|([\\w\\-]+$)")
-(defconstant +regex-host+ "[\\w\\.]+")
-(defconstant +regex-port+ "(\\d{1,5}$)|(\\d{1,5}\\s+)")
-(defconstant +regex-number+ "\\d+")
-(defconstant +regex-symbol+ "[^\\s()]+")
-(defconstant +regex-base64+ "[a-zA-Z0-9+/=]+")
+(defparameter +regex-blank+ "\\s+") ;blank auch in build-regex aendern
+(defparameter +regex-identifier+ "^(([\\w\\-]+)\\s+)|([\\w\\-]+$)")
+(defparameter +regex-host+ "[\\w\\.]+")
+(defparameter +regex-port+ "(\\d{1,5}$)|(\\d{1,5}\\s+)")
+(defparameter +regex-number+ "\\d+")
+(defparameter +regex-symbol+ "[^\\s()]+")
+(defparameter +regex-base64+ "[a-zA-Z0-9+/=]+")
 
-(defparameter *invoke-restart-compiled* nil)
-(defparameter *connect-compiled* nil)
-(defparameter *eval-compiled* nil)
-(defparameter *function-request-compiled* nil)
-(defparameter *macro-request-compiled* nil)
-(defparameter *identifier-compiled* nil)
+; input:  parts - Kein oder mehrere Regex-Teile
+; effect: Fuegt die Regex-Teile zu einem Regex zusammen. Die einzelnen Teile werden durch das Whitespace-Regex getrennt (\\s+)
+; value:  -
+(defun build-regex (&rest parts)
+  (format NIL "^~{(~a)~^\\s+~}$" parts))
+
+; input:  &rest
+;         strings - Kein oder mehrere Strings
+; effect: Konkateniert die String aus Parameterliste und gibt die Konkatenation zurueck.
+; value:  String, Konkatenierte String aus Rest-Parametern.
+(defun conc-strings (&rest strings)
+  (apply #'concatenate 'string strings)
+)
+
+
+;TODO convert to constants
+
+(defparameter *invoke-restart-compiled* (make-instance 'compiled-regex :regex (conc-strings 
+                                                                         (build-regex +token-invoke-restart+ +regex-symbol+ +regex-base64+)
+                                                                         "|" (build-regex +token-invoke-restart+ +regex-symbol+))))
+(defparameter *connect-compiled* (make-instance 'compiled-regex :regex (build-regex +token-connect+ +regex-host+ +regex-port+)))
+(defparameter *eval-compiled* (make-instance 'compiled-regex :regex (build-regex +token-eval+ +regex-symbol+ +regex-base64+)))
+(defparameter *function-request-compiled* (make-instance 'compiled-regex :regex (build-regex +token-functions+ +regex-symbol+)))
+(defparameter *macro-request-compiled* (make-instance 'compiled-regex :regex (build-regex +token-macros+ +regex-symbol+)))
+(defparameter *identifier-compiled* (make-instance 'compiled-regex :regex +regex-identifier+))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Systemabhaengige Funktionen
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun write-10-termination (stream)
+  #+clisp (write-byte-clisp 10 stream) ;newline problem in clisp
+  #-clisp (write-char (code-char 10) stream))
+
+#+clisp
+(defun write-byte-clisp (byte stream)
+   (setf (stream-element-type stream) '(UNSIGNED-BYTE 8))
+   (write-byte byte stream)
+   (setf (stream-element-type stream) 'character))
 
 ;###########################################
 ;#
@@ -179,23 +211,32 @@
 ;###########################################
 
 ;****************************
-;; EXPORTIERTE Methoden
+;; INTERNAL helper functions
 ;****************************
-;(init-protocol)
-; input:  -
-; effect: Initialisert das Protokoll-Modul. Muss vor der ersten Verwendung
-;         aufgerufen werden.
-; value:  -
-(defun init-protocol ()
-  (setf *connect-compiled* (make-instance 'compiled-regex :regex (build-regex +token-connect+ +regex-host+ +regex-port+)))
-  (setf *eval-compiled* (make-instance 'compiled-regex :regex (build-regex +token-eval+ +regex-symbol+ +regex-base64+)))
-  (setf *identifier-compiled* (make-instance 'compiled-regex :regex +regex-identifier+))
-  (setf *invoke-restart-compiled* (make-instance 'compiled-regex :regex (conc-strings 
-                                                                         (build-regex +token-invoke-restart+ +regex-symbol+ +regex-base64+)
-                                                                         "|" (build-regex +token-invoke-restart+ +regex-symbol+))))
-  (setf *function-request-compiled* (make-instance 'compiled-regex :regex (build-regex +token-functions+ +regex-symbol+)))
-  (setf *macro-request-compiled* (make-instance 'compiled-regex :regex (build-regex +token-macros+ +regex-symbol+)))
-  nil)
+
+; input:  string - Ein String
+;         scanner - Scanner-Objekt
+; effect: Ueberprueft den uebergebenen String mit scanner auf syntaktische Korrektheit. Loest
+;         ein malformed-protocol-error Signal aus wenn String inkorrekt. Wenn String korrekt
+;         wird dier Zerlegung des Strings als Liste zureckgegeben.
+; value:  - 
+(defun read-list (string scanner)
+  (cond ((scan scanner string)
+         (split +regex-blank+ string))
+        (T (error 'malformed-protocol-error :protocol-string string))))
+
+; input:  check - beliebig
+;         received - Empfanger String
+; effect: Wenn check = NIL ist wird ein malformed-protocol-error Signalisiert. Ansonsten wird
+;         check zurueckgegeben.
+; value:  check, wenn check != NIL
+(defun check-read (check received)
+  (cond (check (identity check))
+        (T (error 'malformed-protocol-error :protocol-string received))))
+
+;****************************
+;; EXPORTED functions
+;****************************
 
 ;;;;;;;;;;;;;;
 ;;;; Reader
@@ -249,7 +290,7 @@
 (defun read-eval (string)
   (check-read 
    (register-groups-bind (id package form) ((scanner *eval-compiled*) string)
-     (list id package (base64-decode form))) string))
+     (list id package (base64-string-to-string form))) string))
 
 ; input:  string - String aus dem das INVOKE-RESTART-Kommando gelesen werden soll
 ; effect: Liefert die Bestandteile des INVOKE-RESTART-Kommandos als Liste zurueck.
@@ -259,7 +300,7 @@
 (defun read-invoke-restart (string)
   (let (list)
     (setf list (read-list string (scanner *invoke-restart-compiled*)))
-    (when (third list) (setf (third list) (base64-decode (third list))))
+    (when (third list) (setf (third list) (base64-string-to-string (third list))))
     (identity list)))
 
 ; input:  string - String aus dem das Function-Request Kommando gelesen werden soll
@@ -305,7 +346,7 @@
 ; value:  -
 ;@testcase
 (defun write-error (writer formatstring &rest args)
-  (write-line-to-writer writer (format nil "~a ~a" +token-error+ (base64-encode (make-formatted-string formatstring args)))))
+  (write-line-to-writer writer (format nil "~a ~a" +token-error+ (string-to-base64-string (make-formatted-string formatstring args)))))
 
 ; input:  writer - Ein protocol-writer Objekt
 ;         package-string - Paketname des aktuellen Pakets
@@ -316,7 +357,7 @@
 (defun write-eval-success (writer package-string multiple-value-list) ;(setf multiple-value-list '("1" "2") package-string ":my-package")
   (let (encoded-mv)
     (when (not multiple-value-list) (setf multiple-value-list (list "NIL"))) 
-    (setf encoded-mv (mapcar #'base64-encode multiple-value-list))
+    (setf encoded-mv (mapcar #'string-to-base64-string multiple-value-list))
     (write-line-to-writer writer (format nil "~a ~a ~{~a~^ ~}" +token-ok+ package-string encoded-mv))))
 
 ; input:  writer - Ein protocol-writer Objekt
@@ -327,9 +368,9 @@
 (defun write-eval-error (writer restart-assoc formatstring &rest args) ;(setf restart-list (list (find-restart 'abort)))
   (let (restarts-stringed error-stringed)
     (setf restarts-stringed (mapcar #'(lambda (restart-list)
-                                        (list (first restart-list) (base64-encode (format nil "~a" (second restart-list)))))
+                                        (list (first restart-list) (string-to-base64-string (format nil "~a" (second restart-list)))))
                                     restart-assoc))
-    (setf error-stringed (base64-encode (make-formatted-string formatstring args)))
+    (setf error-stringed (string-to-base64-string (make-formatted-string formatstring args)))
     (write-line-to-writer writer 
                           (format nil "~a ~a~:[~; ~{~{~a ~a~}~^ ~}~]" +token-eval-error+ error-stringed restarts-stringed restarts-stringed))))
 
@@ -340,7 +381,7 @@
 ; value:  -
 ;@testcase
 (defun write-read-error (writer formatstring &rest args)
-  (write-line-to-writer writer (format nil "~a ~a" +token-read-error+ (base64-encode (make-formatted-string formatstring args)))))
+  (write-line-to-writer writer (format nil "~a ~a" +token-read-error+ (string-to-base64-string (make-formatted-string formatstring args)))))
 
 ; input:  writer - Ein protocol-writer Objekt
 ;         package-list - Ein Liste von Package-Objekten
@@ -363,8 +404,8 @@
             (let ((documentation (function-documentation fs))
                   (arglist (function-arglist->string fs)))
               (if (or (not documentation) (equalp (string-trim '(#\Space #\Tab #\Newline) documentation) ""))
-                  (setf documentation (base64-encode "NIL"))
-                  (setf documentation (base64-encode documentation)))
+                  (setf documentation (string-to-base64-string "NIL"))
+                  (setf documentation (string-to-base64-string documentation)))
               ;(unless arglist (setf arglist (list "NIL")))
               (write-line-to-writer writer (format nil "~a ~a~:[~; ~]~{~a~^ ~}" fs documentation arglist arglist)))) 
         function-symbols))
@@ -379,59 +420,10 @@
   (write-10-termination stream)
   (force-output stream))
 
-;****************************
-;; INTERNE Hilfsmethoden
-;****************************
-
-; input:  &rest
-;         strings - Kein oder mehrere Strings
-; effect: Konkateniert die String aus Parameterliste und gibt die Konkatenation zurueck.
-; value:  String, Konkatenierte String aus Rest-Parametern.
-(defun conc-strings (&rest strings)
-  (apply #'concatenate 'string strings)
-)
-
-;(build-regex "aa" "bb")
-; input:  parts - Kein oder mehrere Regex-Teile
-; effect: Fuegt die Regex-Teile zu einem Regex zusammen. Die einzelnen Teile werden durch das Whitespace-Regex getrennt (\\s+)
-; value:  -
-(defun build-regex (&rest parts)
-  (format NIL "^~{(~a)~^\\s+~}$" parts))
-
-; input:  string - Ein String
-;         scanner - Scanner-Objekt
-; effect: Ueberprueft den uebergebenen String mit scanner auf syntaktische Korrektheit. Loest
-;         ein malformed-protocol-error Signal aus wenn String inkorrekt. Wenn String korrekt
-;         wird dier Zerlegung des Strings als Liste zureckgegeben.
-; value:  - 
-(defun read-list (string scanner)
-  (cond ((scan scanner string)
-         (split +regex-blank+ string))
-        (T (error 'malformed-protocol-error :protocol-string string))))
-
-; input:  check - beliebig
-;         received - Empfanger String
-; effect: Wenn check = NIL ist wird ein malformed-protocol-error Signalisiert. Ansonsten wird
-;         check zurueckgegeben.
-; value:  check, wenn check != NIL
-(defun check-read (check received)
-  (cond (check (identity check))
-        (T (error 'malformed-protocol-error :protocol-string received))))
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Systemabhaengige Funktionen
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun write-10-termination (stream)
-  #+clisp (write-byte-clisp 10 stream) ;newline problem in clisp
-  #-clisp (write-char (code-char 10) stream))
 
-#+clisp
-(defun write-byte-clisp (byte stream)
-   (setf (stream-element-type stream) '(UNSIGNED-BYTE 8))
-   (write-byte byte stream)
-   (setf (stream-element-type stream) 'character))
 
 

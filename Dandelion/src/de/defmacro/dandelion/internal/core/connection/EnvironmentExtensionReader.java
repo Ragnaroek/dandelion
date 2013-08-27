@@ -21,12 +21,14 @@ package de.defmacro.dandelion.internal.core.connection;
 
 import java.io.File;
 import java.util.*;
+
+import javax.annotation.Nonnull;
+
 import org.eclipse.core.runtime.*;
 
 import de.defmacro.dandelion.core.connection.IConfigurationFactory;
 import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.connection.IEnvironmentConfiguration.TLogSeverity;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class EnvironmentExtensionReader 
@@ -48,7 +50,7 @@ public class EnvironmentExtensionReader
 	 * Die Umgebungen und Konfigurationen werden aus der Extension-Registry gelesen.
 	 * @return Die eingelesenen Umgebungen und jeweiligen Konfigurationen
 	 */
-	@NonNull
+	@Nonnull
 	public Map<IEnvironment, IEnvironmentConfiguration> readExtensions()
 	{
 		IConfigurationElement[] servers = Platform.getExtensionRegistry()
@@ -91,7 +93,7 @@ public class EnvironmentExtensionReader
 		return evalServer;
 	}
 	
-	@NonNull
+	@Nonnull
 	@SuppressWarnings("Dm")
 	private IEnvironmentConfiguration createConfigurationFromElement(final IConfigurationElement server)
 	{

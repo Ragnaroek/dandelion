@@ -7,15 +7,14 @@
 
 (in-package :cl-user)
 
-(defpackage :de.fh-trier.test.evalserver.utils
-  (:use :common-lisp 
-        :de.fh-trier.evalserver.utils
-        :lisp-unit))
+(defpackage #:dandelion-test-dandelion-utils
+  (:use #:common-lisp 
+        #:dandelion-utils
+        #:lisp-unit))
 
-(in-package #:de.fh-trier.test.evalserver.utils)
+(in-package #:dandelion-test-dandelion-utils)
 
-;(run-tests)
-(remove-all-tests)
+(remove-tests :all)
 
 (define-test test-find-shortest-string
   (assert-error nil (find-shortest-string nil))
@@ -25,8 +24,8 @@
   (assert-equal "333" (find-shortest-string (list "4444" "4444" "333" "55555" "666666"))))
 
 (define-test test-read-all-from-string
-  (assert-equal '(a b c) (read-all-from-string "a b c  "))
-  (assert-equal '(nil ((quote a) 1 x)) (read-all-from-string "() ('a 1 x)")))
+  (assert-equal '(cl-user::a cl-user::b cl-user::c) (read-all-from-string "a b c  "))
+  (assert-equal '(nil ((quote cl-user::a) 1 cl-user::x)) (read-all-from-string "() ('a 1 x)")))
 
 (define-test test-make-formatted-string
   (assert-equal "A B C" (make-formatted-string "~{~a~^ ~}" (list '(a b c))))

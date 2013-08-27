@@ -20,10 +20,12 @@
 package de.defmacro.dandelion.internal.core.connection;
 
 import java.util.*;
+
+import javax.annotation.Nonnull;
+
 import org.eclipse.swt.widgets.Shell;
 
 import de.defmacro.dandelion.internal.ui.dialogs.EvalFailureDialog;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Standardimplementierung der {@link IResult}-Schnittstelle.
@@ -142,7 +144,7 @@ implements IResult
 	 * @return Restart-Auwahl, niemals <code>null</code> zurueck.
 	 * @see IResult#openRestartDialog(Shell)
 	 */
-	@NonNull
+	@Nonnull
 	public IRestartSelection openRestartDialog(final Shell shell) 
 	{
 		final EvalFailureDialog dialog = new EvalFailureDialog(shell, fErrorDescription, fRestarts);
@@ -162,7 +164,7 @@ implements IResult
 	 * @return Die zurueckgegebene List ist unveraenderlich.
 	 * @see IResult#getRestarts()
 	 */
-	@NonNull
+	@Nonnull
 	public List<IRestart> getRestarts() {
 		return fRestarts;
 	}

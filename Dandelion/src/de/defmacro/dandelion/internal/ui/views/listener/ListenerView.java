@@ -22,6 +22,9 @@ package de.defmacro.dandelion.internal.ui.views.listener;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+
+import javax.annotation.CheckForNull;
+
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
@@ -46,9 +49,7 @@ import de.defmacro.dandelion.internal.ui.text.*;
 import de.defmacro.dandelion.internal.ui.text.partition.*;
 import de.defmacro.dandelion.internal.ui.text.presentation.LispSourcePresentationManager;
 import de.defmacro.dandelion.internal.ui.views.*;
-import edu.umd.cs.findbugs.annotations.*;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 import static de.defmacro.dandelion.internal.ui.text.SourceUtilities.*;
 
 //TODO Copy-Paste von mehreren Forms in Listener ermoeglichen (ueber bulk-eval-job)
@@ -314,7 +315,7 @@ implements IBackgroundEvaluationListener, ITextListener, IListenerView
 		getProgressService().showBusyForFamily(fEvalServer);
 	}
 	
-	@Nullable
+	@CheckForNull
 	public IEnvironment getEvalServer() {
 		return fEvalServer;
 	}

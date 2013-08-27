@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.clisp.linux.x86"
       label="Dandelion and CLISP (Linux, x86)"
-      version="2.4.8"
+      version="2.49.2"
       provider-name="Michael Bohn">
 
    <description>
@@ -25,29 +25,28 @@ http://www.gnu.org/licenses/gpl.txt
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="de.defmacro.dandelion"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.junit4"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="de.defmacro.dandelion"/>
    </requires>
 
    <plugin
          id="de.defmacro.dandelion.env.clisp.linux.x86"
          download-size="3200"
          install-size="17800"
-         version="2.4.8"/>
+         version="2.49.2"/>
 
    <plugin
          id="de.defmacro.dandelion"
          download-size="467"
          install-size="467"
-         version="1.2.0"
+         version="1.2.2"
          unpack="false"/>
 
 </feature>

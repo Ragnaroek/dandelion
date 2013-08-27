@@ -1,8 +1,0 @@
-;;; -*- Mode: Lisp -*-
-
-;;; metering.system --
-
-(mk:defsystem metering
-    :source-pathname (translate-logical-pathname "clocc:src;tools;metering;")
-    :source-extension "lisp"
-    :components ((:file "metering")))

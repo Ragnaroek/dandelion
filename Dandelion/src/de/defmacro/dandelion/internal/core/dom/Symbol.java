@@ -19,11 +19,12 @@
 
 package de.defmacro.dandelion.internal.core.dom;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.text.Position;
 
 import de.defmacro.dandelion.internal.core.dom.parse.DestructuredSymbol;
-
-import edu.umd.cs.findbugs.annotations.*;
 
 /**
  * Ein Lisp-Symbol.
@@ -112,7 +113,7 @@ extends SExpression
 	 * Liefert den Namen des Symbols als String.
 	 * @return
 	 */
-	@NonNull
+	@Nonnull
 	public String getSymbolName()
 	{
 		return fSymbolName;

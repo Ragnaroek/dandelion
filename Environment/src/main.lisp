@@ -27,25 +27,15 @@
 
 (in-package :cl-user)
 
-(defpackage :de.fh-trier.evalserver.main
+(defpackage #:dandelion-main
   (:use #:common-lisp 
-        #:de.fh-trier.evalserver
-        #:de.fh-trier.evalserver.utils)
+        #:dandelion-server
+        #:dandelion-utils)
   (:export #:main))
 
-(in-package #:de.fh-trier.evalserver.main)
+(in-package #:dandelion-main)
 
 (defparameter *exit-lisp* T) ;nur fuer testzwecke
-
-; input:  -
-; effect: Hauptfunktion die fuer Image-Builds und Exec-Builds angegeben wird.
-; value:  -
-(defun main ()
-  ;Verteilung auf verschiende read-time-conditionals
-  #+clisp (main-clisp)
-  #+sbcl (main-sbcl)
-  #-(or clisp sbcl) (error "No main method implemented")
-  (exit-lisp))
 
 ; input:  -
 ; effect: Beendet die Lisp-Umgebung. Verhindert Aufruf der Konsole.
@@ -53,38 +43,16 @@
 (defun exit-lisp ()
   (when *exit-lisp*
     #+clisp (ext:exit)
-    #+sbcl (sb-ext:quit)
+    #+sbcl (sb-ext:exit)
     #-(or clisp sbcl) (error "No exit method implemented")))
 
-#+clisp
-(defun main-clisp ()
-  (let ((args ext:*args*)) ;uebergebene Parameter aus der Konsole
-    (when (equalp (first args) "lispfile") (setf args (rest args)))
-    (start-with-default-order args)))
-
-#+sbcl
-(defun main-sbcl ()
-  (start-with-default-order (rest sb-ext:*posix-argv*)))
-
-;normale Reihenfolge der Parameter in args
-(defun start-with-default-order (args)
-  (start-eval-server (check-port (first args))
-                       :serve-forever (check-boolean (second args) "serve mode" nil)
-                       :logging-enabled (check-boolean (third args) "logging mode" nil)
-                       :log-level (check-log-level (fourth args) :error)
-                       ;:layout (check-layout (fifth args) 'log4cl:html-layout)
-                       :log-type-args (check-log-file (fifth args) nil)))
-
-; input:  port-string - String der Portnummer enthaelt
-; effect: Ueberprueft den uebergebenen String auf gueltige Port-Angabe
-; signal: arg-error - wenn port-string ungueltig
-; value:  portnummer wenn port-string korrekte port-angabe enthaelt
-;@testcase
-(defun check-port (port-string)
-  (let ((port (and port-string (parse-integer port-string :junk-allowed T))))
-    (when (or (not port) (< port 0) (> port 65535))
-        (arg-error "port number" port-string "is invalid"))
-    port))
+; input:  &rest
+;         message - Kein oder mehrere Strings
+; effect: Schreibt message an den Standard-Output und beendet die Lisp-Umgebung
+; value:  - (Lisp-Umgebung wird beendet)
+(defun arg-error (&rest message)
+  (format t "Illegal parameter: ~{~a~^ ~}" message)
+  (exit-lisp))
 
 ; input:  bool - String der Boolean enthaelt (T oder NIL)
 ;         param - String fuer Beschreibung des Parameters
@@ -100,6 +68,18 @@
           ;string kann hier nur T oder NIL sein
         (T (read-from-string bool))))
 
+
+; input:  port-string - String der Portnummer enthaelt
+; effect: Ueberprueft den uebergebenen String auf gueltige Port-Angabe
+; signal: arg-error - wenn port-string ungueltig
+; value:  portnummer wenn port-string korrekte port-angabe enthaelt
+;@testcase
+(defun check-port (port-string)
+  (let ((port (and port-string (parse-integer port-string :junk-allowed T))))
+    (when (or (not port) (< port 0) (> port 65535))
+        (arg-error "port number" port-string "is invalid"))
+    port))
+
 ; input:  level-string - String der Log-Level Angabe enthaelt
 ;         default - Der Wert der zurueckgeliefert wird wenn level-string = NIL
 ; effect: Ueberprueft die level-string Variable ob sie gueltige Log-Level Angabe enthaelt
@@ -108,26 +88,32 @@
 ;@testcase
 (defun check-log-level (level-string default)
   (cond ((not level-string) default)
-        ((unless (some #'(lambda (valid-level) (equalp level-string (format nil "~a" valid-level))) *log-levels*)
-           (arg-error (format nil "illegal log level, must be one of: ~{~a~^ ~}" *log-levels*))))
+        ((unless (some #'(lambda (valid-level) (equalp level-string (format nil "~a" valid-level))) +log-levels+)
+           (arg-error (format nil "illegal log level, must be one of: ~{~a~^ ~}" +log-levels+))))
         (T (read-from-string (format nil ":~a" level-string)))))
 
-; input:  file-string - String der Pfadangabe enthaelt
-;         default - Der Wert der zurueckgeliefert wird wenn file-string = NIL
-; effect: Ueberprueft die file-string Variable ob sie gueltige Pfadangabe enthaelt
-; signal: arg-error - wenn file-string ungueltig
-; value:  Pfadangabe in liste wenn file-string gueltig, default wenn file-string = NIL
-;@testcase
-(defun check-log-file (file-string default)
-  (cond ((not file-string) default)
-        ((unless (parse-namestring file-string nil *default-pathname-defaults* :junk-allowed T)
-           (arg-error (format nil "illegal log-file"))))
-        (T (list (parse-namestring file-string)))))
+;normale Reihenfolge der Parameter in args
+(defun start-with-default-order (args)
+  (start-eval-server (check-port (first args))
+                       :serve-forever (check-boolean (second args) "serve mode" nil)
+                       :log-level (check-log-level (third args) :error)))
 
-; input:  &rest
-;         message - Kein oder mehrere Strings
-; effect: Schreibt message an den Standard-Output und beendet die Lisp-Umgebung
-; value:  - (Lisp-Umgebung wird beendet)
-(defun arg-error (&rest message)
-  (format t "Illegal parameter: ~{~a~^ ~}" message)
+#+clisp
+(defun main-clisp ()
+  (let ((args ext:*args*)) ;uebergebene Parameter aus der Konsole
+    (when (equalp (first args) "lispfile") (setf args (rest args)))
+    (start-with-default-order args)))
+
+#+sbcl
+(defun main-sbcl ()
+  (start-with-default-order (rest sb-ext:*posix-argv*)))
+
+; input:  -
+; effect: Hauptfunktion die fuer Image-Builds und Exec-Builds angegeben wird.
+; value:  -
+(defun main ()
+  ;Verteilung auf verschiende read-time-conditionals
+  #+clisp (main-clisp)
+  #+sbcl (main-sbcl)
+  #-(or clisp sbcl) (error "No main method implemented")
   (exit-lisp))

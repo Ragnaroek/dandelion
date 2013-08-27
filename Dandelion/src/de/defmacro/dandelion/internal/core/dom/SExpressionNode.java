@@ -21,7 +21,8 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.*;
 
-import edu.umd.cs.findbugs.annotations.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Knoten im Baum der Lisp-Ausdruecke.
@@ -78,7 +79,7 @@ public abstract class SExpressionNode
 	 * Achtung: lazy-init wird umgangen.
 	 * @return
 	 */
-	@NonNull
+	@Nonnull
 	protected abstract List<SExpression> getChildrenCreateIfNeccessary();
 	
 	/**

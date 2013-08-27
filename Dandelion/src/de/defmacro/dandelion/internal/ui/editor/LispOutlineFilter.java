@@ -20,10 +20,12 @@
 package de.defmacro.dandelion.internal.ui.editor;
 
 import java.util.*;
+
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.viewers.*;
 
 import de.defmacro.dandelion.internal.core.dom.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Der Filter fuer den Inhalt der Outline.
@@ -33,9 +35,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class LispOutlineFilter 
 extends ViewerFilter
 {
-	@NonNull
+	@Nonnull
 	private Set<TSExpression> fShowTypesToplevel;
-	@NonNull
+	@Nonnull
 	private Set<TSExpression> fShowTypesSublevel;
 	
 	private boolean fHideSublevel;

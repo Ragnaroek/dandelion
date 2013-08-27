@@ -19,11 +19,13 @@
 
 package de.defmacro.dandelion.internal.ui.text.presentation;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.text.*;
 
 import de.defmacro.dandelion.internal.LispPluginActivator;
 import de.defmacro.dandelion.internal.core.dom.*;
-import edu.umd.cs.findbugs.annotations.*;
 
 /**
  * Berechnet den aktuelle Kontext im 
@@ -88,7 +90,7 @@ public class Context
 	 * Liefert den Typ des Kontextes.
 	 * @return Typ des Kontextes
 	 */
-	@NonNull
+	@Nonnull
 	public ContextType getContextType()
 	{
 		return fContextType;
@@ -181,7 +183,7 @@ public class Context
 	 * @param offset
 	 * @return
 	 */
-	@NonNull
+	@Nonnull
 	private String computePreviousWord(final IDocument document, final int offset)
 	throws BadLocationException
 	{	

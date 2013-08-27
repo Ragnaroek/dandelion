@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.sbcl.mac.ppc"
       label="Dandelion and SBCL (MacOS X, ppc)"
-      version="1.0.45"
+      version="1.1.10"
       provider-name="Michael Bohn">
 
    <description>
@@ -26,29 +26,28 @@ http://www.gnu.org/licenses/gpl.txt
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="de.defmacro.dandelion"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.junit4"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="de.defmacro.dandelion"/>
    </requires>
 
    <plugin
          id="de.defmacro.dandelion.env.sbcl.mac.ppc"
          download-size="18200"
          install-size="58600"
-         version="1.0.45"/>
+         version="1.1.10"/>
 
    <plugin
          id="de.defmacro.dandelion"
          download-size="467"
          install-size="467"
-         version="1.2.0"
+         version="1.2.2"
          unpack="false"/>
 
 </feature>

@@ -21,8 +21,9 @@ package de.defmacro.dandelion.internal.core.dom.parse;
 
 import java.util.*;
 
+import javax.annotation.Nonnull;
+
 import de.defmacro.dandelion.internal.core.dom.*;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 
@@ -61,7 +62,7 @@ implements IParser<T>
 	protected abstract void parse0() throws ParseException;
 	protected abstract void cleanUp0();
 	
-	@NonNull
+	@Nonnull
 	protected abstract T constructObject();
 	protected abstract void setInput(IParserInput input);
 	

@@ -22,6 +22,8 @@ package de.defmacro.dandelion.internal.core.connection;
 import java.util.*;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
+
 import net.jcip.annotations.ThreadSafe;
 
 import org.eclipse.core.resources.*;
@@ -35,7 +37,6 @@ import de.defmacro.dandelion.internal.core.connection.AbstractJob.JobType;
 import de.defmacro.dandelion.internal.core.meta.*;
 import de.defmacro.dandelion.internal.preferences.*;
 import de.defmacro.dandelion.internal.ui.views.listener.*;
-import edu.umd.cs.findbugs.annotations.*;
 
 /**
  * Die zentrale Verwaltungsklasse fuer die Lisp-Umgebungen.
@@ -327,7 +328,7 @@ implements IDisposable, IJobHandler
 	 * @return - die {@link IEnvironmentConfiguration} fuer die Umgebung
 	 * @throws ManagementException - wenn IEvalServer nicht bekannt (nicht aus Liste {@link EnvironmentManager#getEnvironments()}
 	 */
-	@NonNull
+	@Nonnull
 	public synchronized IEnvironmentConfiguration getConfigurationFor(final IEnvironment server)
 	throws ManagementException
 	{	

@@ -21,7 +21,9 @@ package de.defmacro.dandelion.internal.core.dom;
 
 import java.util.*;
 
-import edu.umd.cs.findbugs.annotations.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * Eine Ordinary-Lambda-Liste.
@@ -98,7 +100,7 @@ extends DefaultMalformationProvider
 	 * Liefert die required-Parameter der Lambda-Liste.
 	 * @return Required-Parameter
 	 */
-	@NonNull
+	@Nonnull
 	public List<RequiredParameterDefinition> getRequiredParameters()
 	{
 		return fRequired;
@@ -108,7 +110,7 @@ extends DefaultMalformationProvider
 	 * Liefert die &ampoptional-Parameter.
 	 * @return optional-Parameter
 	 */
-	@NonNull
+	@Nonnull
 	public List<ParameterDefinition> getOptionalParameters()
 	{
 		return fOptional;
@@ -128,7 +130,7 @@ extends DefaultMalformationProvider
 	 * Liefert die &ampkey-Parameter.
 	 * @return key-Parameter
 	 */
-	@NonNull
+	@Nonnull
 	public List<ParameterDefinition> getKeywordParameters()
 	{
 		return fKeyword;
@@ -138,7 +140,7 @@ extends DefaultMalformationProvider
 	 * Liefert die &ampaux-Parameter.
 	 * @return aux-Parameter
 	 */
-	@NonNull
+	@Nonnull
 	public List<ParameterDefinition> getAuxParameters()
 	{
 		return fAux;

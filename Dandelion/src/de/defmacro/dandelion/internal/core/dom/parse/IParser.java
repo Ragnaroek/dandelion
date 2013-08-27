@@ -19,8 +19,9 @@
 
 package de.defmacro.dandelion.internal.core.dom.parse;
 
+import javax.annotation.CheckForNull;
+
 import de.defmacro.dandelion.internal.core.dom.IMalformationProvider;
-import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Schnittstelle fuer Parser-Klassen.
@@ -31,6 +32,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 public interface IParser<T> 
 extends IMalformationProvider 
 {
-	@Nullable
+	@CheckForNull
 	public T parse(IParserInput input);
 }

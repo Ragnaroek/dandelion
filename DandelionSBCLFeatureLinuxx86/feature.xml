@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.defmacro.dandelion.feature.sbcl.linux.x86"
+      label="Dandelion and SBCL (Linux, x86)"
+      version="1.1.10"
+      provider-name="Michael Bohn">
+
+   <description>
+      Dandelion Plugin bundled with SBCL Environment (Linux, x86)
+   </description>
+
+   <copyright>
+      (c) 2008, Michael Bohn
+   </copyright>
+
+   <license url="http://www.gnu.org/licenses/gpl.txt">
+      Dandelion is free software distributed under the terms of the
+GNU Public License.
+http://www.gnu.org/licenses/gpl.txt
+   </license>
+
+   <url>
+      <update label="Sourceforge Update-Site" url="http://dandelion-ecl.sourceforge.net/update/"/>
+      <discovery label="Sourceforge" url="http://sourceforge.net/projects/dandelion-ecl"/>
+   </url>
+
+   <plugin
+         id="de.defmacro.dandelion.env.sbcl.linux.x86"
+         download-size="15600"
+         install-size="55300"
+         version="1.1.10"/>
+
+   <plugin
+         id="de.defmacro.dandelion"
+         download-size="467"
+         install-size="467"
+         version="1.2.2"
+         unpack="false"/>
+
+</feature>

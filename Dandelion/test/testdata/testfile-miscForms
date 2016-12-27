@@ -1,0 +1,17 @@
+(((())))) ; eine Klammer zuviel
+
+) ;keine oeffnende Klammer
+
+")" ; invalid in String
+
+#| 
+(())) invalid in Block-Kommentar 
+|#
+
+'x
+'(a b c)
+symbol
+(defparameter *bla* 'blubb)
+
+;;hier koennen Testdaten angehangen werden, aber nichts oben abaendern
+;;Tests in aus dieser Datei sollen nur Bereiche analysieren

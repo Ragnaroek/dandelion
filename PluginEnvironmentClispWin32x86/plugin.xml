@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+
+ <plugin>
+    <extension
+         point="de.defmacro.dandelion.servers">
+       <server
+            host="localhost"
+            name="CLISP"
+            port="31404"
+            version="2.49.2">
+          <configuration
+               class="de.defmacro.dandelion.env.clisp.win32.x86.Configuration"
+               logging="true"
+               logseverity="error">
+          </configuration>
+       </server>
+    </extension>
+ </plugin>

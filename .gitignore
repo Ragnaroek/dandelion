@@ -1,0 +1,10 @@
+Dandelion/.settings/
+Dandelion/bin/
+PluginEnvironmentClispLinuxx86/bin/
+PluginEnvironmentClispMacIntel/bin/
+PluginEnvironmentClispMacPPC/bin/
+PluginEnvironmentClispWin32x86/bin/
+PluginEnvironmentSBCLLinuxx86/bin/
+PluginEnvironmentSBCLMacIntel/bin/
+PluginEnvironmentSBCLMacPPC/bin/
+PluginEnvironmentSBCLWin32x86/bin/

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.defmacro.dandelion.feature.clisp.mac.intel_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.mac.intel" version="2.49.2">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.intel_1.1.10.jar" id="de.defmacro.dandelion.feature.sbcl.mac.intel" version="1.1.10">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.clisp.linux.x86_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.linux.x86" version="2.49.2">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.clisp.mac.ppc_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.mac.ppc" version="2.49.2">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.clisp.win32.x86_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.win32.x86" version="2.49.2">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.linux.x86_1.1.10.jar" id="de.defmacro.dandelion.feature.sbcl.linux.x86" version="1.1.10">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.win32.x86_1.1.8.jar" id="de.defmacro.dandelion.feature.sbcl.win32.x86" version="1.1.8">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.ppc_1.1.10.jar" id="de.defmacro.dandelion.feature.sbcl.mac.ppc" version="1.1.10">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <category-def name="de.defmacro.dandelion.categories.bundles" label="Dandelion Environment Bundles"/>
+</site>

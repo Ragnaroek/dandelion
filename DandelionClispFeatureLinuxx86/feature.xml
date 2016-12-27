@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.defmacro.dandelion.feature.clisp.linux.x86"
+      label="Dandelion and CLISP (Linux, x86)"
+      version="2.49.2"
+      provider-name="Michael Bohn">
+
+   <description>
+      Dandelion Plugin bundled with CLISP Environment (Linux, x86)
+   </description>
+
+   <copyright>
+      (c) 2008, Michael Bohn
+   </copyright>
+
+   <license url="http://www.gnu.org/licenses/gpl.txt">
+      Dandelion is free software distributed under the terms of the
+GNU Public License.
+http://www.gnu.org/licenses/gpl.txt
+   </license>
+
+   <url>
+      <update label="Sourceforge Update-Site" url="http://dandelion-ecl.sourceforge.net/update/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="de.defmacro.dandelion"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.forms"/>
+   </requires>
+
+   <plugin
+         id="de.defmacro.dandelion.env.clisp.linux.x86"
+         download-size="3200"
+         install-size="17800"
+         version="2.49.2"/>
+
+   <plugin
+         id="de.defmacro.dandelion"
+         download-size="467"
+         install-size="467"
+         version="1.2.2"
+         unpack="false"/>
+
+</feature>

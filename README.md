@@ -1,4 +1,4 @@
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?fid=g3qj00&url=https%3A%2F%2Fgithub.com%2FRagnaroek%2Fdandelion%2Fblob%2Fmaster%2FREADME.md)
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?fid=g3qj00&url=https%3A%2F%2Fgithub.com%2FRagnaroek%2Fdandelion)
 
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Ragnaroek/rust-trellis/blob/master/LICENSE)
 

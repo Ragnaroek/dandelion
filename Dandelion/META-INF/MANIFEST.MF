@@ -22,3 +22,4 @@ Bundle-ClassPath: .,
 Export-Package: de.defmacro.dandelion.core.connection
 Bundle-Vendor: Michael Bohn
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: de.defmacro.dandelion

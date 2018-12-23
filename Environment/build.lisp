@@ -28,6 +28,8 @@
 
 (in-package :cl-user)
 
+(push #p"./" asdf:*central-registry*)
+
 (ql:quickload :dandelion-server)
 
 ;Where to put the binaries in

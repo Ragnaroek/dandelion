@@ -22,6 +22,6 @@ implements IConfigurationFactory
 			throw new RuntimeException(e);
 		}
 		File file = new File(url.getFile());
-		return file;
+		return file.getAbsoluteFile();
 	}
 }

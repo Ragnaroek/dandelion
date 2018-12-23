@@ -1,0 +1,5 @@
+features/
+plugins/
+.DS_Store
+artifacts.jar
+content.jar

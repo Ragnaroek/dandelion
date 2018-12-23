@@ -3,7 +3,9 @@
       id="de.defmacro.dandelion.feature.clisp.linux.x86"
       label="Dandelion and CLISP (Linux, x86)"
       version="2.49.2"
-      provider-name="Michael Bohn">
+      provider-name="Michael Bohn"
+      os="linux"
+      arch="x86_64">
 
    <description>
       Dandelion Plugin bundled with CLISP Environment (Linux, x86)

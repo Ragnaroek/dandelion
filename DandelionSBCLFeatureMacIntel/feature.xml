@@ -3,7 +3,9 @@
       id="de.defmacro.dandelion.feature.sbcl.mac.intel"
       label="Dandelion and SBCL (MacOS X, Intel)"
       version="1.1.10"
-      provider-name="Michael Bohn">
+      provider-name="Michael Bohn"
+      os="macosx"
+      arch="x86_64">
 
    <description>
       Dandelion Plugin bundled with CLISP Environment (MacOS X, PPC)

@@ -3,7 +3,9 @@
       id="de.defmacro.dandelion.feature.clisp.mac.intel"
       label="Dandelion and CLISP (MacOS X, Intel)"
       version="2.49.2"
-      provider-name="Michael Bohn">
+      provider-name="Michael Bohn"
+      os="macosx"
+      arch="x86_64">
 
    <description>
       Dandelion Plugin bundled with CLISP Environment (MacOS, Intel)

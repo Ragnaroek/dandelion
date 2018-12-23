@@ -21,4 +21,4 @@ Bundle-ClassPath: .,
  bin
 Export-Package: de.defmacro.dandelion.core.connection
 Bundle-Vendor: Michael Bohn
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

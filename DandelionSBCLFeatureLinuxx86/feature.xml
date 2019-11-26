@@ -3,9 +3,7 @@
       id="de.defmacro.dandelion.feature.sbcl.linux.x86"
       label="Dandelion and SBCL (Linux, x86)"
       version="1.4.10"
-      provider-name="Michael Bohn"
-      os="linux"
-      arch="x86_64">
+      provider-name="Michael Bohn">
 
    <description>
       Dandelion Plugin bundled with SBCL Environment (Linux, x86)

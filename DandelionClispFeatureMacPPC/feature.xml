@@ -3,9 +3,7 @@
       id="de.defmacro.dandelion.feature.clisp.mac.ppc"
       label="Dandelion and CLISP (MacOS X, ppc)"
       version="2.49.2"
-      provider-name="Michael Bohn"
-      os="macosx"
-      arch="ppc">
+      provider-name="Michael Bohn">
 
    <description>
       Dandelion Plugin bundled with CLISP Environment (MacOS X, PPC)

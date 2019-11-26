@@ -2,10 +2,8 @@
 <feature
       id="de.defmacro.dandelion.feature.sbcl.mac.intel"
       label="Dandelion and SBCL (MacOS X, Intel)"
-      version="1.4.14"
-      provider-name="Michael Bohn"
-      os="macosx"
-      arch="x86_64">
+      version="1.5.8"
+      provider-name="Michael Bohn">
 
    <description>
       Dandelion Plugin bundled with SBCL Environment (MacOS X, x86_64)
@@ -49,6 +47,6 @@ http://www.gnu.org/licenses/gpl.txt
          id="de.defmacro.dandelion.env.sbcl.mac.intel"
          download-size="0"
          install-size="0"
-         version="1.4.14"/>
+         version="1.5.8"/>
 
 </feature>

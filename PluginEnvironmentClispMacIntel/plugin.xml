@@ -7,7 +7,7 @@
             host="localhost"
             name="CLISP"
             port="31404"
-            version="2.49.2">
+            version="2.49.93">
          <configuration
                class="de.defmacro.dandelion.env.clisp.mac.intel.Configuration"
                logging="false"

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CLISP Environment
 Bundle-SymbolicName: de.defmacro.dandelion.env.clisp.mac.intel;singleton:=true
-Bundle-Version: 2.49.2
+Bundle-Version: 2.49.93
 Bundle-Activator: de.defmacro.dandelion.env.clisp.mac.intel.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;bundle-version="3.5.1",

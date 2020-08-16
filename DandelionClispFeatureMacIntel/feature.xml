@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.clisp.mac.intel"
       label="Dandelion and CLISP (MacOS X, Intel)"
-      version="2.49.2"
+      version="2.49.93"
       provider-name="Michael Bohn">
 
    <description>
@@ -39,7 +39,7 @@ http://www.gnu.org/licenses/gpl.txt
          id="de.defmacro.dandelion.env.clisp.mac.intel"
          download-size="2700"
          install-size="2700"
-         version="2.49.2"/>
+         version="2.49.93"/>
 
    <plugin
          id="de.defmacro.dandelion"

@@ -1,7 +1,3 @@
-[![Beerpay](https://beerpay.io/Ragnaroek/dandelion/badge.svg)](https://beerpay.io/Ragnaroek/dandelion)
-[![Beerpay](https://beerpay.io/Ragnaroek/dandelion/make-wish.svg?style=flat-square)](https://beerpay.io/Ragnaroek/dandelion?focus=wish)
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?fid=g3qj00&url=https%3A%2F%2Fgithub.com%2FRagnaroek%2Fdandelion)
-
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Ragnaroek/rust-trellis/blob/master/LICENSE)
 
 # Dandelion
@@ -40,8 +36,3 @@ You can extract the correct path to the environment from the resulting error mes
 ![Editor and Code Outline](https://a.fsdn.com/con/app/proj/dandelion-ecl/screenshots/133381.jpg/182/137/2)
 
 ![Apropos View](https://a.fsdn.com/con/app/proj/dandelion-ecl/screenshots/133393.jpg/182/137/2)
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/Ragnaroek/dandelion/badge.svg?style=beer-square)](https://beerpay.io/Ragnaroek/dandelion)  [![Beerpay](https://beerpay.io/Ragnaroek/dandelion/make-wish.svg?style=flat-square)](https://beerpay.io/Ragnaroek/dandelion?focus=wish)

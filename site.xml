@@ -18,10 +18,10 @@
    <feature url="features/de.defmacro.dandelion.feature.sbcl.win32.x86_1.4.14.jar" id="de.defmacro.dandelion.feature.sbcl.win32.x86" version="1.4.14">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
-   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.intel_1.5.8.jar" id="de.defmacro.dandelion.feature.sbcl.mac.intel" version="1.5.8">
+   <feature url="features/de.defmacro.dandelion.feature.clisp.mac.intel_2.49.93.jar" id="de.defmacro.dandelion.feature.clisp.mac.intel" version="2.49.93">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
-   <feature url="features/de.defmacro.dandelion.feature.clisp.mac.intel_2.49.93.jar" id="de.defmacro.dandelion.feature.clisp.mac.intel" version="2.49.93">
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.intel_2.0.7.jar" id="de.defmacro.dandelion.feature.sbcl.mac.intel" version="2.0.7">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
    <category-def name="de.defmacro.dandelion.categories.bundles" label="Dandelion Environment Bundles"/>

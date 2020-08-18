@@ -40,6 +40,6 @@ extends AbstractConfigurationFactory
 	 */
 	public File getExecutableFile() 
 	{
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_1.5.8");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_2.0.7");
 	}
 }

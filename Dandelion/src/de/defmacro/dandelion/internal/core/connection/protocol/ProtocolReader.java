@@ -64,7 +64,7 @@ implements IProtocolReader
 		Pattern pattern = fPatternFactory.getEvalResultPattern();
 		checkMatch(pattern, input);
 		
-		//invariante: Gültige EvalResult Antwort von Server
+		//invariante: Gueltige EvalResult Antwort von Server
 		
 		IResult result = null;
 		String[] parts = split(input);

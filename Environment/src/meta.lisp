@@ -153,8 +153,8 @@
 ;         Destructuring-Parameter in Makroparameter werden passend umgewandelt.
 ; value:  Die umgewandelte Argumentliste.
 ;@testcase
-(defun function-arglist->string (fsymbol &aux keyword-seen (fargs (multiple-value-list (function-arglist fsymbol))))
-  (mapcan #'(lambda (farg)
+(defun function-arglist->string (fsymbol &aux r keyword-seen (fargs (multiple-value-list (function-arglist fsymbol))))
+  (map-dotted #'(lambda (farg)
               (when (member farg LAMBDA-LIST-KEYWORDS)
                 (setf keyword-seen T))
               (cond ((consp farg) ;parameter symbol ist eine Liste
@@ -162,7 +162,7 @@
                            (destructuring-argument->string farg)
                            (init-form->string farg)))
                     ((symbolp farg)
-                     (list (symbol-name farg)))
+                     (list (function-name farg)))
                     (T (list "ERROR")))) (first fargs)))
 
 ; input:  func - Funktionssymbol

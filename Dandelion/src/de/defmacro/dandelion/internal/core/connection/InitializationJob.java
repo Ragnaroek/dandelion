@@ -39,7 +39,7 @@ extends AbstractJob
 	
 	private IConnection fConnection;
 	private ISymbolStore fStore;
-	
+		
 	/**
 	 * Erstellt einen neuen Initialisierungsjob.
 	 * @param connection - Die Verbindung von der die Symbole gelesen werden sollen.
@@ -82,7 +82,7 @@ extends AbstractJob
 		try {
 			ensureConnected(fConnection);
 			
-			//eigentlich nicht noetig, aber die ausführung zweier init-jobs
+			//eigentlich nicht noetig, aber die ausfï¿½hrung zweier init-jobs
 			//zur selben zeit wird so verhindert
 			fConnection.getLock().acquire(); //Verbindung blockieren
 				
@@ -92,8 +92,9 @@ extends AbstractJob
 			writer.writePackageRequest();
 			List<String> packages = reader.readPackageList();
 			
-			monitor.beginTask("Reading package symbols", packages.size() * 1000 * 2);
 			
+			monitor.beginTask("Reading package symbols", packages.size() * 1000 * 2);
+
 			for(String pack : packages) {
 				monitor.subTask("Package " + pack);
 				

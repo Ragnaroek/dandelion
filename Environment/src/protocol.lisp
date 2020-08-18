@@ -400,14 +400,14 @@
 ;@testcase
 (defun write-function-list (writer function-symbols)
   (write-line-to-writer writer (format nil "~a ~a" +token-function-list+ (length function-symbols)))
-  (mapc #'(lambda (fs) ;(setf fs 'mapcar)
+  (mapc #'(lambda (fs)
             (let ((documentation (function-documentation fs))
-                  (arglist (function-arglist->string fs)))
+                  (arglist (function-arglist->string fs)))              
               (if (or (not documentation) (equalp (string-trim '(#\Space #\Tab #\Newline) documentation) ""))
                   (setf documentation (string-to-base64-string "NIL"))
                   (setf documentation (string-to-base64-string documentation)))
-              ;(unless arglist (setf arglist (list "NIL")))
-              (write-line-to-writer writer (format nil "~a ~a~:[~; ~]~{~a~^ ~}" fs documentation arglist arglist)))) 
+              (let ((*print-pretty* NIL))
+                (write-line-to-writer writer (format nil "~a ~a~:[~; ~]~{~a~^ ~}" fs documentation arglist arglist)))))	
         function-symbols))
 
 ; input:  stream - Ein Stream Objekt

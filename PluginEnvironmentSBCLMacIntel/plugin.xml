@@ -7,7 +7,7 @@
             host="localhost"
             name="SBCL"
             port="30240"
-            version="1.4.14">
+            version="2.0.7">
          <configuration
                class="de.defmacro.dandelion.env.sbcl.mac.intel.Configuration"
                logging="false"

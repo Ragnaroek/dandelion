@@ -31,6 +31,7 @@
   (:use #:common-lisp)
   (:export #:find-shortest-string
            #:make-formatted-string
+           #:map-dotted
            #:now-string
            #:read-all-from-string
            #:OutputRedirector
@@ -81,6 +82,14 @@
     (cond ((equal (first value-list) 'ende) nil)
           (t (cons (first value-list) (read-all-from-string string (second value-list)))))))
 
+(defun map-dotted (f dotted-list)
+  (let ((cr (funcall f (car dotted-list)))
+        (recu-result 
+          (cond ((null (cdr dotted-list)) nil)
+                ((listp (cdr dotted-list)) (map-dotted f (cdr dotted-list)))
+                (T (funcall f (cdr dotted-list))))))
+    (cons cr recu-result)))
+  
 ;;;
 ;;; Class OutputRedirector
 ;;;

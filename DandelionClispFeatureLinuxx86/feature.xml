@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-      (c) 2008, Michael Bohn
+      (c) 2020, Michael Bohn
    </copyright>
 
    <license url="http://www.gnu.org/licenses/gpl.txt">
@@ -20,7 +20,8 @@ http://www.gnu.org/licenses/gpl.txt
    </license>
 
    <url>
-      <update label="Sourceforge Update-Site" url="http://dandelion-ecl.sourceforge.net/update/"/>
+      <update label="Github Update-Site" url="https://ragnaroek.github.io/dandelion/"/>
+      <discovery label="Github" url="https://github.com/Ragnaroek/dandelion/"/>
    </url>
 
    <requires>

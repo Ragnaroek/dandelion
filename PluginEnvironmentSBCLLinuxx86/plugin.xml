@@ -7,7 +7,7 @@
             host="localhost"
             name="SBCL"
             port="30240"
-            version="1.4.10">
+            version="2.0.1">
          <configuration
                class="de.defmacro.dandelion.env.sbcl.linux.x86.Configuration"
                logging="true"

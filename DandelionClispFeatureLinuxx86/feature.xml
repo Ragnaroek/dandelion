@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.clisp.linux.x86"
       label="Dandelion and CLISP (Linux, x86)"
-      version="2.49.2"
+      version="2.49.92"
       provider-name="Michael Bohn">
 
    <description>
@@ -41,7 +41,7 @@ http://www.gnu.org/licenses/gpl.txt
          id="de.defmacro.dandelion.env.clisp.linux.x86"
          download-size="3200"
          install-size="17800"
-         version="2.49.2"/>
+         version="2.49.92"/>
 
    <plugin
          id="de.defmacro.dandelion"

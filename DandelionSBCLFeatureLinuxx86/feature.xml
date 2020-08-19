@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.sbcl.linux.x86"
       label="Dandelion and SBCL (Linux, x86)"
-      version="1.4.10"
+      version="2.0.1"
       provider-name="Michael Bohn">
 
    <description>
@@ -26,9 +26,9 @@ http://www.gnu.org/licenses/gpl.txt
 
    <plugin
          id="de.defmacro.dandelion.env.sbcl.linux.x86"
-         download-size="15600"
-         install-size="55300"
-         version="1.4.10"/>
+         download-size="0"
+         install-size="0"
+         version="2.0.1"/>
 
    <plugin
          id="de.defmacro.dandelion"

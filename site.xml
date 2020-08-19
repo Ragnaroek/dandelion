@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.defmacro.dandelion.feature.clisp.linux.x86_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.linux.x86" version="2.49.2">
-      <category name="de.defmacro.dandelion.categories.bundles"/>
-   </feature>
    <feature url="features/de.defmacro.dandelion.feature.clisp.mac.ppc_2.49.2.jar" id="de.defmacro.dandelion.feature.clisp.mac.ppc" version="2.49.2">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
@@ -22,6 +19,9 @@
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
    <feature url="features/de.defmacro.dandelion.feature.sbcl.linux.x86_2.0.1.jar" id="de.defmacro.dandelion.feature.sbcl.linux.x86" version="2.0.1">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.clisp.linux.x86_2.49.92.jar" id="de.defmacro.dandelion.feature.clisp.linux.x86" version="2.49.92">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
    <category-def name="de.defmacro.dandelion.categories.bundles" label="Dandelion Environment Bundles"/>

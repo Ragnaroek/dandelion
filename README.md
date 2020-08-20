@@ -1,5 +1,8 @@
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Ragnaroek/rust-trellis/blob/master/LICENSE)
 
+[![Github Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/Ragnaroek)](https://github.com/sponsors/Ragnaroek)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A24SWQT3P5DY2&source=url)
+
 # Dandelion
 Dandelion is a plugin for Eclipse that supports Lisp programming in the Eclipse platform. It comes with two ready to use Lisp environments: SBCL and CLISP. It is possible to connect other environments.
 

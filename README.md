@@ -35,20 +35,23 @@ You can extract the correct path to the environment from the resulting error mes
 
 Dandelion provides an editor with error highlighting and an
 outline view to quickly navigate through big files:
+
 ![Editor and Code Outline](https://ragnaroek.github.io/dandelion/img/outline.png)
 
 ## Completion Proposal
 
 The editor provides completions and documentation for functions/macros:
+
 ![Code Proposal](https://ragnaroek.github.io/dandelion/img/proposal.png)
 
 ## Apropos View
 
 The apropos view allows you to search for functions/macros/packages and their documentation:
+
 ![Apropos](https://ragnaroek.github.io/dandelion/img/apropos.png)
 
 ## Out-of-the-Box Experience
 
 Dandelion comes with ready to use Lisp environments. You do not have to install/configure anything. The plugin also provides a REPL for interactively trying out code:
-![REPL](https://ragnaroek.github.io/dandelion/img/repl.png)
 
+![REPL](https://ragnaroek.github.io/dandelion/img/repl.png)

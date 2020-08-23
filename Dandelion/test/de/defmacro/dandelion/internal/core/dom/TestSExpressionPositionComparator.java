@@ -5,8 +5,6 @@ import java.util.*;
 import org.eclipse.jface.text.Position;
 import org.junit.*;
 
-import de.defmacro.dandelion.internal.core.dom.SExpression;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import static org.junit.Assert.*;
 

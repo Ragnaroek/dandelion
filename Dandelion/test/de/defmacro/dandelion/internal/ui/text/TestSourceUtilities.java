@@ -3,7 +3,6 @@ package de.defmacro.dandelion.internal.ui.text;
 import org.eclipse.jface.text.*;
 import org.junit.*;
 
-import de.defmacro.dandelion.internal.ui.text.SourceUtilities;
 import de.defmacro.dandelion.internal.ui.text.partition.LispPartitionConstants;
 import de.defmacro.dandelion.testutils.TestProject;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;

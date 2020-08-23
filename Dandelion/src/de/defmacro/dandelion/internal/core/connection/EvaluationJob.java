@@ -114,7 +114,7 @@ extends AbstractEvaluationJob
 	 * @sse {@link AbstractJob#run0(IProgressMonitor)}
 	 */
 	@Override
-	@SuppressWarnings("NP") //Rueckgabe von non-null Wert wird über Methoden-Contract geregelt
+	@SuppressWarnings("NP") //Rueckgabe von non-null Wert wird ï¿½ber Methoden-Contract geregelt
 	protected IStatus run0(final IProgressMonitor monitor)
 	throws Exception
 	{	
@@ -178,12 +178,9 @@ extends AbstractEvaluationJob
 	{
 		IEvaluation eval = fConnection.getEvaluation();
 		
-		int cnt = 0;
 		eval.getConnection().getProtocolWriter().writeAbortRestart();
 		eval.resetOutputState();
-		while(eval.nextOutputLine() != null) {
-			cnt++;
-		}
+		while(eval.nextOutputLine() != null) {}
 		eval.getConnection().getProtocolReader().readSuccess();
 	}
 	

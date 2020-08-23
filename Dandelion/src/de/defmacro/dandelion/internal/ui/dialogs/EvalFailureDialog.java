@@ -263,10 +263,10 @@ implements IStructuredContentProvider
 		//nichts zu entsorgen
 	}
 
-	@SuppressWarnings("unchecked") //cast auf List<IRestart> sinnlos
+	@SuppressWarnings("unchecked")
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) 
 	{
-		this.fRestarts = (List)newInput;
+		this.fRestarts = (List<IRestart>)newInput;
 	}
 
 	public Object[] getElements(Object inputElement) 

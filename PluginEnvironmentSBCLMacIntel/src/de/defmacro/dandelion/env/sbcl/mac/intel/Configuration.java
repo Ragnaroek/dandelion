@@ -23,7 +23,6 @@ import java.io.*;
 import java.util.List;
 
 import de.defmacro.dandelion.core.connection.*;
-import de.defmacro.dandelion.env.sbcl.mac.intel.Activator;
 
 public class Configuration 
 extends AbstractConfigurationFactory

@@ -29,6 +29,8 @@ import de.defmacro.dandelion.internal.core.dom.ISyntacticalMalformation;
 public class ParseException 
 extends Exception
 {
+	private static final long serialVersionUID = -4260396209981978829L;
+	
 	private ISyntacticalMalformation fMalformation;
 	
 	public ParseException(ISyntacticalMalformation malformation)

@@ -200,8 +200,9 @@ implements ISelectionChangedListener, ILispEditor
 	 * Liefert die Outline fuer den Editor.
 	 * @see IAdaptable#getAdapter(Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized Object getAdapter(final Class required) 
+    public synchronized Object getAdapter(@SuppressWarnings("rawtypes") final Class required) 
 	{
 		//Adapter fuer Projektionsupport
 		if( fProjectionSupport != null ) {
@@ -374,8 +375,8 @@ implements ISelectionChangedListener, ILispEditor
 	
 	private void removeAnnotations(final IAnnotationModel annotationModel) 
 	{
-		for(Iterator iter = annotationModel.getAnnotationIterator(); iter.hasNext();) {
-			Annotation annotation = (Annotation)iter.next();
+		for(Iterator<Annotation> iter = annotationModel.getAnnotationIterator(); iter.hasNext();) {
+			Annotation annotation = iter.next();
 			annotationModel.removeAnnotation(annotation);
 		}
 	}
@@ -397,8 +398,8 @@ implements ISelectionChangedListener, ILispEditor
 			boolean hasErrors = false;
 			boolean hasWarnings = false;
 			
-			for(Iterator iter = annotationModel.getAnnotationIterator(); iter.hasNext(); ) {
-				Annotation annotation = (Annotation)iter.next();
+			for(Iterator<Annotation> iter = annotationModel.getAnnotationIterator(); iter.hasNext(); ) {
+				Annotation annotation = iter.next();
 				String type = annotation.getType();
 				int severity = 0;
 				if(type.equals(ERROR_ANNOTATION)) {

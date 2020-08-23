@@ -26,6 +26,8 @@ package de.defmacro.dandelion.internal.core.connection;
 public class ManagementException 
 extends Exception 
 {
+	private static final long serialVersionUID = 8991595138063953675L;
+
 	public ManagementException() {
 		super();
 	}

@@ -5,7 +5,6 @@ import org.eclipse.jface.text.Position;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import de.defmacro.dandelion.internal.core.dom.ISexpModel;
 import de.defmacro.dandelion.testutils.TestProject;
 
 public class TestSexpModelContainsError 

@@ -3,7 +3,6 @@ package de.defmacro.dandelion.internal.ui.text;
 import org.eclipse.jface.text.IDocument;
 import org.junit.*;
 
-import de.defmacro.dandelion.internal.ui.text.VisitableDocument;
 import de.defmacro.dandelion.testutils.*;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import static org.junit.Assert.*;

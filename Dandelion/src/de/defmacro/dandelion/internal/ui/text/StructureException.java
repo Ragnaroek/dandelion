@@ -30,6 +30,8 @@ import org.eclipse.jface.text.Position;
 public class StructureException 
 extends Exception
 {
+	private static final long serialVersionUID = 7135739900105179040L;
+	
 	private Position fAtPosition;
 	
 	public StructureException(final Position position) {

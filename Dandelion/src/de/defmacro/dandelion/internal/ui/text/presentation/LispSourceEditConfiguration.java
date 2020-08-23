@@ -105,7 +105,6 @@ extends LispSourceViewConfiguration
 		assistant.setAutoActivationDelay(500);
 		assistant.enableAutoActivation(true);
 		assistant.enablePrefixCompletion(true);
-		//assistant.setShowEmptyList(true);
 		assistant.setInformationControlCreator(new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell parent) {
 				return new DefaultInformationControl(parent, SWT.WRAP,  new LispAdditionalInformationPresenter());

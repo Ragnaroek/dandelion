@@ -55,7 +55,6 @@ implements IAnnotationHover
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked") //model.getAnnotationIterator() - Eclipse API nicht generic
 	private Annotation findAnnotation(int lineNumber, ISourceViewer viewer) 
 	throws BadLocationException
 	{

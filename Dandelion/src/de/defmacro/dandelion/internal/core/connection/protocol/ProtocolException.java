@@ -28,6 +28,8 @@ import de.defmacro.dandelion.internal.core.connection.ConnectionException;
 public class ProtocolException 
 extends ConnectionException
 {
+	private static final long serialVersionUID = 5283741161443482840L;
+
 	public ProtocolException() {
 		super();
 	}

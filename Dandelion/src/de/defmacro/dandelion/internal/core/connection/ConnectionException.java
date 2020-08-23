@@ -27,6 +27,8 @@ package de.defmacro.dandelion.internal.core.connection;
 public class ConnectionException 
 extends Exception
 {
+	private static final long serialVersionUID = 6933635872248287284L;
+
 	public ConnectionException() {
 		super();
 	}

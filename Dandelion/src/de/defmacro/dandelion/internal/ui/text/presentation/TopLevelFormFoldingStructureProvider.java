@@ -103,7 +103,6 @@ public class TopLevelFormFoldingStructureProvider
 		}
 	}
 	
-	@SuppressWarnings("unchecked") //Schnittstelle zu Eclipse nicht generisch
 	private void copyAnnotationPositions(ProjectionAnnotationModel annotationModel, Map<Annotation, Position> annotationModelPositions) 
 	{
 		Iterator<Annotation> iter = annotationModel.getAnnotationIterator();

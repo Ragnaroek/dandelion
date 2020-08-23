@@ -6,8 +6,6 @@ import static de.defmacro.dandelion.testutils.AssertUtil.*;
 import org.eclipse.jface.text.Position;
 import org.junit.Test;
 
-import de.defmacro.dandelion.internal.core.dom.Symbol;
-
 public class TestSymbol {
 
 	@Test

@@ -147,18 +147,4 @@ extends AbstractJob
 			commands.add("OFF");
 		}
 	}
-	
-	private String normalizePath(final String path)
-	{
-		String separator = System.getProperty("file.separator");
-		if(!path.endsWith(separator)) {
-			return path + separator;
-		}
-		return path;
-	}
-	
-	private String makeLogFile(final String path, final IEnvironment server)
-	{	
-		return normalizePath(path) + server.getName() +"_"+server.getVersion()+".html";
-	}
 }

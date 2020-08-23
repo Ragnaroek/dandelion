@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.defmacro.dandelion.internal.core.dom.parse.DestructuredSymbol;
-
 public class TestDestructuredSymbol {
 
 	@Test

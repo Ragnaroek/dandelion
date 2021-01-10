@@ -7,7 +7,7 @@ Dandelion is a plugin for Eclipse that supports Lisp programming in the Eclipse 
 
 |Type |Platform     |Architecture  |Version           |Maintenance Status|
 |-----|-------------|--------------|------------------|------------------|
-|SBCL| macOS | x86 |2.0.7|maintained
+|SBCL| macOS | x86 |2.0.11|maintained
 |SBCL| macOS | ppc |1.1.10|unmaintained|
 |SBCL| Linux | x86 |2.0.1|maintained|
 |SBCL| Windows | x86 | 2.0.0|maintained (SBCL only partially maintains Windows)|

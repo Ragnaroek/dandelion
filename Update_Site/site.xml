@@ -12,16 +12,16 @@
    <feature url="features/de.defmacro.dandelion.feature.clisp.mac.intel_2.49.93.jar" id="de.defmacro.dandelion.feature.clisp.mac.intel" version="2.49.93">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
-   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.intel_2.0.7.jar" id="de.defmacro.dandelion.feature.sbcl.mac.intel" version="2.0.7">
-      <category name="de.defmacro.dandelion.categories.bundles"/>
-   </feature>
    <feature url="features/de.defmacro.dandelion.feature.sbcl.linux.x86_2.0.1.jar" id="de.defmacro.dandelion.feature.sbcl.linux.x86" version="2.0.1">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
    <feature url="features/de.defmacro.dandelion.feature.clisp.linux.x86_2.49.92.jar" id="de.defmacro.dandelion.feature.clisp.linux.x86" version="2.49.92">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
-   <feature url="features/de.defmacro.dandelion.feature.sbcl.win32.x86_2.0.0.jar" id="de.defmacro.dandelion.feature.sbcl.win32.x86" version="2.0.0">
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.mac.intel_2.0.11.jar" id="de.defmacro.dandelion.feature.sbcl.mac.intel" version="2.0.11">
+      <category name="de.defmacro.dandelion.categories.bundles"/>
+   </feature>
+   <feature url="features/de.defmacro.dandelion.feature.sbcl.win32.x86_2.0.1.jar" id="de.defmacro.dandelion.feature.sbcl.win32.x86" version="2.0.1">
       <category name="de.defmacro.dandelion.categories.bundles"/>
    </feature>
    <category-def name="de.defmacro.dandelion.categories.bundles" label="Dandelion Environment Bundles"/>

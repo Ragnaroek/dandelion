@@ -2,7 +2,7 @@
 <feature
       id="de.defmacro.dandelion.feature.sbcl.mac.intel"
       label="Dandelion and SBCL (MacOS X, Intel)"
-      version="2.0.7"
+      version="2.0.11"
       provider-name="Michael Bohn">
 
    <description>
@@ -47,6 +47,6 @@ http://www.gnu.org/licenses/gpl.txt
          id="de.defmacro.dandelion.env.sbcl.mac.intel"
          download-size="0"
          install-size="0"
-         version="2.0.7"/>
+         version="2.0.11"/>
 
 </feature>

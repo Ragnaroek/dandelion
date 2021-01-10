@@ -17,6 +17,6 @@ extends AbstractConfigurationFactory
 
 	public File getExecutableFile() 
 	{	
-		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_2.0.0.exe");
+		return loadFromProject(Activator.getDefault(), Activator.PLUGIN_ID, "/binary/environment_sbcl_2.0.1.exe");
 	}
 }
